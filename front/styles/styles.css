@@ -1,0 +1,28 @@
+/*  */
+p{
+    text-align: justify;
+}
+footer{
+    background-color: #767676;
+}
+img{
+    width: 100%;
+}
+
+/* id */
+#nav{
+    background-color: #002687;
+}
+#icon{
+    width: 30px;
+}
+#rodape-link, #rodape-contato{
+    color: white;
+}
+#rodape-link{
+    text-decoration: underline;
+}
+#tabela{
+    border-color: #002687;
+    text-align: center;
+}
