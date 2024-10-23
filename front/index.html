@@ -16,10 +16,10 @@
     <!-- Barra de navegação/Menu -->
     <nav class="navbar navbar-expand-sm" id="nav" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
+            <a>
                 <img src="images/logo_matematica_no_metro.png" id="icon" alt="logo">
             </a>
-            <a class="navbar-brand" href="#">Matemática no Metrô</a>
+            <a class="navbar-brand mx-sm-3" href="#">MATEMÁTICA NO METRÔ</a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -32,7 +32,7 @@
                         <a class="nav-link active" aria-current="page" href="#">Início</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="informacoes.html">Informações</a>
+                        <a class="nav-link" href="informacoes.html">Sobre nós</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="forum.html">Fórum</a>
@@ -52,50 +52,78 @@
     <!-- Conteúdo da página -->
     <main>
         <div class="container my-4">
-            <div class="col-sm-6">
-                <div>
-                    <h3>Sobre o projeto</h3>
+            <div class="row">
+                <div class="col-md-6 align-self-center">
+                    <h3>SOBRE O PROJETO</h3>
                     <p>
-                        A estação Sacomã, da Linha 2-Verde, torna-se sala de aula, com o início do projeto “Resolva aqui
-                        suas dúvidas de matemática”, uma parceria entre o Instituto de Engenharia de São Paulo e o Metrô
-                        Social, com o apoio do Instituto Mauá de Tecnologia. A atividade consiste em proporcionar aos
-                        estudantes do ensino médio e passageiros do transporte metropolitano, aulas gratuitas,
-                        ministradas
-                        por alunos do primeiro ano de engenharia da Instituto Mauá de Tecnologia, que desempenharão essa
-                        função como voluntários.
+                        O projeto Matemática no Metrô tem o objetivo de proporcionar aos passageiros do metrô,
+                        independentemente da idade, ajuda com suas dúvidas em matemática. O projeto foi desenvolvido
+                        em parceria entre o Instituto de Engenharia de São Paulo e o Metrô Social, apoiados pelo
+                        Instituto Mauá de Tecnologia.
                     </p>
                 </div>
-                <div class="mt-2">
-                    <h3>Um ano do projeto</h3>
-                    <p>
-                        O projeto-piloto "Resolva aqui suas Dúvidas de Matemática", iniciado pelo Instituto de
-                        Engenharia com
-                        apoio do Metrô e do Instituto Mauá de Tecnologia, visa ajudar alunos do ensino médio e usuários
-                        do
-                        metrô a esclarecer suas dúvidas em matemática. Lançado em resposta ao descontentamento com a
-                        reforma
-                        do Novo Ensino Médio de 2022, que reduziu a carga horária de matérias essenciais, o projeto
-                        busca
-                        melhorar o entendimento de matemática, crucial para carreiras técnicas, especialmente na
-                        engenharia.
-                    </p>
-                    <p>
-                        Realizado na estação Sacomã do Metrô, o projeto oferece atendimentos voluntários por estudantes
-                        de
-                        engenharia às segundas-feiras. A maioria dos usuários que busca ajuda não são apenas alunos do
-                        ensino médio, mas também adultos que enfrentam dificuldades com matemática básica, como
-                        aritmética e
-                        tabuada, o que impede a resolução de problemas mais complexos. Além disso, há críticas sobre a
-                        abordagem do ensino de matemática nas escolas, onde muitos professores se sentem desmotivados e
-                        incapazes de manter a disciplina.
-                    </p>
-                    <p>
-                        O projeto tem gerado interesse e resultados, mas sua expansão depende do apoio do poder público
-                        e das
-                        secretarias de educação. O texto conclui enfatizando a importância de ensinar a tabuada de forma
-                        efetiva para preparar melhor os alunos para o futuro.
-                    </p>
+                <div class="col-md-6">
+                    <img src="images/imagem_voluntário.jpeg" alt="Foto do Projeto" style="width: 80%;">
                 </div>
+            </div>
+        </div>
+
+
+        <div class="my-4" id="info">
+            <hr>
+            <div class="p-4" id="sinais" style="background-image: url('images/sinais_matematica.png'); /* Verifique o caminho da imagem */ background-repeat: repeat-x; background-size: auto;">
+            </div>
+
+
+            <div class="container my-4">
+                <div class="row mt-4">
+                    <div class="col-sm-6">
+                        <h3>MAPA</h3>
+                        <img src="images/maps.jpeg" alt="google_maps">
+                        <p class="mt-2">Clique <a href="https://maps.app.goo.gl/nBmhaDZZoNHXCYLs8" style="color:white">aqui</a> para ir ao Google Maps</p>
+                        <h4>Endereço</h4>
+                        <p>Praça Altemar Dutra - Ipiranga, São Paulo - SP, 04203-053</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <h3>HORÁRIOS DOS VOLUNTÁRIOS</h3>
+                        <table class="table table-bordered" id="horarios">
+                            <thead>
+                                <tr>
+                                    <th id="elementos-horarios">Dia da semana</th>
+                                    <th id="elementos-horarios">Horário</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="elementos-horarios">Segunda-Feira</td>
+                                    <td id="elementos-horarios">16:30-18:30</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4" id="sinais" style="background-image: url('images/sinais_matematica.png'); /* Verifique o caminho da imagem */ background-repeat: repeat-x; background-size: auto;">
+            </div>
+            <hr>
+        </div>
+
+        <div class="container my-4">
+            <h3>NESTE SITE</h3>
+            <div class="row gap-3">
+                <a class="col-md-3 mx-md-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site" href="informacoes.html">
+                    <img src="images/sobre_nos.jpeg" alt="sobre-nos-imagem">
+                    <p>Sobre Nós</p>
+                </a>
+                <a class="col-md-3 mx-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site" href="forum.html">
+                    <img src="images/forum.jpeg" alt="forum-imagem">
+                    <p>Fórum</p>
+                </a>
+                <a class="col-md-3 mx-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site" href="desafios.html">
+                    <img src="images/desafios.jpeg" alt="deafios-imagem">
+                    <p>Desafios</p>
+                </a>
             </div>
         </div>
     </main>
@@ -109,7 +137,8 @@
                 <img src="images/instagram_icon.png" id="icon" alt="instagram">
                 @matematica_no_metro</a>
             <a class="nav-link m-4" id="rodape-link" href="#">email.placeholeder@email.com</a>
-            <a class="nav-link m-4 border border-white rounded-3" id="rodape-contato" href="contato.html">Contate-nos</a>
+            <a class="nav-link m-4 border border-white rounded-3" id="rodape-contato"
+                href="contato.html">Contate-nos</a>
         </nav>
     </footer>
 

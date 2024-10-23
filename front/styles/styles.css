@@ -1,12 +1,24 @@
 /*  */
 p{
     text-align: justify;
+    font-size: larger;
 }
 footer{
     background-color: #767676;
 }
 img{
     width: 100%;
+}
+h3, h4 {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+/* classes */
+.navbar-brand {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.nav-item {
+    font-size: large;
 }
 
 /* id */
@@ -22,7 +34,30 @@ img{
 #rodape-link{
     text-decoration: underline;
 }
-#tabela{
-    border-color: #002687;
+#horarios{
+    border-color: white;
     text-align: center;
+    background-color: transparent;
+}
+#elementos-horarios {
+    background-color: transparent;
+    color: white;
+}
+#info {
+    background-image: linear-gradient(to right,#1985D7, #186FAB);
+    color: white;
+}
+#neste-site {
+    background-image: linear-gradient(to right,#1985D7, #186FAB);
+    color: white;
+    text-align: center;
+}
+#neste-site img{
+    width: 70%;
+    border-radius: 50%;
+}
+#neste-site p {
+    text-align: center;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    padding-top: 5%;
 }
