@@ -15,14 +15,14 @@ h3, h4 {
 
 /* classes */
 .navbar-brand {
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', -serif;
 }
 .nav-item {
     font-size: large;
 }
 
 /* id */
-#nav{
+#menu-nav{
     background-color: #002687;
 }
 #icon{
@@ -44,11 +44,11 @@ h3, h4 {
     color: white;
 }
 #info {
-    background-image: linear-gradient(to right,#1985D7, #186FAB);
+    background-image: linear-gradient(to right,#186FAB, #0c3ab0);
     color: white;
 }
 #neste-site {
-    background-image: linear-gradient(to right,#1985D7, #186FAB);
+    background-image: linear-gradient(to right,#186FAB, #0c3ab0);
     color: white;
     text-align: center;
 }
