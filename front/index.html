@@ -14,32 +14,37 @@
 
 <body>
     <!-- Barra de navegação/Menu -->
-    <nav class="navbar navbar-expand-sm" id="menu-nav" data-bs-theme="dark">
+    <nav class="navbar navbar-expand-md" id="menu-nav" data-bs-theme="dark">
         <div class="container-fluid">
             <a>
-                <img src="images/logo_matematica_no_metro.png" id="icon" alt="Esta imagem representa o logo do projeto Matemática no Metrô">
+                <img src="images/logo_matematica_no_metro.JPG" id="icon" alt="Esta imagem representa o logo do projeto Matemática no Metrô">
             </a>
-            <a class="navbar-brand mx-sm-3">MATEMÁTICA NO METRÔ</a>
+            <a class="navbar-brand mx-sm-3" id="tituloSite">MATEMÁTICA NO METRÔ</a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" 
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#myNav"
+                  aria-controls="myNav"
+                  aria-expanded="false"
+                  aria-label="Toggle Navigation">
+            <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="nav nav-underline navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+            <div class="nav nav-underline collapse navbar-collapse text-end" id="myNav">
+                <ul class="navbar-nav ms-auto me-4">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Início</a>
+                        <a class="nav-link active me-2" aria-current="page" href="#">Início</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="sobrenos.html">Sobre nós</a>
+                        <a class="nav-link me-2" href="sobrenos.html">Sobre nós</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="forum.html">Fórum</a>
+                        <a class="nav-link me-2" href="forum.html">Fórum</a>
                     </li>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="desafios.html">Desafios</a>
+                        <a class="nav-link me-2" href="desafios.html">Desafios</a>
                     </li>
                 </ul>
             </div>
@@ -82,7 +87,8 @@
                         <img src="images/maps.jpeg" alt="Esta imagem mostra a localização da estação em que os voluntários estão presentes para tirar dúvidas">
                         <p class="mt-2">Clique <a href="https://maps.app.goo.gl/nBmhaDZZoNHXCYLs8" style="color:white">aqui</a> para ir ao Google Maps</p>
                         <h4 class="mt-2">Endereço</h4>
-                        <p>Praça Altemar Dutra - Ipiranga, São Paulo - SP, 04203-053</p>
+                        <p>Estação Sacomã - Praça Altemar Dutra - Ipiranga, São Paulo - SP, 04203-053</p>
+                        <p>Estação Ana Rosa - Av. Conselheiro Rodrigues Alves, 180 - Vila Mariana, São Paulo - SP, 04014-000</p>
                     </div>
                     <div class="col-sm-6 my-auto">
                         <h3>HORÁRIOS DOS VOLUNTÁRIOS</h3>
@@ -113,7 +119,7 @@
             <h3>NESTE SITE</h3>
             <div class="row gap-3">
                 <a class="col-md-3 mx-md-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site" href="informacoes.html">
-                    <img src="images/sobre_nos.jpeg" alt="Esta imagem possui uma outra logo para o site Matemática no Metrô">
+                    <img src="images/logo_matematica_no_metro.JPG" alt="Esta imagem possui uma outra logo para o site Matemática no Metrô">
                     <p>Sobre Nós</p>
                 </a>
                 <a class="col-md-3 mx-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site" href="forum.html">

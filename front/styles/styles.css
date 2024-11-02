@@ -27,6 +27,7 @@ h3, h4 {
 }
 #icon{
     width: 30px;
+    border-radius: 50%;
 }
 #rodape-link, #rodape-contato{
     color: white;
@@ -54,10 +55,23 @@ h3, h4 {
 }
 #neste-site img{
     width: 70%;
+    border: solid black;
     border-radius: 50%;
+    
 }
 #neste-site p {
     text-align: center;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     padding-top: 5%;
+}
+
+#info ::selection {
+    background-color: white;
+    color: #002687;
+}
+
+#sobreNos {
+    width: 75%;
+    border: solid #002687;
+    border-radius: 25%;
 }

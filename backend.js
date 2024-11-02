@@ -1,38 +1,28 @@
 const express = require('express')
 const cors = require('cors')
-const mysql = require('mysql2')
-const bcrypt = require('bcrypt')
+const mysqlx = require('@mysql/xdevapi');
 
 const app = express() //construindo uma aplicação express
 app.use(express.json())
 app.use(cors())
 
-const db = mysql.createConnection({
-    host: 'mysql-2ea90144-matnometrot1t2-7d69.c.aivencloud.com',
-    user: 'avnadmin',
-    password: 'AVNS_7NP1Lp7jYXOoEog6j1C',
-    database: 'matNoMetro'
-});
+const connectionString = 'mysql://avnadmin:AVNS_7NP1Lp7jYXOoEog6j1C@mysql-31de77e0-matnometrot1t2-7d69.c.aivencloud.com:18545/defaultdb?ssl-mode=REQUIRED/matNoMetro'
 
-db.connect((err) => {
-    if (err) {
-        console.error('Erro ao conectar ao banco:', err);
-        return;
+const tabelaHorarios = { schema: 'matNoMetro', table: 'tbHorarios', user: 'avnadmin' };
+
+async function conectarAoMySQL() {
+    await mysqlx.getSession('mysql://avnadmin:AVNS_7NP1Lp7jYXOoEog6j1C@mysql-31de77e0-matnometrot1t2-7d69.c.aivencloud.com:18545/defaultdb?ssl-mode=REQUIRED/matNoMetro')
+        .then(session => {
+            console.log(session.inspect());
+        });
+}
+
+app.listen(33060, () => {
+    try {
+        conectarAoMySQL()
+        console.log("server up & running, conexão ok")
     }
-    console.log('Conectado ao banco de dados');
-});
-
-// Rota para pegar as postagens da tabela
-app.get('/forum', (req, res) => {
-    const sql = 'SELECT tp.postagem, tp.imagemPost, tl.apelido FROM tbPostagens as tp JOIN tbLogins as tl ON tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 2';
-    db.query(sql, (err, results) => {
-        if (err) {
-            return res.status(500).send(err);
-        }
-        res.json(results);
-    });
-});
-
-const Respostas = mysql.json({
-
+    catch (e) {
+        console.log('erro de conexão', e)
+    }
 })
