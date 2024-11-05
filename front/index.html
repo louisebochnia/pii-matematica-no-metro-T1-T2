@@ -12,12 +12,12 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
-<body>
+<body onload="obterHorarios()">
     <!-- Barra de navegação/Menu -->
     <nav class="navbar navbar-expand-md" id="menu-nav" data-bs-theme="dark">
         <div class="container-fluid">
             <a>
-                <img src="images/logo_matematica_no_metro.JPG" id="icon" alt="Esta imagem representa o logo do projeto Matemática no Metrô">
+                <img src="images/logo_matematica_no_metro.JPG" id="icon-menu" alt="Esta imagem representa o logo do projeto Matemática no Metrô">
             </a>
             <a class="navbar-brand mx-sm-3" id="tituloSite">MATEMÁTICA NO METRÔ</a>
 
@@ -67,8 +67,8 @@
                         Instituto Mauá de Tecnologia.
                     </p>
                 </div>
-                <div class="col-md-6">
-                    <img src="images/imagem_voluntário.jpeg" alt="Esta imagem mostra um voluntário trabalhando na estação de metrô Sacomã" style="width: 80%;">
+                <div class="col-md-6 text-center">
+                    <img src="images/imagem_voluntário.jpg" alt="Esta imagem mostra um voluntário trabalhando na estação de metrô Sacomã" style="width: 80%;">
                 </div>
             </div>
         </div>
@@ -84,7 +84,7 @@
                     <div class="col-sm-6">
                         <h3>LOCALIZAÇÃO</h3>
                         <h4 class="mt-2">Mapa</h4>
-                        <img src="images/maps.jpeg" alt="Esta imagem mostra a localização da estação em que os voluntários estão presentes para tirar dúvidas">
+                        <iframe src="https://www.google.com/maps/d/u/2/embed?mid=1nVsvGwLbGGA-cZ8mVktUEMHMjWRAJNY&ehbc=2E312F&noprof=1" width="640" height="480" style="width: 100%;"></iframe>
                         <p class="mt-2">Clique <a href="https://maps.app.goo.gl/nBmhaDZZoNHXCYLs8" style="color:white">aqui</a> para ir ao Google Maps</p>
                         <h4 class="mt-2">Endereço</h4>
                         <p>Estação Sacomã - Praça Altemar Dutra - Ipiranga, São Paulo - SP, 04203-053</p>
@@ -92,7 +92,7 @@
                     </div>
                     <div class="col-sm-6 my-auto">
                         <h3>HORÁRIOS DOS VOLUNTÁRIOS</h3>
-                        <table class="table table-bordered" id="horarios" summary="A tabela mostra os horários que os voluntários estão presentes no metrô para tirar dúvidas e ajudar as pessoas. A primeira coluna possui os dias da semana em que os voluntários estão na estação, podendo variar entre todos os dias da semana. A segunda coluna possui os horários que os voluntários estão livres para atender as pessoas.">
+                        <table class="table table-bordered horarios" id="horarios" summary="A tabela mostra os horários que os voluntários estão presentes no metrô para tirar dúvidas e ajudar as pessoas. A primeira coluna possui os dias da semana em que os voluntários estão na estação, podendo variar entre todos os dias da semana. A segunda coluna possui os horários que os voluntários estão livres para atender as pessoas.">
                             <thead>
                                 <tr>
                                     <th id="elementos-horarios">Dia da semana</th>
@@ -100,10 +100,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td id="elementos-horarios">Segunda-Feira</td>
-                                    <td id="elementos-horarios">16:30-18:30</td>
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>
@@ -118,7 +115,7 @@
         <div class="container my-4">
             <h3>NESTE SITE</h3>
             <div class="row gap-3">
-                <a class="col-md-3 mx-md-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site" href="informacoes.html">
+                <a class="col-md-3 mx-md-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site" href="sobrenos.html">
                     <img src="images/logo_matematica_no_metro.JPG" alt="Esta imagem possui uma outra logo para o site Matemática no Metrô">
                     <p>Sobre Nós</p>
                 </a>
@@ -150,7 +147,13 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous">
+    </script>
+
+    <script src="js/frontend.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        
 </body>
 
 </html>

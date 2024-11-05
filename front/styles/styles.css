@@ -27,6 +27,9 @@ h3, h4 {
 }
 #icon{
     width: 30px;
+}
+#icon-menu {
+    width: 30px;
     border-radius: 50%;
 }
 #rodape-link, #rodape-contato{
@@ -44,6 +47,12 @@ h3, h4 {
     background-color: transparent;
     color: white;
 }
+
+#horarios tbody tr td{
+    background-color: transparent;
+    color: white;
+}
+
 #info {
     background-image: linear-gradient(to right,#186FAB, #0c3ab0);
     color: white;
