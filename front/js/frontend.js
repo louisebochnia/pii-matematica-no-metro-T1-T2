@@ -6,7 +6,6 @@ async function obterHorarios() {
     const URLcompleta = `${protocolo}${baseURL}${horariosEndpoint}`
     const horarios = (await axios.get(URLcompleta)).data
     console.log(horarios)
-    // const horarios = pegarHorarios()
     exibirHorarios(horarios)
 }
 

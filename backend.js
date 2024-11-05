@@ -8,11 +8,6 @@ app.use(cors())
 
 const tabelaHorarios = { schema: 'matNoMetro', table: 'tbHorarios', user: 'avnadmin' };
 
-let horarios = {
-    diaSemana: { type: String }, 
-    horarioVoluntarios: { type: String }
-}
-
 const config = {
     password: 'AVNS_7NP1Lp7jYXOoEog6j1C',
     user: 'avnadmin',
@@ -28,34 +23,6 @@ async function conectarAoMySQL() {
         });
 }
 
-// async function pegarHorarios() {
-    // await mysqlx.getSession(config)
-    //     .then(session => {
-    //         const tbHorarios = session.getSchema(tabelaHorarios.schema).getTable(tabelaHorarios.table);
-    //         return tbHorarios.select('diaSemana', 'horarioVoluntarios')
-    //             .execute()
-    //     })
-    //     .then(res => {
-    //         horarios = res.toArray();
-    //         console.log(horarios)
-    //     })
-    // }
-
-// app.get('/horarios', async (req, res) => {
-//     await mysqlx.getSession(config)
-//         .then(session => {
-//             const tbHorarios = session.getSchema(tabelaHorarios.schema).getTable(tabelaHorarios.table);
-//             return tbHorarios.select('diaSemana', 'horarioVoluntarios')
-//                 .execute()
-//         })
-//         .then(res => {
-//             horarios = res.toArray();
-//         })
-//         .catch(error => {
-//             console.error("Erro ao buscar horários:", error);
-//         });
-// })
-
 app.get('/horarios', async (req, res) => {
     try {
         const session = await mysqlx.getSession(config); // Conecta ao MySQL
@@ -67,12 +34,10 @@ app.get('/horarios', async (req, res) => {
         // Converte o resultado em array
         const horarios = result.toArray();
 
-        // Fecha a sessão
-        await session.close();
-
         // Envia os horários como resposta em formato JSON
         res.json(horarios);
-    } catch (error) {
+    } 
+    catch (error) {
         console.error("Erro ao buscar horários:", error);
         res.status(500).json({ error: "Erro ao buscar horários" });
     }
@@ -81,7 +46,6 @@ app.get('/horarios', async (req, res) => {
 app.listen(3000, () => {
     try {
         conectarAoMySQL()
-        // pegarHorarios()
         console.log("server up & running, conexão ok")
     }
     catch (e) {
