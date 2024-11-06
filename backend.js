@@ -7,6 +7,7 @@ app.use(express.json())
 app.use(cors())
 
 const tabelaHorarios = { schema: 'matNoMetro', table: 'tbHorarios', user: 'avnadmin' };
+const tabelaDiasSemana = { schema: 'matNoMetro', table: 'tbDiasSemana', user: 'avnadmin' };
 
 const config = {
     password: 'AVNS_7NP1Lp7jYXOoEog6j1C',
@@ -26,13 +27,12 @@ async function conectarAoMySQL() {
 app.get('/horarios', async (req, res) => {
     try {
         const session = await mysqlx.getSession(config); // Conecta ao MySQL
-        const tbHorarios = session.getSchema(tabelaHorarios.schema).getTable(tabelaHorarios.table);
 
         // Executa a consulta
-        const result = await tbHorarios.select('diaSemana', 'horarioVoluntarios').execute();
+        const resultado = await session.sql('SELECT tbDiasSemana.diaSemana, tbHorarios.horarioVoluntarios FROM tbDiasSemana JOIN tbHorarios ON tbDiasSemana.idDiaSemana = tbHorarios.idDiaSemana ORDER BY tbHorarios.idDiaSemana DESC').execute();
 
         // Converte o resultado em array
-        const horarios = result.toArray();
+        const horarios = resultado.fetchAll();
 
         // Envia os horários como resposta em formato JSON
         res.json(horarios);
