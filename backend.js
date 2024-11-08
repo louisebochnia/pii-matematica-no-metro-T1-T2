@@ -22,24 +22,83 @@ async function conectarAoMySQL() {
         .then(session => {
             console.log(session.inspect());
         });
-}
+};
 
 app.get('/horarios', async (req, res) => {
     try {
-        const session = await mysqlx.getSession(config); // Conecta ao MySQL
+        const session = await mysqlx.getSession(config) // Conecta ao MySQL
 
         // Executa a consulta
-        const resultado = await session.sql('SELECT tbDiasSemana.diaSemana, tbHorarios.horarioVoluntarios FROM tbDiasSemana JOIN tbHorarios ON tbDiasSemana.idDiaSemana = tbHorarios.idDiaSemana ORDER BY tbHorarios.idDiaSemana DESC').execute();
+        const resultado = await session.sql('SELECT tbDiasSemana.diaSemana, tbHorarios.horarioVoluntarios FROM tbDiasSemana JOIN tbHorarios ON tbDiasSemana.idDiaSemana = tbHorarios.idDiaSemana ORDER BY tbHorarios.idDiaSemana DESC').execute()
 
         // Converte o resultado em array
-        const horarios = resultado.fetchAll();
+        const horarios = resultado.fetchAll().map(horario => ({
+            diaSemana: horario[0],
+            horarioVoluntarios: horario[1]
+        }))
 
         // Envia os horários como resposta em formato JSON
-        res.json(horarios);
+        res.json(horarios)
     } 
-    catch (error) {
-        console.error("Erro ao buscar horários:", error);
-        res.status(500).json({ error: "Erro ao buscar horários" });
+    catch (e) {
+        console.error("Erro ao buscar horários:", e)
+        res.status(500).json({ e: "Erro ao buscar horários" })
+    }
+});
+
+app.get('/posts', async (req, res) => {
+    try {
+        const session = await mysqlx.getSession(config); // Conecta ao MySQL
+        const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 2').execute()
+        
+        const posts = resultados.fetchAll().map(post => ({
+            apelido: post[0],
+            idPost: post[1],
+            postagem: post[2],
+            imagemPost: post[3],
+            resposta: []
+        }))
+
+        for (let post in posts){
+            let idPost = post.idPost
+            let resultados2 = await session.sql('SELECT tl.apelido, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 2 AND tp.idPostagemResp = ?').bind(idPost).execute()
+
+            let respostas = resultados2.fetchAll().map(resposta => ({
+                apelido: resposta[0],
+                postagem: resposta[1],
+                imagemPost: resposta[2]
+            }))
+            
+            post.resposta = respostas
+        }
+
+        res.json(posts)
+    }
+    catch (e){
+        console.error("Erro ao buscar horários:", e);
+        res.status(500).json({ e: "Erro ao buscar horários" });
+    }
+});
+
+app.get('/enderecos', async (req, res) => {
+    try {
+        const session = await mysqlx.getSession(config) // Conecta ao MySQL
+
+        // Executa a consulta
+        const resultado = await session.sql('SELECT estacao, endereco FROM tbEnderecos ORDER BY estacao').execute()
+
+        // Converte o resultado em array
+        const enderecos = resultado.fetchAll().map(endereco => ({
+            estacao: endereco[0],
+            enderecoEstacao: endereco[1]
+        }))
+
+        // Envia os enderecos como resposta em formato JSON
+        res.json(enderecos)
+    } 
+    catch (e) {
+        console.error("Erro ao buscar endereços:", e)
+        res.status(500).json({ e: "Erro ao buscar endereços" })
     }
 });
 
@@ -52,4 +111,4 @@ app.listen(3000, () => {
         console.log('erro de conexão', e)
     }
     
-})
+});

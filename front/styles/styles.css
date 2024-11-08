@@ -74,6 +74,11 @@ h3, h4 {
     padding-top: 5%;
 }
 
+::selection {
+    background-color: #002687;
+    color: white;
+}
+
 #info ::selection {
     background-color: white;
     color: #002687;
