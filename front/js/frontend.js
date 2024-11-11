@@ -40,3 +40,40 @@ function exibirEnderecos(enderecos){
         div.appendChild(p);
     }
 }
+
+// Códigos para visualizar a página de Desafios 
+async function prepararDesafios() {
+    const desafiosEndpoint = '/desafios'
+    const URLcompletaDesafios = `${protocolo}${baseURL}${desafiosEndpoint}`
+    const desafios = (await axios.get(URLcompletaDesafios)).data
+    console.log(desafios)
+    exibirDesafios(horarios)
+}
+
+function exibirTopicoDesafios(desafios) {
+    let div = document.querySelector('.topico-desafios')
+    div.innerHTML = ""
+
+    for (let desafio of desafios) {
+        const p = document.createElement('p')
+        p.textContent = `${desafio.questao}`
+        div.appendChild(p)
+        if(desafios.imagemURL){
+            let imgDesafio = document.createElement('img')
+            imgDesafio.scr = post.imagemURL
+            div.appendChild(imgDesafio)
+        }
+        
+    }
+}
+
+function exibirDesafios(desafios) {
+    let div = document.querySelector('.topico-desafios')
+    div.innerHTML = ""
+
+    for (let desafio of desafios) {
+        const p = document.createElement('p')
+        p.textContent = `${endereco[0]}${' - '}${endereco[1]}`
+        div.appendChild(p)
+    }
+}
