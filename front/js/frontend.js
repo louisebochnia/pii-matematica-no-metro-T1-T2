@@ -32,8 +32,10 @@ function exibirHorarios(horarios){
         let linha = corpoTabela.insertRow(0)
         let celulaDiaSemana = linha.insertCell(0)
         let celulaHorarioVoluntarios = linha.insertCell(1)
+        let celulaEstacao = linha.insertCell(2)
         celulaDiaSemana.innerHTML = horario.diaSemana
         celulaHorarioVoluntarios.innerHTML = horario.horarioVoluntarios  
+        celulaEstacao.innerHTML = horario.estacao
     }
 }
 

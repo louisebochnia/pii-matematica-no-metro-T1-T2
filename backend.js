@@ -29,12 +29,13 @@ app.get('/horarios', async (req, res) => {
         const session = await mysqlx.getSession(config) // Conecta ao MySQL
 
         // Executa a consulta
-        const resultado = await session.sql('SELECT tbDiasSemana.diaSemana, tbHorarios.horarioVoluntarios FROM tbDiasSemana JOIN tbHorarios ON tbDiasSemana.idDiaSemana = tbHorarios.idDiaSemana ORDER BY tbHorarios.idDiaSemana DESC').execute()
+        const resultado = await session.sql('SELECT tbDiasSemana.diaSemana, tbHorarios.horarioVoluntarios, tbEnderecos.estacao FROM tbDiasSemana JOIN tbHorarios ON tbDiasSemana.idDiaSemana = tbHorarios.idDiaSemana JOIN tbEnderecos ON tbHorarios.idEndereco = tbEnderecos.idEndereco ORDER BY tbHorarios.idDiaSemana DESC').execute()
 
         // Converte o resultado em array
         const horarios = resultado.fetchAll().map(horario => ({
             diaSemana: horario[0],
-            horarioVoluntarios: horario[1]
+            horarioVoluntarios: horario[1],
+            estacao: horario[2]
         }))
 
         // Envia os horários como resposta em formato JSON
