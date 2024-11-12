@@ -2,6 +2,7 @@
 p{
     text-align: justify;
     font-size: larger;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 footer{
     background-color: #767676;
@@ -27,6 +28,9 @@ h3, h4 {
 }
 #icon{
     width: 30px;
+}
+#forum-icon{
+    width: 45px;
 }
 #icon-menu {
     width: 30px;
@@ -94,3 +98,12 @@ h3, h4 {
     font-family: Arial, Helvetica, sans-serif;
     font-size: large;
 } 
+
+#filtrar-forum {
+        text-align: justify;
+        font-size: larger;
+}
+
+#forum-menu {
+    border-color:#002687 !important;
+}
