@@ -236,44 +236,36 @@ async function prepararPaginaDesafios() {
     const desafios = (await axios.get(URLcompletaDesafios)).data
     console.log(desafios)
     exibirTopicoDesafios(desafios)
-    exibirDesafios(desafios)
 }
 
-function exibirTopicoDesafios(desafios) {
+function exibirTopicoDesafios(topicosDesafio) {
     let div = document.querySelector('.topico-desafios')
     div.innerHTML = ""
 
-    for (let desafio of desafios) {
-        const p = document.createElement('p')
-        p.textContent = `${desafio.questao}`
-        div.appendChild(p)
-        if(desafios.imagemURL){
-            let imgDesafio = document.createElement('img')
-            imgDesafio.scr = post.imagemURL
-            div.appendChild(imgDesafio)
+    for (let topicoDesafio of topicosDesafio) {
+        const details = document.createElement('details')
+        details.className = "my-2"
+        const summary = document.createElement('summary')
+        summary.innerHTML = topicoDesafio.topico
+        details.appendChild(summary)
+
+        for (let desafio of topicoDesafio.desafio){
+            const enunciado = document.createElement('p')
+            enunciado.innerHTML = desafio.questao
+            const fieldset = document.createElement('fieldset')
+            const escolha = document.createElement('p')
+            escolha.style = "font-weight: bold;"
+            escolha.innerHTML = "Escolha uma alternativa"
+
+            
+            const resolucao = document.createElement('p')
+            resolucao.innerHTML = desafio.resolucao
+
+            details.appendChild(enunciado)
+            details.appendChild(resolucao)
         }
+
+        div.appendChild(details)
+        
     }
-}
-
-// function exibirDesafios(desafios) {
-//     let div = document.querySelector('.topico-desafios')
-//     div.innerHTML = ""
-
-//     for (let desafio of desafios) {
-//         const p = document.createElement('p')
-//         p.textContent = `${desafio.questao}`
-//         div.appendChild(p)
-//     }
-// }
-
-function exibirDesafios(desafios) {
-    const div = document.querySelector('.questao')
-    div.innerHTML = '' // Limpa a div antes de adicionar novos desafios
-
-    // Itera pelos desafios e cria elementos para cada um
-    desafios.forEach((desafio) => {
-        let p = document.createElement('p')
-        p.textContent = desafio.questao // Assume que 'questao' é a coluna que contém o texto da questão
-        div.appendChild(p)
-    });
 }

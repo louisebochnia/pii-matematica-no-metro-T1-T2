@@ -139,32 +139,43 @@ app.get('/desafios', async(req, res) => {
     try {
         const session = await mysqlx.getSession(config) // Conecta ao MySQL
 
-        // Recupera o ID do tópico de desafio a partir da requisição
-        const idTopicoDesafio = req.query.idTopicoDesafio
+        //Pega os tópicos dos desafios
+        const resultado = await session.sql('SELECT * FROM tbTopicosDesafios').execute()
 
-        // Verifica se o idTopicoDesafio foi passado
-        if (!idTopicoDesafio) {
-            return res.status(400).json({ error: 'ID do tópico de desafio é obrigatório' })
+        const topicosDesafio = resultado.fetchAll().map(topicoDesafio => ({
+            id: topicoDesafio[0],
+            topico: topicoDesafio[1],
+            desafio: []
+        }))
+
+        for (let topicoDesafio of topicosDesafio){
+            // Executa a consulta, vinculando o idTopicoDesafio no lugar do ?
+            const resultado2 = await session.sql('SELECT d.idQuestao, d.questao, d.imagemURL, d.respostaCorreta, d.resolucao FROM tbDesafios as d JOIN tbTopicosDesafios as td ON td.idTopicoDesafios = d.idTopicoDesafios WHERE td.idTopicoDesafios = ?').bind(topicoDesafio.id).execute()
+            
+            // Converte o resultado em array
+            const desafios = resultado2.fetchAll().map(desafio => ({
+                idQuestao: desafio[0],
+                questao: desafio[1],
+                imagemURL: desafio[2],
+                respostaCorreta: desafio[3],
+                respostas: [],
+                resolucao: desafio[4]
+            }))
+
+            for (let desafio of desafios) {
+                const resultado3 = await session.sql('SELECT respostaCorreta, respostaIncorreta1, respostaIncorreta2, respostaIncorreta3, respostaIncorreta4 FROM tbDesafios WHERE idQuestao = ?').bind(desafio.idQuestao).execute()
+
+                const respostas = resultado3.fetchAll()
+
+                desafio.respostas = respostas
+            }
+
+            topicoDesafio.desafio = desafios
         }
 
-        // Executa a consulta, vinculando o idTopicoDesafio no lugar do ?
-        const resultado = await session.sql('SELECT td.topicoDesafio, d.questao, d.imagemURL, d.respostaCorreta, d.respostaIncorreta1, d.respostaIncorreta2, d.respostaIncorreta3, d.respostaIncorreta4, d.resolucao FROM tbTopicosDesafios as td JOIN tbDesafios as d ON td.idTopicoDesafios = d.idTopicoDesafios WHERE td.idTopicoDesafios = ?').bind(idTopicoDesafio).execute()
-
-        // Converte o resultado em array
-        const desafios = resultado.fetchAll().map(desafio => ({
-            topicoDesafio : desafio[0],
-            questao: desafio[1],
-            imagemURL: desafio[2],
-            respostaCorreta: desafio[3],
-            respostaIncorreta1: desafio[4],
-            respostaIncorreta2: desafio[5],
-            respostaIncorreta3: desafio[6],
-            respostaIncorreta4: desafio[7],
-            resolucao: desafio[8]
-        }));
 
         // Envia os desafios como resposta em formato JSON
-        res.json(desafios);
+        res.json(topicosDesafio);
     } 
     catch (e) {
         console.error("Erro ao buscar desafios:", e);
