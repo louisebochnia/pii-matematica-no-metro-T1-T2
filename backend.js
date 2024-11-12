@@ -48,7 +48,7 @@ app.get('/horarios', async (req, res) => {
 
 app.get('/posts', async (req, res) => {
     try {
-        const session = await mysqlx.getSession(config); // Conecta ao MySQL
+        const session = await mysqlx.getSession(config)
         const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 2').execute()
         
         const posts = resultados.fetchAll().map(post => ({
@@ -59,9 +59,9 @@ app.get('/posts', async (req, res) => {
             resposta: []
         }))
 
-        for (let post in posts){
+        for (let post of posts){
             let idPost = post.idPost
-            let resultados2 = await session.sql('SELECT tl.apelido, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 2 AND tp.idPostagemResp = ?').bind(idPost).execute()
+            let resultados2 = await session.sql('SELECT tl.apelido, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 3 AND tp.idPostagemResp = ?').bind(idPost).execute()
 
             let respostas = resultados2.fetchAll().map(resposta => ({
                 apelido: resposta[0],
@@ -75,25 +75,57 @@ app.get('/posts', async (req, res) => {
         res.json(posts)
     }
     catch (e){
-        console.error("Erro ao buscar horários:", e);
-        res.status(500).json({ e: "Erro ao buscar horários" });
+        console.error("Erro ao buscar posts:", e)
+        res.status(500).json({ e: "Erro ao buscar posts" })
     }
 });
 
+app.get ('/avisos', async (req, res) => {
+    try {
+        const session = await mysqlx.getSession(config)
+        const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 1').execute()
+        
+        const avisos = resultados.fetchAll().map(aviso => ({
+            apelido: aviso[0],
+            idAviso: aviso[1],
+            postagem: aviso[2],
+            imagemPost: aviso[3],
+            resposta: []
+        }))
+
+        for (let aviso of avisos){
+            let idAviso = aviso.idAviso
+            let resultados2 = await session.sql('SELECT tl.apelido, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 3 AND tp.idPostagemResp = ?').bind(idAviso).execute()
+
+            let respostas = resultados2.fetchAll().map(resposta => ({
+                apelido: resposta[0],
+                postagem: resposta[1],
+                imagemPost: resposta[2]
+            }))
+            
+            aviso.resposta = respostas
+        }
+        
+        res.json(avisos)
+        await session.close()
+    }
+    catch (e){
+        console.error("Erro ao buscar avisos:", e)
+        res.status(500).json({ e: "Erro ao buscar avisos" })
+    }
+})
+
 app.get('/enderecos', async (req, res) => {
     try {
-        const session = await mysqlx.getSession(config) // Conecta ao MySQL
+        const session = await mysqlx.getSession(config)
 
-        // Executa a consulta
         const resultado = await session.sql('SELECT estacao, endereco FROM tbEnderecos ORDER BY estacao').execute()
 
-        // Converte o resultado em array
         const enderecos = resultado.fetchAll().map(endereco => ({
             estacao: endereco[0],
             enderecoEstacao: endereco[1]
         }))
 
-        // Envia os enderecos como resposta em formato JSON
         res.json(enderecos)
     } 
     catch (e) {
