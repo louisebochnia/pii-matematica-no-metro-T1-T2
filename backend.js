@@ -115,17 +115,19 @@ app.get('/desafios', async(req, res) => {
         }
 
         // Executa a consulta, vinculando o idTopicoDesafio no lugar do ?
-        const resultado = await session.sql('SELECT questao, imagemURL, respostaCorreta, respostaIncorreta1, respostaIncorreta2, respostaIncorreta3, respostaIncorreta4 FROM tbTopicosDesafios WHERE td.idTopicoDesafio = ?').bind(idTopicoDesafio).execute()
+        const resultado = await session.sql('SELECT td.topicoDesafio, d.questao, d.imagemURL, d.respostaCorreta, d.respostaIncorreta1, d.respostaIncorreta2, d.respostaIncorreta3, d.respostaIncorreta4, d.resolucao FROM tbTopicosDesafios as td JOIN tbDesafios as d ON td.idTopicoDesafios = d.idTopicoDesafios WHERE td.idTopicoDesafios = ?').bind(idTopicoDesafio).execute()
 
         // Converte o resultado em array
         const desafios = resultado.fetchAll().map(desafio => ({
-            questao: desafio[0],
-            imagemURL: desafio[1],
-            respostaCorreta: desafio[2],
-            respostaIncorreta1: desafio[3],
-            respostaIncorreta2: desafio[4],
-            respostaIncorreta3: desafio[5],
-            respostaIncorreta4: desafio[6]
+            topicoDesafio : desafio[0],
+            questao: desafio[1],
+            imagemURL: desafio[2],
+            respostaCorreta: desafio[3],
+            respostaIncorreta1: desafio[4],
+            respostaIncorreta2: desafio[5],
+            respostaIncorreta3: desafio[6],
+            respostaIncorreta4: desafio[7],
+            resolucao: desafio[8]
         }));
 
         // Envia os desafios como resposta em formato JSON

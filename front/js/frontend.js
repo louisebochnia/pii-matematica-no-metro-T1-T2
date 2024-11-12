@@ -42,12 +42,13 @@ function exibirEnderecos(enderecos){
 }
 
 // Códigos para visualizar a página de Desafios 
-async function prepararDesafios() {
+async function prepararPaginaDesafios() {
     const desafiosEndpoint = '/desafios'
     const URLcompletaDesafios = `${protocolo}${baseURL}${desafiosEndpoint}`
     const desafios = (await axios.get(URLcompletaDesafios)).data
     console.log(desafios)
-    exibirDesafios(horarios)
+    exibirTopicoDesafios(desafios)
+    exibirDesafios(desafios)
 }
 
 function exibirTopicoDesafios(desafios) {
@@ -63,17 +64,28 @@ function exibirTopicoDesafios(desafios) {
             imgDesafio.scr = post.imagemURL
             div.appendChild(imgDesafio)
         }
-        
     }
 }
 
-function exibirDesafios(desafios) {
-    let div = document.querySelector('.topico-desafios')
-    div.innerHTML = ""
+// function exibirDesafios(desafios) {
+//     let div = document.querySelector('.topico-desafios')
+//     div.innerHTML = ""
 
-    for (let desafio of desafios) {
-        const p = document.createElement('p')
-        p.textContent = `${endereco[0]}${' - '}${endereco[1]}`
+//     for (let desafio of desafios) {
+//         const p = document.createElement('p')
+//         p.textContent = `${desafio.questao}`
+//         div.appendChild(p)
+//     }
+// }
+
+function exibirDesafios(desafios) {
+    const div = document.querySelector('.questao')
+    div.innerHTML = '' // Limpa a div antes de adicionar novos desafios
+
+    // Itera pelos desafios e cria elementos para cada um
+    desafios.forEach((desafio) => {
+        let p = document.createElement('p')
+        p.textContent = desafio.questao // Assume que 'questao' é a coluna que contém o texto da questão
         div.appendChild(p)
-    }
+    });
 }
