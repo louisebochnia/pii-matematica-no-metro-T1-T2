@@ -134,6 +134,41 @@ app.get('/enderecos', async (req, res) => {
     }
 });
 
+app.get('/desafios', async(req, res) => {
+    try {
+        const session = await mysqlx.getSession(config) // Conecta ao MySQL
+
+        // Recupera o ID do tópico de desafio a partir da requisição
+        const idTopicoDesafio = req.query.idTopicoDesafio
+
+        // Verifica se o idTopicoDesafio foi passado
+        if (!idTopicoDesafio) {
+            return res.status(400).json({ error: 'ID do tópico de desafio é obrigatório' })
+        }
+
+        // Executa a consulta, vinculando o idTopicoDesafio no lugar do ?
+        const resultado = await session.sql('SELECT questao, imagemURL, respostaCorreta, respostaIncorreta1, respostaIncorreta2, respostaIncorreta3, respostaIncorreta4 FROM tbTopicosDesafios WHERE td.idTopicoDesafio = ?').bind(idTopicoDesafio).execute()
+
+        // Converte o resultado em array
+        const desafios = resultado.fetchAll().map(desafio => ({
+            questao: desafio[0],
+            imagemURL: desafio[1],
+            respostaCorreta: desafio[2],
+            respostaIncorreta1: desafio[3],
+            respostaIncorreta2: desafio[4],
+            respostaIncorreta3: desafio[5],
+            respostaIncorreta4: desafio[6]
+        }));
+
+        // Envia os desafios como resposta em formato JSON
+        res.json(desafios);
+    } 
+    catch (e) {
+        console.error("Erro ao buscar desafios:", e);
+        res.status(500).json({ error: "Erro ao buscar desafios" });
+    }
+});
+
 app.listen(3000, () => {
     try {
         conectarAoMySQL()
