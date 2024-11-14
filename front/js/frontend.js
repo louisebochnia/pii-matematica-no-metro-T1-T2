@@ -16,11 +16,19 @@ async function prepararForum() {
     const avisosEndpoint = '/avisos'
     const URLcompletaAvisos = `${protocolo}${baseURL}${avisosEndpoint}`
     const avisos = (await axios.get(URLcompletaAvisos)).data
-    exibirAvisosRecentes(avisos)
+    exibirUltimoAviso(avisos[0])
     const postsEndPoint = '/posts'
     const URLcompletaPosts = `${protocolo}${baseURL}${postsEndPoint}`
     const posts = (await axios.get(URLcompletaPosts)).data
     exibirPosts(posts)
+    const filtrarTudo = document.querySelector('.filtro-inicio')
+    if(filtrarTudo.classList.contains('d-none') == false){
+        filtrarTudo.classList.add('d-none')
+    }
+    const divPosts = document.querySelector('.posts')
+    if(divPosts.classList.contains('d-none')){
+        divPosts.classList.remove('d-none')
+    }
 }
 
 function exibirHorarios(horarios){
@@ -50,74 +58,77 @@ function exibirEnderecos(enderecos){
     }
 }
 
-function exibirAvisosRecentes(avisos) {
-    const tamanhoAvisos = avisos.length
-    console.log("Número de avisos:", tamanhoAvisos)
-
+function exibirUltimoAviso(aviso) {
     let div = document.querySelector('.avisos')
     div.innerHTML = ""
     const h4 = document.createElement('h4')
-    h4.textContent = "Últimos Avisos"
+    h4.textContent = "Último Aviso"
     div.appendChild(h4)
 
-    if (tamanhoAvisos < 2) {
-        for (aviso of avisos){
-            formatacaoDiv = "row justify-content-end align-items-end my-2"
-            formatacaoBalao = "col-8 col-md-11 p-3 mx-auto bg-secondary-subtle rounded-top-4 rounded-end-4"
+    formatacaoDiv = "row justify-content-end align-items-end my-2"
+    formatacaoBalao = "col-8 col-md-11 p-3 mx-auto bg-secondary-subtle rounded-top-4 rounded-end-4"
 
-            montarPost("null", aviso, formatacaoDiv, formatacaoBalao, div, "post")
+    montarPost("null", aviso, formatacaoDiv, formatacaoBalao, div, "post")
+
+    let respostasContainer = document.createElement('div')
+    respostasContainer.className = "respostas-container d-none"
+    
+    for (resposta of aviso.resposta) {
+        let divResp = document.createElement('div')
+
+        let formatacaoDivResposta = "row justify-content-end align-items-end my-2"
+        let formatacaoBalaoResposta = "col-6 col-md-10 p-3 mx-auto mx-md-1 bg-secondary-subtle rounded-top-4 rounded-end-4"
+
+        montarPost(divResp, resposta, formatacaoDivResposta, formatacaoBalaoResposta, respostasContainer, "resposta")    
+    }
+    div.appendChild(respostasContainer)
+
+    botoesRespostas(respostasContainer, div)
+
+}
+
+async function filtrarAvisos(){
+    const avisosEndpoint = '/avisos'
+    const URLcompletaAvisos = `${protocolo}${baseURL}${avisosEndpoint}`
+    const avisos = (await axios.get(URLcompletaAvisos)).data
+    exibirAvisos(avisos)
+}
+
+function exibirAvisos(avisos) {
+    let filtrarTudo = document.querySelector('.filtro-inicio')
+    filtrarTudo.classList.remove('d-none')
+    let div = document.querySelector('.avisos')
+    div.innerHTML = ""
+    const h4 = document.createElement('h4')
+    h4.textContent = "Avisos"
+    div.appendChild(h4)
+    let divPosts = document.querySelector('.posts')
+    divPosts.classList.add('d-none')
+
+    for (let aviso of avisos){
+        formatacaoDiv = "row justify-content-end align-items-end my-2"
+        formatacaoBalao = "col-8 col-md-11 p-3 mx-auto bg-secondary-subtle rounded-top-4 rounded-end-4"
+
+        montarPost("null", aviso, formatacaoDiv, formatacaoBalao, div, "post")
+
+        let respostasContainer = document.createElement('div')
+        respostasContainer.className = "respostas-container d-none"
+
+        for (resposta of aviso.resposta) {
             
-            for (resposta of aviso.resposta) {
-                divPost = document.createElement('div')
-                formatacaoDiv = "row justify-content-end align-items-end my-2 d-none"
-                formatacaoBalao = "col-6 col-md-10 p-3 mx-auto mx-md-1 bg-secondary-subtle rounded-top-4 rounded-end-4"
+            let divResp = document.createElement('div')
+            let formatacaoDivResposta = "row justify-content-end align-items-end my-2"
+            let formatacaoBalaoResposta = "col-6 col-md-10 p-3 mx-auto mx-md-1 bg-secondary-subtle rounded-top-4 rounded-end-4"
+            console.log(resposta)
 
-                montarPost(divPost, resposta, formatacaoDiv, formatacaoBalao, div, "resposta")
-        }}
-    }
-    else {
-        for (let i = 0; i < 2; i++) {
-            let aviso = avisos[(tamanhoAvisos - i)]
-
-            formatacaoDiv = "row justify-content-end align-items-end my-2"
-            formatacaoBalao = "col-8 col-md-11 p-3 mx-auto bg-secondary-subtle rounded-top-4 rounded-end-4"
-
-            montarPost(aviso, formatacaoDiv, formatacaoBalao, div, "post")
-         
-            for (resposta of aviso.reposta) {
-                formatacaoDiv = "row justify-content-end align-items-end my-2 d-none"
-                formatacaoBalao = "col-6 col-md-10 p-3 mx-auto mx-md-1 bg-secondary-subtle rounded-top-4 rounded-end-4"
-
-                montarPost(resposta, formatacaoDiv, formatacaoBalao, div, "resposta")
-            }
+            montarPost(divResp, resposta, formatacaoDivResposta, formatacaoBalaoResposta, respostasContainer, "resposta")
         }
+
+        div.appendChild(respostasContainer)
+
+        botoesRespostas(respostasContainer, div)
     }
-    let botoes = document.createElement('div')
-    let mostrarRespostas = document.createElement('div')
-    mostrarRespostas.className = "color-secondary justify-content-start btn"
-    mostrarRespostas.innerHTML = "Mostrar Respostas"
-    let esconderRespostas = document.createElement('div')
-    esconderRespostas.className = "color-secondary justify-content-start btn d-none"
-    esconderRespostas.innerHTML = "Esconder Respostas"
-    mostrarRespostas.onclick = function() {
-        divPost.classList.remove('d-none')
-        mostrarRespostas.classList.add('d-none')
-        esconderRespostas.classList.remove('d-none')
-        }
-    esconderRespostas.onclick = function() {
-        divPost.classList.add('d-none')
-        mostrarRespostas.classList.remove('d-none')
-        esconderRespostas.classList.add('d-none')
-    }
-    let responder = document.createElement('div')
-    responder.className = "color-secondary justify-content-start btn"
-    responder.innerHTML = "Responder"
     
-    botoes.appendChild(responder)
-    botoes.appendChild(mostrarRespostas)
-    botoes.appendChild(esconderRespostas)
-    
-    div.appendChild(botoes)
 }
 
 function exibirPosts(posts) {
@@ -140,44 +151,19 @@ function exibirPosts(posts) {
         respostasContainer.className = "respostas-container d-none"
 
         for (let resposta of post.resposta) {
+
             let divResp = document.createElement('div')
             let formatacaoDivResposta = "row justify-content-end align-items-end my-2"
             let formatacaoBalaoResposta = "col-6 col-md-10 p-3 mx-auto mx-md-1 bg-secondary-subtle rounded-top-4 rounded-end-4"
             console.log(resposta)
 
-            montarPost(divResp, resposta, formatacaoDivResposta, formatacaoBalaoResposta, respostasContainer, "resposta");
+            montarPost(divResp, resposta, formatacaoDivResposta, formatacaoBalaoResposta, respostasContainer, "resposta")
         }
 
         div.appendChild(respostasContainer)
     
         
-        let botoes = document.createElement('div')
-        let mostrarRespostas = document.createElement('div')
-        mostrarRespostas.className = "color-secondary justify-content-start btn"
-        mostrarRespostas.innerHTML = "Mostrar Respostas"
-        let esconderRespostas = document.createElement('div')
-        esconderRespostas.className = "color-secondary justify-content-start btn d-none"
-        esconderRespostas.innerHTML = "Esconder Respostas"
-        mostrarRespostas.onclick = function () {
-            respostasContainer.classList.remove('d-none');
-            mostrarRespostas.classList.add('d-none');
-            esconderRespostas.classList.remove('d-none');
-        }
-
-        esconderRespostas.onclick = function () {
-            respostasContainer.classList.add('d-none');
-            mostrarRespostas.classList.remove('d-none');
-            esconderRespostas.classList.add('d-none');
-        }
-        let responder = document.createElement('div')
-        responder.className = "color-secondary justify-content-start btn"
-        responder.innerHTML = "Responder"
-        
-        botoes.appendChild(responder)
-        botoes.appendChild(mostrarRespostas)
-        botoes.appendChild(esconderRespostas)
-        
-        div.appendChild(botoes)
+        botoesRespostas(respostasContainer, div)
     }
 }
 
@@ -229,6 +215,38 @@ function montarPost(divPost, post, formatacaoDiv, formatacaoBalao, div, tipo){
     div.appendChild(divAviso)
 }
 
+function botoesRespostas(respostasContainer, div){
+    let botoes = document.createElement('div')
+
+    let mostrarRespostas = document.createElement('div')
+    mostrarRespostas.className = "color-secondary justify-content-start btn"
+    mostrarRespostas.innerHTML = "Mostrar Respostas"
+
+    let esconderRespostas = document.createElement('div')
+    esconderRespostas.className = "color-secondary justify-content-start btn d-none"
+    esconderRespostas.innerHTML = "Esconder Respostas"
+    mostrarRespostas.onclick = function () {
+        respostasContainer.classList.remove('d-none');
+        mostrarRespostas.classList.add('d-none');
+        esconderRespostas.classList.remove('d-none');
+    }
+
+    esconderRespostas.onclick = function () {
+        respostasContainer.classList.add('d-none');
+        mostrarRespostas.classList.remove('d-none');
+        esconderRespostas.classList.add('d-none');
+    }
+    let responder = document.createElement('div')
+    responder.className = "color-secondary justify-content-start btn"
+    responder.innerHTML = "Responder"
+    
+    botoes.appendChild(responder)
+    botoes.appendChild(mostrarRespostas)
+    botoes.appendChild(esconderRespostas)
+    
+    div.appendChild(botoes)
+}
+
 // Códigos para visualizar a página de Desafios 
 async function prepararPaginaDesafios() {
     const desafiosEndpoint = '/desafios'
@@ -257,7 +275,7 @@ function exibirTopicoDesafios(topicosDesafio) {
             escolha.style = "font-weight: bold;"
             escolha.innerHTML = "Escolha uma alternativa"
 
-            
+
             const resolucao = document.createElement('p')
             resolucao.innerHTML = desafio.resolucao
 

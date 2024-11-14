@@ -50,7 +50,7 @@ app.get('/horarios', async (req, res) => {
 app.get('/posts', async (req, res) => {
     try {
         const session = await mysqlx.getSession(config)
-        const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 2').execute()
+        const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 2 ORDER BY tp.idPostagem DESC').execute()
         
         const posts = resultados.fetchAll().map(post => ({
             apelido: post[0],
@@ -84,7 +84,7 @@ app.get('/posts', async (req, res) => {
 app.get ('/avisos', async (req, res) => {
     try {
         const session = await mysqlx.getSession(config)
-        const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 1').execute()
+        const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 1 ORDER BY tp.idPostagem DESC').execute()
         
         const avisos = resultados.fetchAll().map(aviso => ({
             apelido: aviso[0],
