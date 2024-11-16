@@ -119,7 +119,6 @@ function exibirAvisos(avisos) {
             let divResp = document.createElement('div')
             let formatacaoDivResposta = "row justify-content-end align-items-end my-2"
             let formatacaoBalaoResposta = "col-6 col-md-10 p-3 mx-auto mx-md-1 bg-secondary-subtle rounded-top-4 rounded-end-4"
-            console.log(resposta)
 
             montarPost(divResp, resposta, formatacaoDivResposta, formatacaoBalaoResposta, respostasContainer, "resposta")
         }
@@ -132,16 +131,13 @@ function exibirAvisos(avisos) {
 }
 
 function exibirPosts(posts) {
-    const tamanhoPosts = posts.length
-    console.log("Número de posts:", tamanhoPosts)
-
     let div = document.querySelector('.posts')
     div.innerHTML = ""
     const h4 = document.createElement('h4')
     h4.textContent = "Posts"
     div.appendChild(h4)
 
-    for (post of posts){
+    for (let post of posts){
         formatacaoDiv = "row justify-content-end align-items-end my-2"
         formatacaoBalao = "col-8 col-md-11 p-3 mx-auto bg-secondary-subtle rounded-top-4 rounded-end-4"
 
@@ -252,7 +248,6 @@ async function prepararPaginaDesafios() {
     const desafiosEndpoint = '/desafios'
     const URLcompletaDesafios = `${protocolo}${baseURL}${desafiosEndpoint}`
     const desafios = (await axios.get(URLcompletaDesafios)).data
-    console.log(desafios)
     exibirTopicoDesafios(desafios)
 }
 

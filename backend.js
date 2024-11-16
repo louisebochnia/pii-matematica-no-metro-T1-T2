@@ -1,13 +1,10 @@
 const express = require('express')
 const cors = require('cors')
-const mysqlx = require('@mysql/xdevapi');
+const mysqlx = require('@mysql/xdevapi')
 
 const app = express() //construindo uma aplicação express
 app.use(express.json())
 app.use(cors())
-
-const tabelaHorarios = { schema: 'matNoMetro', table: 'tbHorarios', user: 'avnadmin' };
-const tabelaDiasSemana = { schema: 'matNoMetro', table: 'tbDiasSemana', user: 'avnadmin' };
 
 const config = {
     password: 'AVNS_7NP1Lp7jYXOoEog6j1C',
@@ -15,14 +12,14 @@ const config = {
     host: 'mysql-31de77e0-matnometrot1t2-7d69.c.aivencloud.com',
     port: 18549,
     schema: 'matNoMetro'
-};
+}
 
 async function conectarAoMySQL() {
     mysqlx.getSession(config)
         .then(session => {
-            console.log(session.inspect());
+            console.log(session.inspect())
         });
-};
+}
 
 app.get('/horarios', async (req, res) => {
     try {
@@ -45,7 +42,7 @@ app.get('/horarios', async (req, res) => {
         console.error("Erro ao buscar horários:", e)
         res.status(500).json({ e: "Erro ao buscar horários" })
     }
-});
+})
 
 app.get('/posts', async (req, res) => {
     try {
@@ -79,7 +76,7 @@ app.get('/posts', async (req, res) => {
         console.error("Erro ao buscar posts:", e)
         res.status(500).json({ e: "Erro ao buscar posts" })
     }
-});
+})
 
 app.get ('/avisos', async (req, res) => {
     try {
@@ -133,7 +130,7 @@ app.get('/enderecos', async (req, res) => {
         console.error("Erro ao buscar endereços:", e)
         res.status(500).json({ e: "Erro ao buscar endereços" })
     }
-});
+})
 
 app.get('/desafios', async(req, res) => {
     try {
@@ -173,15 +170,14 @@ app.get('/desafios', async(req, res) => {
             topicoDesafio.desafio = desafios
         }
 
-
         // Envia os desafios como resposta em formato JSON
         res.json(topicosDesafio);
     } 
     catch (e) {
-        console.error("Erro ao buscar desafios:", e);
-        res.status(500).json({ error: "Erro ao buscar desafios" });
+        console.error("Erro ao buscar desafios:", e)
+        res.status(500).json({ error: "Erro ao buscar desafios" })
     }
-});
+})
 
 app.listen(3000, () => {
     try {
@@ -192,4 +188,4 @@ app.listen(3000, () => {
         console.log('erro de conexão', e)
     }
     
-});
+})
