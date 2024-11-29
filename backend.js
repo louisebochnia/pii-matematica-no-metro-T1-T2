@@ -5,6 +5,7 @@ const mysqlx = require('@mysql/xdevapi')
 const app = express() //construindo uma aplicação express
 app.use(express.json())
 app.use(cors())
+const bcrypt = require('bcrypt') //para criptografar as senhas dos usuários
 
 const config = {
     password: 'AVNS_7NP1Lp7jYXOoEog6j1C',
@@ -177,6 +178,44 @@ app.get('/desafios', async(req, res) => {
         console.error("Erro ao buscar desafios:", e)
         res.status(500).json({ error: "Erro ao buscar desafios" })
     }
+})
+
+// Cadastrando usuários no banco de dados
+app.post('/cadastro', async(req, res) => {
+    try{
+        const login = req.body.login
+        const password = req.body.password
+
+        const password_criptografada = await bcrypt.hash(password, 10)
+
+        const usuario = new Usuario ({login: login, password: password_criptografada})
+        const respMongo = await usuario.save()
+        console.log(respMongo)
+        //para dar o status de q deu certo
+        res.status(201).end()
+    }
+    catch(e) {
+        console.log(e)
+        res.status(409).end()
+    }
+    
+})
+// Validando usuário para fazer login
+app.post('/login', async(req, res) => {
+    const login = req.body.login
+    const password = req.body.password
+
+    const usuarioExiste = await Usuario.findOne({login: login})
+    if(!usuarioExiste) {
+        return res.status(401).json({mensagem: "Login inválido"})
+    }
+    const senhaValida = await bcrypt.compare(password, usuarioExiste.password)
+
+    if(!senhaValida) {
+        return res.status(401).json({mensagem: "Senha inválida"})
+    }
+    //daqui a pouco voltamos
+    res.end()
 })
 
 app.listen(3000, () => {

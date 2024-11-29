@@ -53,6 +53,40 @@
         </nav>
     </header>
 
+    <main>
+        <div class="form-floating mb-3">
+        <div class="container col-8 align-self-center my-4">
+            <h3>LOGIN</h3>
+            <P>Acesse com e-mail e senha para entrar:</P>
+
+            <form>
+                <div class="my-4">
+                    <label for="loginInput" class="col-form-label">E-mail</label>
+                    <div class="input-group">
+                        <input type="email" id="loginInput" class="form-control" placeholder="Digite seu e-mail">
+                        <span class="input-group-text btn btn-outline-secondary disabled" id="emailSpan">@email.com</span>
+                    </div>
+                </div>
+
+                <div class="my-4">
+                    <label for="senhaInput" class="col-form-label">Senha</label>
+                    <div class="input-group">
+                        <input type="password" id="senhaInput" class="form-control" placeholder="Digite sua senha">
+                        <button type="button" id="senhaButton" class="btn btn-outline-secondary" onmouseenter="esconderSenha()">Mostrar</button>
+                    </div>
+                </div>                
+                
+                <div class="container justify-content-center mt-5 mb-3">
+                    <div class="row">
+                        <button class="btn" id="loginCadastroButton" type="submit">Fazer Login</button>
+                    </div>
+                </div>
+
+                <p class="mb-5">Não possui uma conta ainda? <a href="/front/cadastro.html">Cadastre-se aqui</a>.</p>
+            </form>
+        </div>
+    </main>
+
     <!-- Rodapé -->
     <footer>
         <nav class="nav nav-fill">
@@ -63,6 +97,18 @@
             <a class="nav-link m-4 border border-white rounded-3" id="rodape-contato" href="contato.html">Contate-nos</a>
           </nav>
     </footer>
+
+    <!-- Incluindo intérprete de Libras com o VLibras Widget -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+          <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

@@ -282,3 +282,37 @@ function exibirTopicoDesafios(topicosDesafio) {
         
     }
 }
+
+// Códigos para visualizar a página de login
+async function prepararPaginaLogin() {
+    const loginEndpoint = '/login'
+    const URLcompletaLogin = `${protocolo}${baseURL}${loginEndpoint}`
+    const login = (await axios.get(URLcompletaLogin)).data
+}
+function esconderSenha() {
+    document.getElementById('senhaButton').addEventListener('click', function () {
+        // Seleciona os campos de senha pelos IDs
+        let senhas = [
+            document.getElementById('senhaInput'),
+            document.getElementById('senhaCadastroInput'),
+            document.getElementById('senhaCadastroInput2')
+        ];
+        for (let senha of senhas) {
+            if (senha) { // Certifica-se de que o elemento existe
+                const type = senha.getAttribute('type') === 'password' ? 'text' : 'password'
+                senha.setAttribute('type', type)
+            }
+        }
+        // Altera o texto do botão com base no estado do primeiro campo
+        this.textContent = senhas[0]?.getAttribute('type') === 'password' ? 'Mostrar' : 'Esconder'
+    })
+}
+async function cadastrarUsuario() {
+    esconderModal('#modalTermos', 500)
+}
+function esconderModal(seletor, timeout) {
+    setTimeout (() => {
+        let modal = bootstrap.Modal.getInstance(seletor)
+        modal.hide()
+    }, timeout)
+}
