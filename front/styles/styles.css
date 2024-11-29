@@ -14,6 +14,10 @@ h3, h4 {
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 
+summary{
+    font-size: 125%;
+}
+
 /* classes */
 .navbar-brand {
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', -serif;
@@ -107,4 +111,25 @@ h3, h4 {
 #forum-menu {
     border-color:#002687 !important;
 }
+
+#loginInput, #senhaInput, #cadastroInput, #senhaCadastroInput, #senhaCadastroInput2{
+    background-color:#E6E6E6; 
+    height: 60px;
+    font-size: 80%;
+}
+
+#loginCadastroButton{
+    background-color: #002687;
+    color: white;
+    height: 50px;
+}
+
+#emailSpan, #senhaButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 80%;
+}
+
 
