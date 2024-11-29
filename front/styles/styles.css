@@ -1,5 +1,5 @@
 /*  */
-p{
+p, summary{
     text-align: justify;
     font-size: larger;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -107,3 +107,4 @@ h3, h4 {
 #forum-menu {
     border-color:#002687 !important;
 }
+

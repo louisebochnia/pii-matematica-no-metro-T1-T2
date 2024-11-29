@@ -248,10 +248,10 @@ async function prepararPaginaDesafios() {
     const desafiosEndpoint = '/desafios'
     const URLcompletaDesafios = `${protocolo}${baseURL}${desafiosEndpoint}`
     const desafios = (await axios.get(URLcompletaDesafios)).data
-    exibirTopicoDesafios(desafios)
+    exibirDesafios(desafios)
 }
 
-function exibirTopicoDesafios(topicosDesafio) {
+function exibirDesafios(topicosDesafio) {
     let div = document.querySelector('.topico-desafios')
     div.innerHTML = ""
 
@@ -259,26 +259,120 @@ function exibirTopicoDesafios(topicosDesafio) {
         const details = document.createElement('details')
         details.className = "my-2"
         const summary = document.createElement('summary')
-        summary.innerHTML = topicoDesafio.topico
+        summary.textContent = topicoDesafio.topico
         details.appendChild(summary)
+        let i = 1
 
         for (let desafio of topicoDesafio.desafio){
+            const divQuestao = document.createElement('div')
+            divQuestao.className = "my-2 p-4 border-bottom border-3"
+            divQuestao.style = "border-color: #002687 !important;"
+
             const enunciado = document.createElement('p')
-            enunciado.innerHTML = desafio.questao
+            enunciado.innerHTML = `${i}.  ${desafio.questao}`
+
             const fieldset = document.createElement('fieldset')
             const escolha = document.createElement('p')
             escolha.style = "font-weight: bold;"
             escolha.innerHTML = "Escolha uma alternativa"
 
+            //salva uma cópia da lista de alternativas
+            let alternativas = [...desafio.alternativas]
 
+            //embaralha as alternativas na lista para que elas fiquem em ordem diferentes
+            let alternativasEmbaralhadas = embaralharAlternativas(desafio.alternativas)
+
+            for(let alternativa of alternativasEmbaralhadas) {
+                const p = document.createElement('p')
+                const inputRadio = document.createElement('input')
+                inputRadio.type = 'radio'
+                inputRadio.name = `alternativa-${topicoDesafio.id}-${desafio.id}`
+                inputRadio.value = alternativa
+                
+                const label = document.createElement('label')
+                label.style.cursor = "pointer";
+                label.appendChild(inputRadio)
+                label.appendChild(document.createTextNode(` ${alternativa}`))
+
+                p.appendChild(label)
+
+                fieldset.appendChild(p)
+            }
+
+            const divResolucao = document.createElement('div')
+            divResolucao.className = "d-none"
             const resolucao = document.createElement('p')
             resolucao.innerHTML = desafio.resolucao
 
-            details.appendChild(enunciado)
-            details.appendChild(resolucao)
+            const botao = document.createElement('button')
+            botao.className = "justify-content-start btn"
+            botao.style = "background-color: #002687; color: white;"
+            botao.innerHTML = "Responder"
+
+            botao.onclick = function () {
+                let assinalada = divQuestao.querySelector(`input[name="alternativa-${topicoDesafio.id}-${desafio.id}"]:checked`)
+                
+                //confirma se o usuário selecionou uma alternativa
+                if (assinalada) {
+                    let resposta = assinalada.value
+                    console.log("Alternativa selecionada:", resposta);
+
+                    //verifica se o usuário acertou ou errou a questão
+                    if (resposta == desafio.respostaCorreta){
+                        let quantidade = desafio.porcentagemRespCorreta + 1
+                        armazenarResposta(desafio.idQuestao, "porcentagemRespCorreta", quantidade)
+                    } else {
+                        //pega o indíce da resposta do usuário na lista não embaralhada
+                        let nRepsIncorreta = alternativas.indexOf(resposta)
+                        console.log(nRepsIncorreta)
+                        
+                        //pega a quantidade de vezes que a resposta do usuário já foi selecionada
+                        let quantidade = desafio.porcentagemRespIncorretas[nRepsIncorreta - 1] + 1
+                        console.log(quantidade)
+
+                        let alternativaMarcada = `porcentagemRespIncorreta${nRepsIncorreta}`
+                        console.log(alternativaMarcada)
+                        console.log(desafio.idQuestao)
+                        armazenarResposta(desafio.idQuestao, alternativaMarcada, quantidade)
+                        
+                    }
+                } else {
+                    alert("Por favor, selecione uma alternativa antes de enviar.");
+                }
+            }
+
+            divQuestao.appendChild(enunciado)
+            divQuestao.appendChild(fieldset)
+            divQuestao.appendChild(botao)
+            divQuestao.appendChild(divResolucao)
+
+            details.appendChild(divQuestao)
+
+            i++
         }
 
         div.appendChild(details)
         
     }
+}
+
+function embaralharAlternativas(respostas) {
+    let m = respostas.length, t, i;
+    
+    while (m) {
+      i = Math.floor(Math.random() * m--);
+  
+      t = respostas[m];
+      respostas[m] = respostas[i];
+      respostas[i] = t;
+    }
+  
+    return respostas;
+}
+
+async function armazenarResposta(questao, assinalada, quantidade) {
+        const desafiosEndpoint = '/desafios'
+        const URLcompletaDesafios = `${protocolo}${baseURL}${desafiosEndpoint}`
+        const response = await axios.post(URLcompletaDesafios, {idQuestao: questao, assinalada: assinalada, quantidade: quantidade}) 
+        console.log(response)
 }

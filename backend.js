@@ -23,7 +23,8 @@ async function conectarAoMySQL() {
 
 app.get('/horarios', async (req, res) => {
     try {
-        const session = await mysqlx.getSession(config) // Conecta ao MySQL
+        // Conecta ao MySQL
+        const session = await mysqlx.getSession(config) 
 
         // Executa a consulta
         const resultado = await session.sql('SELECT tbDiasSemana.diaSemana, tbHorarios.horarioVoluntarios, tbEnderecos.estacao FROM tbDiasSemana JOIN tbHorarios ON tbDiasSemana.idDiaSemana = tbHorarios.idDiaSemana JOIN tbEnderecos ON tbHorarios.idEndereco = tbEnderecos.idEndereco ORDER BY tbHorarios.idDiaSemana DESC').execute()
@@ -147,7 +148,7 @@ app.get('/desafios', async(req, res) => {
 
         for (let topicoDesafio of topicosDesafio){
             // Executa a consulta, vinculando o idTopicoDesafio no lugar do ?
-            const resultado2 = await session.sql('SELECT d.idQuestao, d.questao, d.imagemURL, d.respostaCorreta, d.resolucao FROM tbDesafios as d JOIN tbTopicosDesafios as td ON td.idTopicoDesafios = d.idTopicoDesafios WHERE td.idTopicoDesafios = ?').bind(topicoDesafio.id).execute()
+            const resultado2 = await session.sql('SELECT d.idQuestao, d.questao, d.imagemURL, d.respostaCorreta, d.resolucao, d.porcentagemRespCorreta, d.porcentagemRespIncorreta1, d.porcentagemRespIncorreta2, d.porcentagemRespIncorreta3, d.porcentagemRespIncorreta4 FROM tbDesafios as d JOIN tbTopicosDesafios as td ON td.idTopicoDesafios = d.idTopicoDesafios WHERE td.idTopicoDesafios = ?').bind(topicoDesafio.id).execute()
             
             // Converte o resultado em array
             const desafios = resultado2.fetchAll().map(desafio => ({
@@ -155,16 +156,21 @@ app.get('/desafios', async(req, res) => {
                 questao: desafio[1],
                 imagemURL: desafio[2],
                 respostaCorreta: desafio[3],
-                respostas: [],
-                resolucao: desafio[4]
+                alternativas: [],
+                resolucao: desafio[4],
+                porcentagemRespCorreta: desafio[5],
+                porcentagemRespIncorretas: [
+                    desafio[6],
+                    desafio[7],
+                    desafio[8],
+                    desafio[9]
+                ]
             }))
 
             for (let desafio of desafios) {
                 const resultado3 = await session.sql('SELECT respostaCorreta, respostaIncorreta1, respostaIncorreta2, respostaIncorreta3, respostaIncorreta4 FROM tbDesafios WHERE idQuestao = ?').bind(desafio.idQuestao).execute()
 
-                const respostas = resultado3.fetchAll()
-
-                desafio.respostas = respostas
+                desafio.alternativas = resultado3.fetchOne()
             }
 
             topicoDesafio.desafio = desafios
@@ -176,6 +182,28 @@ app.get('/desafios', async(req, res) => {
     catch (e) {
         console.error("Erro ao buscar desafios:", e)
         res.status(500).json({ error: "Erro ao buscar desafios" })
+    }
+})
+
+app.post('/desafios', async(req, res) => {
+    try {
+        const idQuestao = req.body.idQuestao
+        const assinalada = req.body.assinalada
+        const quantidade = req.body.quantidade
+
+        const query =`UPDATE tbDesafios SET ${assinalada} = ? WHERE idQuestao = ?`
+
+        // Conecta ao MySQL
+        const session = await mysqlx.getSession(config) 
+
+        //Registra a alternativa marcada no banco de dados
+        const respSQL = await session.sql(query).bind(quantidade, idQuestao).execute()
+        console.log(respSQL)
+        res.status(200).send('Atualização realizada com sucesso!');
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao atualizar os dados.');
     }
 })
 
