@@ -246,6 +246,10 @@ app.post('/login', async(req, res) => {
     res.end()
 })
 
+app.post('/contato', async(req, res) => {
+    
+})
+
 app.listen(3000, () => {
     try {
         conectarAoMySQL()

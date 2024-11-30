@@ -12,6 +12,17 @@ async function prepararPaginaInicial() {
     exibirEnderecos(enderecos)
 }
 
+async function prepararPaginaContato() {
+    const enderecosEndpoint = '/enderecos'
+    const URLcompletaEnderecos = `${protocolo}${baseURL}${enderecosEndpoint}`
+    const enderecos = (await axios.get(URLcompletaEnderecos)).data
+    exibirEnderecos(enderecos)
+}
+
+async function postarDuvida() {
+    
+}
+
 async function prepararForum() {
     const avisosEndpoint = '/avisos'
     const URLcompletaAvisos = `${protocolo}${baseURL}${avisosEndpoint}`

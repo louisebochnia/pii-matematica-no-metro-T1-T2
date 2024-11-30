@@ -10,7 +10,7 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
-<body>
+<body onload="prepararPaginaContato()">
     <header>
         <nav class="navbar navbar-expand-sm" id="menu-nav" data-bs-theme="dark">
             <div class="container-fluid">
@@ -52,6 +52,52 @@
             </div>
         </nav>
     </header>
+
+    <main>
+       
+        <div class="container my-4">
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h3>LOCALIZAÇÃO</h3>
+                    <h4 class="mt-2">Mapa</h4>
+                    <iframe src="https://www.google.com/maps/d/u/2/embed?mid=1nVsvGwLbGGA-cZ8mVktUEMHMjWRAJNY&ehbc=2E312F&noprof=1" width="640" height="480" style="width: 100%;"></iframe>
+                    <p class="mt-2">Clique <a href="https://maps.app.goo.gl/nBmhaDZZoNHXCYLs8" style="color: blue;">aqui</a> para ir ao Google Maps</p>
+                    <h4 class="mt-2">Endereço</h4>
+                    <div class="enderecos">
+
+                    </div>
+                </div> 
+
+                    <div class="col-md-6">
+                            <form>
+                                <div class="my-4">
+                                    <label for="nomeInput" class="col-form-label">Nome completo:</label>
+                                    <input type="text" id="nomeInput" class="form-control" placeholder="Digite seu nome completo">
+                                </div>
+                                <div class="my-4">
+                                    <label for="emailInput" class="col-form-label">E-mail:</label>
+                                    <div class="input-group">
+                                        <input type="email" id="emailInput" class="form-control" placeholder="Digite seu e-mail">
+                                        <span class="input-group-text btn btn-outline-secondary disabled" id="emailSpan">@email.com</span>
+                                    </div>
+                                </div>
+                
+                                <div class="my-4">
+                                   <textarea style="height: 150px; width: 400px;" placeholder="Digite sua mensagem" id="duvidaTextarea"></textarea>
+                                    </div>
+                                    <button class="btn" id="duvidaSendButton" type="submit">Enviar</button>
+                                    
+                                    <div class="my-4">
+                                        <h4>Nosso e-mail:</h4>
+                                        <a id="emailLink" href="#">email.placeholeder@email.com</a>
+                                    </div>
+                            </form>
+                    </div>    
+                </div>
+        </div>
+
+        
+    </main>
 
     <!-- Incluindo intérprete de Libras com o VLibras Widget -->
     <div vw class="enabled">

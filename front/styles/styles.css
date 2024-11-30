@@ -118,7 +118,7 @@ summary{
     font-size: 80%;
 }
 
-#loginCadastroButton{
+#loginCadastroButton,#duvidaSendButton{
     background-color: #002687;
     color: white;
     height: 50px;
