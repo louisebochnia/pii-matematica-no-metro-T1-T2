@@ -12,36 +12,6 @@ async function prepararPaginaInicial() {
     exibirEnderecos(enderecos)
 }
 
-async function prepararPaginaContato() {
-    const enderecosEndpoint = '/enderecos'
-    const URLcompletaEnderecos = `${protocolo}${baseURL}${enderecosEndpoint}`
-    const enderecos = (await axios.get(URLcompletaEnderecos)).data
-    exibirEnderecos(enderecos)
-}
-
-async function postarDuvida() {
-    let inputNomeCompleto = (document.querySelector('#nomeInput'))
-    let inputEmailContato = (document.querySelector('#emailInput'))
-    let inputMensagemContato = (document.querySelector('#duvidaTextarea'))
-    let nome = inputNomeCompleto.value
-    let email = inputEmailContato.value
-    let mensagem = inputMensagemContato.value
-    if (nome && email && mensagem){
-        try{
-            const contatoEndpoint = '/contato'
-            const URLcompletaContato = `${protocolo}${baseURL}${contatoEndpoint}`
-            const response = await axios.post(URLcompletaContato, {nomeCompleto: nome, emailContato: email, mensagemContato: mensagem})
-            console.log(response)
-        }
-        catch(e) {
-            console.log(e)
-        }
-    } else {
-        console.log("Preencha todos os campos!")
-    }
-   
-}
-
 async function prepararForum() {
     const avisosEndpoint = '/avisos'
     const URLcompletaAvisos = `${protocolo}${baseURL}${avisosEndpoint}`
@@ -455,7 +425,6 @@ function exibeAlerta(seletor, innerHTML, classesToAdd, classesToRemove, timeout)
         alert.classList.add(...classesToRemove)
     }, timeout)
 }
-<<<<<<< HEAD
 function esconderModal(seletor, timeout, acao) {
     // Seleciona o elemento do modal
     const modalElement = document.querySelector(seletor)
@@ -572,12 +541,4 @@ const fazerLogin = async () => {
     else {
         exibeAlerta('.alert-login', "Preencha todos os campos!", ['show', 'alert-danger'], ['d-none'], 2000)
     }
-=======
-function mostrarModal(seletor, timeout) {
-    setTimeout(() => {
-        // para sumir o modal inteiro de Novo usuário
-        let modal = bootstrap.Modal.getInstance(seletor)
-        modal.show()
-    }, timeout)
->>>>>>> 6df4fbdf7e57e15ce2b4be03f399f4310f9ee855
 }
