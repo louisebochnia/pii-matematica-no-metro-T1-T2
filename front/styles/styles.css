@@ -112,7 +112,7 @@ summary{
     border-color:#002687 !important;
 }
 
-#loginInput, #senhaInput, #cadastroInput, #senhaCadastroInput, #senhaCadastroInput2{
+#emailLoginInput, #senhaLoginInput, #emailCadastroInput, #senhaCadastroInput, #senhaCadastroInput2, #apelidoInput{
     background-color:#E6E6E6; 
     height: 60px;
     font-size: 80%;

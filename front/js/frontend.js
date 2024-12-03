@@ -380,36 +380,165 @@ async function armazenarResposta(questao, assinalada, quantidade) {
 }
 
 
-// Códigos para visualizar a página de login
+// Códigos para as páginas login e cadastro
 async function prepararPaginaLogin() {
     const loginEndpoint = '/login'
     const URLcompletaLogin = `${protocolo}${baseURL}${loginEndpoint}`
     const login = (await axios.get(URLcompletaLogin)).data
 }
 function esconderSenha() {
-    document.getElementById('senhaButton').addEventListener('click', function () {
-        // Seleciona os campos de senha pelos IDs
-        let senhas = [
-            document.getElementById('senhaInput'),
-            document.getElementById('senhaCadastroInput'),
-            document.getElementById('senhaCadastroInput2')
-        ];
-        for (let senha of senhas) {
-            if (senha) { // Certifica-se de que o elemento existe
-                const type = senha.getAttribute('type') === 'password' ? 'text' : 'password'
-                senha.setAttribute('type', type)
+    // Adiciona um único evento de clique ao documento para capturar os dois botões
+    document.addEventListener('click', function (event) {
+        // Verifica se o clique foi em um dos botões relevantes
+        if (event.target.id === 'senhaButton' || event.target.id === 'senhaCadastroButton') {
+            // Determina os campos de entrada associados com base no ID do botão
+            let inputIds = []
+            if (event.target.id === 'senhaButton') {
+                inputIds = ['senhaLoginInput']
+            } else if (event.target.id === 'senhaCadastroButton') {
+                inputIds = ['senhaCadastroInput', 'senhaCadastroInput2']
             }
+            // Alterna o tipo dos campos associados
+            let allArePassword = true
+            inputIds.forEach((id) => {
+                const input = document.getElementById(id)
+                if (input) {
+                    const isPassword = input.getAttribute('type') === 'password'
+                    input.setAttribute('type', isPassword ? 'text' : 'password')
+                    if (!isPassword) {
+                        allArePassword = false
+                    }
+                }
+            })
+            // Atualiza o texto do botão com base no estado dos campos
+            event.target.textContent = allArePassword ? 'Mostrar senha' : 'Esconder senha'
         }
-        // Altera o texto do botão com base no estado do primeiro campo
-        this.textContent = senhas[0]?.getAttribute('type') === 'password' ? 'Mostrar' : 'Esconder'
     })
 }
-async function cadastrarUsuario() {
-    esconderModal('#modalTermos', 500)
-}
-function esconderModal(seletor, timeout) {
-    setTimeout (() => {
-        let modal = bootstrap.Modal.getInstance(seletor)
-        modal.hide()
+function exibeAlerta(seletor, innerHTML, classesToAdd, classesToRemove, timeout) {
+    let alert = document.querySelector(seletor)
+    alert.innerHTML = innerHTML
+    alert.classList.add(...classesToAdd)
+    alert.classList.remove(...classesToRemove)
+    setTimeout(() => {
+        alert.classList.remove(...classesToAdd)
+        alert.classList.add(...classesToRemove)
     }, timeout)
+}
+function esconderModal(seletor, timeout, acao) {
+    // Seleciona o elemento do modal
+    const modalElement = document.querySelector(seletor)
+
+    // Verifica se o modal existe e inicializa se necessário
+    let modal = bootstrap.Modal.getInstance(modalElement)
+    if (!modal) {
+        modal = new bootstrap.Modal(modalElement)
+    }
+
+    // Define a ação (mostrar ou esconder)
+    if (acao === 'esconder') {
+        setTimeout(() => {
+            modal.hide()
+        }, timeout || 0) // Aplica timeout se fornecido
+    } else if (acao === 'mostrar') {
+        setTimeout(() => {
+            modal.show()
+        }, timeout || 0) // Aplica timeout se fornecido
+    }
+}
+function validaEntradasCadastro() {
+    // Obtém os valores dos campos
+    const apelido = document.querySelector('#apelidoInput').value.trim()
+    const email = document.querySelector('#emailCadastroInput').value.trim()
+    const senha1 = document.querySelector('#senhaCadastroInput').value.trim()
+    const senha2 = document.querySelector('#senhaCadastroInput2').value.trim()
+
+    // Verifica se todos os campos estão preenchidos
+    if (!apelido || !email || !senha1 || !senha2) {
+        exibeAlerta('.alert-cadastro', "Preencha todos os campos!", ['show', 'alert-danger'], ['d-none'], 4000)
+        return
+    }
+    // Verifica se as senhas coincidem
+    if (senha1 !== senha2) {
+        exibeAlerta('.alert-cadastro', "Digite a mesma senha nos dois campos!", ['show', 'alert-danger'], ['d-none'], 4000)
+        return
+    }
+    // Exibe o modal de termos e condições
+    esconderModal('#modalTermos', 0, 'mostrar')
+}
+async function cadastrarUsuario() {
+    // Seleciona o checkbox e a mensagem de feedback
+    const checkbox = document.getElementById('termosCheck')
+    let div = document.querySelector('.termosFeedback')
+    // Pega os valores dos campos de input
+    let emailInput = document.querySelector('#emailCadastroInput')
+    let senhaInput = document.querySelector('#senhaCadastroInput')
+    let senhaInput2 = document.querySelector('#senhaCadastroInput2')
+    let apelidoInput = document.querySelector('#apelidoInput')
+    let email = emailInput.value
+    let senha = senhaInput.value
+    let apelido = apelidoInput.value
+    // Determinando o idTipoLogin (1 é Voluntário e 2 é Comum)
+    let idTipoLogin = email === 'matnometrot1t2@gmail.com' ? 1 : 2;
+    console.log(idTipoLogin === 1 ? 'Você é um voluntário' : 'Você é um aluno');
+
+    // Verifica se o checkbox está marcado
+    if (!checkbox.checked) {
+        checkbox.classList.add('is-invalid')
+        div.className = "invalid-feedback"
+        div.innerHTML = "Você deve concordar com os Termos antes de continuar"
+    } else {
+        // Esconde o modal
+        checkbox.classList.remove('is-invalid')
+        esconderModal('#modalTermos', 10, 'esconder')
+        try {
+            console.log('Entrei no try')
+            // Cadastra o usuário
+            let cadastroUsuarioEndPoint = '/cadastro'
+            let URLcompleta = `${protocolo}${baseURL}${cadastroUsuarioEndPoint}`
+            await axios.post(URLcompleta, {apelido: apelido, email: email, senha: senha, idTipoLogin: idTipoLogin})
+            apelidoInput.value = ""
+            emailInput.value = ""
+            senhaInput.value = ""
+            senhaInput2.value = ""
+            exibeAlerta('.alert-cadastro', "Usuário cadastrado com sucesso!", ['show', 'alert-success'], ['d-none'], 4000)
+            // Redireciona para a página de login
+            window.location.href = "/front/login.html"
+        } 
+        catch(e) {
+            apelidoInput.value = ""
+            emailInput.value = ""
+            senhaInput.value = ""
+            senhaInput2.value = ""
+            exibeAlerta('.alert-cadastro', "Não foi possível cadastrar usuário. Tente mais tarde...", ['show', 'alert-danger'], ['d-none'], 4000)
+        }
+    }
+}
+const fazerLogin = async () => {
+    // Pega os valores dos campos de input
+    let emailInput = document.querySelector('#emailLoginInput')
+    let senhaInput = document.querySelector('#senhaLoginInput')
+    let email = emailInput.value
+    let senha = senhaInput.value
+    if (email && senha) {
+        try {
+            const loginEndPoint = '/login'
+            const URLcompleta = `${protocolo}${baseURL}${loginEndPoint}`
+            const response = await axios.post(URLcompleta, {email: email, senha: senha})
+            localStorage.setItem("token", response.data)
+            emailInput.value = ""
+            senhaInput.value = ""
+            exibeAlerta('.alert-login', "Usuário logado com sucesso", ['show', 'alert-success'], ['d-none'], 4000)
+            // const loginLink = document.querySelector('#loginLink')
+            // loginLink.innerHTML = "Logout"
+            window.location.href = "/front/index.html"
+        }catch(e) {
+            emailInput.value = ""
+            senhaInput.value = ""
+            exibeAlerta('.alert-login', "Falha na autenticação! Confira se você preencheu os campos corretamente!", ['show', 'alert-danger'], ['d-none'], 4000)
+        }
+    }
+    else {
+        exibeAlerta('.alert-login', "Preencha todos os campos!", ['show', 'alert-danger'], ['d-none'], 2000)
+    }
 }

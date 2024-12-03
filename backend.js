@@ -6,6 +6,7 @@ const app = express() //construindo uma aplicação express
 app.use(express.json())
 app.use(cors())
 const bcrypt = require('bcrypt') //para criptografar as senhas dos usuários
+const jwt = require('jsonwebtoken') //token para deixar o usuário logado
 
 const config = {
     password: 'AVNS_7NP1Lp7jYXOoEog6j1C',
@@ -211,16 +212,18 @@ app.post('/desafios', async(req, res) => {
 // Cadastrando usuários no banco de dados
 app.post('/cadastro', async(req, res) => {
     try{
-        const login = req.body.login
-        const password = req.body.password
-
-        const password_criptografada = await bcrypt.hash(password, 10)
-
-        const usuario = new Usuario ({login: login, password: password_criptografada})
-        const respMongo = await usuario.save()
-        console.log(respMongo)
-        //para dar o status de q deu certo
-        res.status(201).end()
+        const email = req.body.email
+        const senha = req.body.senha
+        const apelido = req.body.apelido
+        const idTipoLogin = req.body.idTipoLogin
+        
+        // Criptografando a senha para inserir no banco de dados
+        const senha_criptografada = await bcrypt.hash(senha, 10)
+        const usuario = new Usuario ({email: email, senha: senha_criptografada, apelido: apelido, idTipoLogin: idTipoLogin})
+        
+        const session = await mysqlx.getSession(config)
+        await session.sql('insert into tbLogins (email, senha, apelido, idTipoLogin) values (?, ?, ?, ?)').bind(email, senha_criptografada, apelido, idTipoLogin).execute()
+        res.status(201).send('Usuário cadastrado')
     }
     catch(e) {
         console.log(e)
@@ -230,20 +233,35 @@ app.post('/cadastro', async(req, res) => {
 })
 // Validando usuário para fazer login
 app.post('/login', async(req, res) => {
-    const login = req.body.login
-    const password = req.body.password
+    const email = req.body.email
+    const senha = req.body.senha
 
-    const usuarioExiste = await Usuario.findOne({login: login})
-    if(!usuarioExiste) {
-        return res.status(401).json({mensagem: "Login inválido"})
-    }
-    const senhaValida = await bcrypt.compare(password, usuarioExiste.password)
+    const session = await mysqlx.getSession(config)
+    const tblogins = await session.sql('select email, senha from tbLogins').execute()
 
-    if(!senhaValida) {
-        return res.status(401).json({mensagem: "Senha inválida"})
+    // Converte o resultado em Array
+    const logins = resultado.fetchAll().map(login => ({
+        email: login[0],
+        senha: login[1]
+    }))
+
+    for(let login of logins){
+        if(email == login.email){
+            const senhaValida = await bcrypt.compare(senha, login.senha)
+            if(senhaValida){
+                const token = jwt.sign(
+                    {login: login},
+                    "id-secreto",
+                    {expiresIn: "1h"}
+                )
+                res.status(200).json({token: token})
+            }else{
+                return res.status(401).json({mensagem: "Senha inválida"})
+            }
+        }else{
+            return res.status(401).json({mensagem: "Email inválido"})
+        }
     }
-    //daqui a pouco voltamos
-    res.end()
 })
 
 app.listen(3000, () => {
