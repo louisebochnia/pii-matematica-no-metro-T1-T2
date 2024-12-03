@@ -443,3 +443,10 @@ function esconderModal(seletor, timeout) {
         modal.hide()
     }, timeout)
 }
+function mostrarModal(seletor, timeout) {
+    setTimeout(() => {
+        // para sumir o modal inteiro de Novo usuário
+        let modal = bootstrap.Modal.getInstance(seletor)
+        modal.show()
+    }, timeout)
+}

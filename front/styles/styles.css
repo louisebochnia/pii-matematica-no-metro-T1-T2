@@ -123,6 +123,11 @@ summary{
     color: white;
     height: 50px;
 }
+#editButton{
+    background-color: #186FAB;
+    color: #ffffff;
+    border-color: #ffffff;
+}
 
 #emailSpan, #senhaButton {
     display: flex;
