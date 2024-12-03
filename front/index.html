@@ -58,6 +58,41 @@
 
     <!-- Conteúdo da página -->
     <main>
+        <div class="modal fade" id="modalHorarios">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5">Editar horários</h1>
+                </div>
+        
+                <div class="modal-body">
+                  <div class="alert d-none alert-dismissible fade
+                                alert-modal-cadastro" role="alert"></div>
+                  <form>
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>Dias da semana</option>
+                        <option value="1">Domingo</option>
+                        <option value="2">Segunda-feira</option>
+                        <option value="3">Terça-feira</option>
+                        <option value="4">Quarta-feira</option>
+                        <option value="5">Quinta-feira</option>
+                        <option value="6">Sexta-feira</option>
+                        <option value="7">Sábado</option>
+                      </select>
+                      <div class="my-2">Estação</div>
+                      <select id="estacaoEdit" class="form-select" aria-label="Default select example">
+                        <option selected>Estações</option>
+                      </select>
+                  </form>
+                </div>
+        
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  <button type="button" class="btn btn-primary" onclick="cadastrarUsuario()">Cadastrar</button>
+                </div>
+              </div>
+            </div>
+          </div>
         <div class="container my-4">
             <div class="row">
                 <div class="col-md-6 align-self-center">
@@ -102,9 +137,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-
+                               
                             </tbody>
                         </table>
+                        <button data-bs-toggle="modal" data-bs-target="#modalHorarios" id="editButton" class="dismissable btn">Editar horários</button>
                     </div>
                 </div>
             </div>
