@@ -12,6 +12,36 @@ async function prepararPaginaInicial() {
     exibirEnderecos(enderecos)
 }
 
+async function prepararPaginaContato() {
+    const enderecoEndpoint = '/enderecos'
+    const URLcompletaEnderecos = `${protocolo}${baseURL}${enderecosEndpoint}`
+    const enderecos = (await axios.get(URLcompletaEnderecos)).data
+    exibirEnderecos(enderecos)
+}
+
+async function postarDuvida() {
+    let inputNomeCompleto = (document.querySelector('#nomeInput'))
+    let inputEmailContato = (document.querySelector('#emailInput'))
+    let inputMensagemContato = (document.querySelector('#duvidaTextarea'))
+    let nome = inputNomeCompleto.value
+    let email = inputEmailContato.value
+    let mensagem = inputMensagemContato.value
+    if (nome && email && mensagem){
+        try{
+            const contatoEndpoint = '/contato'
+            const URLcompletaContato = `${protocolo}${baseURL}${contatoEndpoint}`
+            const response = await axios.post(URLcompletaContato, {nomeCompleto: nome, emailContato: email, mensagemContato: mensagem})
+            console.log(response)
+        }
+        catch(e) {
+            console.log(e)
+        }
+    } else {
+        console.log("Preencha todos os campos!")
+    }
+
+}
+
 async function prepararForum() {
     const avisosEndpoint = '/avisos'
     const URLcompletaAvisos = `${protocolo}${baseURL}${avisosEndpoint}`

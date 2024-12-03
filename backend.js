@@ -209,6 +209,22 @@ app.post('/desafios', async(req, res) => {
     }
 })
 
+// Postar uma dúvida na página contato
+app.post('/contato', async (req, res) => {
+    try {
+        const nomeCompleto = req.body.nomeCompleto
+        const emailContato = req.body.emailContato
+        const mensagemContato = req.body.mensagemContato
+        const session = await mysqlx.getSession(config)
+        await session.sql('insert into tbContato (nomeCompleto, email, duvida) values (?, ?, ?)').bind(nomeCompleto, emailContato, mensagemContato).execute()
+        res.status(200).send('Mensagem enviada com sucesso!')
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao atualizar os dados.');
+    }
+})
+
 // Cadastrando usuários no banco de dados
 app.post('/cadastro', async(req, res) => {
     try{
