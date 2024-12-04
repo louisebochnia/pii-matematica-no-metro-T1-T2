@@ -40,6 +40,9 @@
             <li class="nav-item">
               <a class="nav-link me-2" href="desafios.html">Desafios</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link me-2 d-none" href="index.html">Logout</a>
+            </li>
           </ul>
         </div>
         <a class="nav-link" href="login.html">
@@ -51,8 +54,8 @@
   </header>
 
   <main>
-    <div class="modal fade" id="modalLogin">
-      <div class="modal-dialog">
+    <div class="modal fade" id="modalPostNovo">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5">Novo Post</h1>
@@ -61,8 +64,8 @@
             <div class="alert d-none alert-dismissable fade alert-modal-login" role="alert"></div>
             <form>
               <div class="mb-3">
-                <label for="texto" class="col-form-label">Escreva sua mensagem na caixa abaixo</label>
-                <input type="text-area" id="texto" class="form-control">
+                <label for="mensagemPost" class="col-form-label">Escreva sua mensagem na caixa abaixo</label>
+                <textarea class="form-control" id="mensagemPost"></textarea>
               </div>
             </form>
           </div>
@@ -70,7 +73,7 @@
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
               Cancelar
             </button>
-            <button type="button" class="btn btn-primary" onclick="fazerLogin()">
+            <button type="submit" class="btn btn-primary" onclick="enviarPost(2, '#mensagemPost')">
               Publicar
             </button>
           </div>
@@ -82,20 +85,21 @@
       <h3>FÓRUM</h3>
       <div class="row justify-content-center">
         <div class="col-8 col-md-3 btn border border-2 rounded-0 align-items-center" id="forum-menu"
-          data-bs-toggle="modal" data-bs-target="#modalLogin">
+          data-bs-toggle="modal" data-bs-target="#modalPostNovo">
           <p class="m-auto" style="text-align: center;">+ Novo Post</p>
         </div>
-        <div class="col-8 col-md-3 border justify-content-center border-2" id="forum-menu">
-          <div class="dropdown mx-auto">
+        <div class="col-8 col-md-3 border border-2 d-flex justify-content-center align-items-center" id="forum-menu">
+          <div class="dropdown-center mx-auto">
             <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
               id="filtrar-forum">
               Filtrar
             </button>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item d-none filtro-inicio" onclick="prepararForum()">Início (Fórum)</a></li>
-              <li><a class="dropdown-item" onclick="filtrarAvisos()">Avisos</a></li>
-              <li><a class="dropdown-item" onclick="">Mais Recentes</a></li>
-              <li><a class="dropdown-item" onclick="">Mais Antigos</a></li>
+              <li><a class="dropdown-item filtro-avisos" onclick="filtrarAvisos()">Avisos</a></li>
+              <li><a class="dropdown-item filtro-posts" onclick="filtrar(1)">Posts Mais Recentes</a></li>
+              <li><a class="dropdown-item filtro-posts-antigos" onclick="filtrar(0)">Posts Mais Antigos</a></li>
+              <li><a class="dropdown-item d-none filtro-avisos-antigos" onclick="filtrar(2)">Avisos Mais Antigos</a></li>
             </ul>
           </div>
         </div>

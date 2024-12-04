@@ -19,7 +19,7 @@ async function conectarAoMySQL() {
     mysqlx.getSession(config)
         .then(session => {
             console.log(session.inspect())
-        });
+        })
 }
 
 app.get('/horarios', async (req, res) => {
@@ -39,6 +39,8 @@ app.get('/horarios', async (req, res) => {
 
         // Envia os horários como resposta em formato JSON
         res.json(horarios)
+
+        await session.close()
     } 
     catch (e) {
         console.error("Erro ao buscar horários:", e)
@@ -49,30 +51,36 @@ app.get('/horarios', async (req, res) => {
 app.get('/posts', async (req, res) => {
     try {
         const session = await mysqlx.getSession(config)
-        const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 2 ORDER BY tp.idPostagem DESC').execute()
+        const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost, tp.dia, tp.horario FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 2 ORDER BY tp.idPostagem DESC').execute()
         
         const posts = resultados.fetchAll().map(post => ({
             apelido: post[0],
             idPost: post[1],
             postagem: post[2],
             imagemPost: post[3],
+            data: post[4],
+            horario: post[5],
             resposta: []
         }))
 
         for (let post of posts){
             let idPost = post.idPost
-            let resultados2 = await session.sql('SELECT tl.apelido, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 3 AND tp.idPostagemResp = ?').bind(idPost).execute()
+            let resultados2 = await session.sql('SELECT tl.apelido, tp.postagem, tp.imagemPost, tp.dia, tp.horario FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 3 AND tp.idPostagemResp = ?').bind(idPost).execute()
 
             let respostas = resultados2.fetchAll().map(resposta => ({
                 apelido: resposta[0],
                 postagem: resposta[1],
-                imagemPost: resposta[2]
+                imagemPost: resposta[2],
+                data: resposta[3],
+                horario: resposta[4]
             }))
             
             post.resposta = respostas
         }
 
         res.json(posts)
+
+        await session.close()
     }
     catch (e){
         console.error("Erro ao buscar posts:", e)
@@ -80,33 +88,87 @@ app.get('/posts', async (req, res) => {
     }
 })
 
+app.post('/posts', async (req, res) => {
+    try {
+        const postagem = req.body.postagem
+        const idLogin = req.body.idLogin
+        const idTipoPostagem = req.body.idTipoPostagem
+        const horario = req.body.horario
+        const data = req.body.data
+
+        // Conecta ao MySQL
+        const session = await mysqlx.getSession(config) 
+
+        //Registra a alternativa marcada no banco de dados
+        const respSQL = await session.sql('INSERT INTO tbPostagens(postagem, idLogin, idTipoPostagem, dia, horario) VALUES (?, ?, ?, ?, ?)').bind(postagem, idLogin, idTipoPostagem, data, horario).execute()
+
+        res.status(200).send('Atualização realizada com sucesso!')
+
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao atualizar os dados.')
+    }
+})
+
+app.post('/respostas', async (req, res) => {
+    try {
+        const postagem = req.body.postagem
+        const idLogin = req.body.idLogin
+        const idTipoPostagem = req.body.idTipoPostagem
+        const idPostagemResp = req.body.idPostagemResp
+        const data = req.body.data
+        const horario = req.body.horario
+
+        // Conecta ao MySQL
+        const session = await mysqlx.getSession(config) 
+
+        //Registra a resposta do usuário no banco de dados
+        await session.sql('INSERT INTO tbPostagens(postagem, idLogin, idTipoPostagem, idPostagemResp, dia, horario) VALUES (?, ?, ?, ?, ?, ?)').bind(postagem, idLogin, idTipoPostagem, idPostagemResp, data, horario).execute()
+
+        res.status(200).send('Atualização realizada com sucesso!')
+
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao atualizar os dados.')
+    }
+})
+
 app.get ('/avisos', async (req, res) => {
     try {
         const session = await mysqlx.getSession(config)
-        const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 1 ORDER BY tp.idPostagem DESC').execute()
+        const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost, tp.dia, tp.horario FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 1 ORDER BY tp.idPostagem DESC').execute()
         
         const avisos = resultados.fetchAll().map(aviso => ({
             apelido: aviso[0],
             idAviso: aviso[1],
             postagem: aviso[2],
             imagemPost: aviso[3],
+            data: aviso[4],
+            horario: aviso[5],
             resposta: []
         }))
 
         for (let aviso of avisos){
             let idAviso = aviso.idAviso
-            let resultados2 = await session.sql('SELECT tl.apelido, tp.postagem, tp.imagemPost FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 3 AND tp.idPostagemResp = ?').bind(idAviso).execute()
+            let resultados2 = await session.sql('SELECT tl.apelido, tp.postagem, tp.imagemPost, tp.dia, tp.horario FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 3 AND tp.idPostagemResp = ?').bind(idAviso).execute()
 
             let respostas = resultados2.fetchAll().map(resposta => ({
                 apelido: resposta[0],
                 postagem: resposta[1],
-                imagemPost: resposta[2]
+                imagemPost: resposta[2],
+                data: resposta[3],
+                horario: resposta[4]
             }))
             
             aviso.resposta = respostas
         }
         
         res.json(avisos)
+
         await session.close()
     }
     catch (e){
@@ -127,6 +189,8 @@ app.get('/enderecos', async (req, res) => {
         }))
 
         res.json(enderecos)
+
+        await session.close()
     } 
     catch (e) {
         console.error("Erro ao buscar endereços:", e)
@@ -178,7 +242,9 @@ app.get('/desafios', async(req, res) => {
         }
 
         // Envia os desafios como resposta em formato JSON
-        res.json(topicosDesafio);
+        res.json(topicosDesafio)
+
+        await session.close()
     } 
     catch (e) {
         console.error("Erro ao buscar desafios:", e)
@@ -198,13 +264,15 @@ app.post('/desafios', async(req, res) => {
         const session = await mysqlx.getSession(config) 
 
         //Registra a alternativa marcada no banco de dados
-        const respSQL = await session.sql(query).bind(quantidade, idQuestao).execute()
-        console.log(respSQL)
-        res.status(200).send('Atualização realizada com sucesso!');
+        await session.sql(query).bind(quantidade, idQuestao).execute()
+        
+        res.status(200).send('Atualização realizada com sucesso!')
+
+        await session.close()
     }
     catch (e) {
         console.error(e);
-        res.status(500).send('Erro ao atualizar os dados.');
+        res.status(500).send('Erro ao atualizar os dados.')
     }
 })
 
@@ -221,6 +289,8 @@ app.post('/cadastro', async(req, res) => {
         console.log(respMongo)
         //para dar o status de q deu certo
         res.status(201).end()
+
+        await session.close()
     }
     catch(e) {
         console.log(e)
@@ -244,6 +314,8 @@ app.post('/login', async(req, res) => {
     }
     //daqui a pouco voltamos
     res.end()
+
+    await session.close()
 })
 
 app.listen(3000, () => {
