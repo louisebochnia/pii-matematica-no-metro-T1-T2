@@ -6,6 +6,7 @@ const app = express() //construindo uma aplicação express
 app.use(express.json())
 app.use(cors())
 const bcrypt = require('bcrypt') //para criptografar as senhas dos usuários
+const jwt = require('jsonwebtoken') //token para deixar o usuário logado
 
 const config = {
     password: 'AVNS_7NP1Lp7jYXOoEog6j1C',
@@ -198,6 +199,23 @@ app.get('/enderecos', async (req, res) => {
     }
 })
 
+app.get('/estacao', async (req, res) => {
+    try {
+        const session = await mysqlx.getSession(config)
+        const resultado = await session.sql('select estacao from tbEnderecos').execute()
+
+        const estacoes = resultado.fetchAll().map(estacao => ({
+            estacao: estacao[0]
+        }))
+
+        res.json(estacoes)
+        await session.close(e)
+    }
+    catch (e) {
+      console.log("Erro ao pegar a estação")
+    }
+})
+
 app.get('/desafios', async(req, res) => {
     try {
         const session = await mysqlx.getSession(config) // Conecta ao MySQL
@@ -264,8 +282,8 @@ app.post('/desafios', async(req, res) => {
         const session = await mysqlx.getSession(config) 
 
         //Registra a alternativa marcada no banco de dados
-        await session.sql(query).bind(quantidade, idQuestao).execute()
-        
+        const respSQL = await session.sql(query).bind(quantidade, idQuestao).execute()
+        console.log(respSQL)
         res.status(200).send('Atualização realizada com sucesso!')
 
         await session.close()
@@ -276,19 +294,70 @@ app.post('/desafios', async(req, res) => {
     }
 })
 
+// Postar uma dúvida na página contato
+app.post('/contato', async (req, res) => {
+    try {
+        const nomeCompleto = req.body.nomeCompleto
+        const emailContato = req.body.emailContato
+        const mensagemContato = req.body.mensagemContato
+        const session = await mysqlx.getSession(config)
+        await session.sql('insert into tbContato (nomeCompleto, email, duvida) values (?, ?, ?)').bind(nomeCompleto, emailContato, mensagemContato).execute()
+        res.status(200).send('Mensagem enviada com sucesso!')
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao atualizar os dados.')
+    }
+})
+
+app.post('/horarios', async (req,res) => {
+    try {
+        const diaSemanaInput = req.body.diaSemana
+        const horarioInput = req.body.horario
+        const estacaoInput = req.body.estacao
+        const session = await mysqlx.getSession(config)
+        const diaSemana = await session.sql('SELECT idDiaSemana FROM tbDiasSemana WHERE diaSemana = ?').bind(diaSemanaInput).execute()
+        const endereco = await session.sql('SELECT idEndereco FROM tbEnderecos WHERE estacao = ?').bind(estacaoInput).execute()
+        await session.sql('insert into tbHorarios(idDiaSemana, horarioVoluntarios, idEndereco) values(?, ?, ?)').bind(diaSemana, horarioInput, endereco).execute()
+        await session.close()
+    }
+    catch(e) {
+        console.log('erro nos horários')
+    }
+})
+
+app.post('/horarios', async (req,res) => {
+    try {
+        const diaSemanaInput = req.body.diaSemana
+        const horarioInput = req.body.horario
+        const estacaoInput = req.body.estacao
+        const session = await mysqlx.getSession(config)
+        const diaSemana = await session.sql('SELECT idDiaSemana FROM tbDiasSemana WHERE diaSemana = ?').bind(diaSemanaInput).execute()
+        const endereco = await session.sql('SELECT idEndereco FROM tbEnderecos WHERE estacao = ?').bind(estacaoInput).execute()
+        await session.sql('insert into tbHorarios(idDiaSemana, horarioVoluntarios, idEndereco) values(?, ?, ?)').bind(diaSemana, horarioInput, endereco).execute()
+        await session.close()
+    }
+    catch(e) {
+        console.log('erro nos horários')
+    }
+})
+
 // Cadastrando usuários no banco de dados
 app.post('/cadastro', async(req, res) => {
     try{
-        const login = req.body.login
-        const password = req.body.password
-
-        const password_criptografada = await bcrypt.hash(password, 10)
-
-        const usuario = new Usuario ({login: login, password: password_criptografada})
-        const respMongo = await usuario.save()
-        console.log(respMongo)
-        //para dar o status de q deu certo
-        res.status(201).end()
+        const email = req.body.email
+        const senha = req.body.senha
+        const apelido = req.body.apelido
+        const idTipoLogin = req.body.idTipoLogin
+        
+        // Criptografando a senha para inserir no banco de dados
+        const senha_criptografada = await bcrypt.hash(senha, 10)
+        const usuario = new Usuario ({email: email, senha: senha_criptografada, apelido: apelido, idTipoLogin: idTipoLogin})
+        
+        const session = await mysqlx.getSession(config)
+        await session.sql('insert into tbLogins (email, senha, apelido, idTipoLogin) values (?, ?, ?, ?)').bind(email, senha_criptografada, apelido, idTipoLogin).execute()
+        res.status(201).send('Usuário cadastrado')
 
         await session.close()
     }
@@ -300,22 +369,35 @@ app.post('/cadastro', async(req, res) => {
 })
 // Validando usuário para fazer login
 app.post('/login', async(req, res) => {
-    const login = req.body.login
-    const password = req.body.password
+    const email = req.body.email
+    const senha = req.body.senha
 
-    const usuarioExiste = await Usuario.findOne({login: login})
-    if(!usuarioExiste) {
-        return res.status(401).json({mensagem: "Login inválido"})
+    try{
+        const session = await mysqlx.getSession(config)
+        const validacaoLogin = await session.sql('select idLogin, email, senha, idTipoLogin from tbLogins where email = ?').bind(email).execute()
+        // Converte o resultado em Array
+        const logins = resultado.fetchAll().map(login => ({
+            idLogin: login[0],
+            email: login[1],
+            senha: login[2],
+            idTipoLogin: login[3]
+        }))
+
+        if(validacaoLogin){
+            const senhaValida = await bcrypt.compare(senha, login.senha)
+            if(senhaValida){
+                console.log("Usuário logado!")
+            }else{
+                return res.status(401).json({mensagem: "Senha inválida"})
+            }
+        }else{
+            return res.status(401).json({mensagem: "Email inválido"})
+        }
+        await session.close()
     }
-    const senhaValida = await bcrypt.compare(password, usuarioExiste.password)
-
-    if(!senhaValida) {
-        return res.status(401).json({mensagem: "Senha inválida"})
+    catch(e){
+        console.log(e)
     }
-    //daqui a pouco voltamos
-    res.end()
-
-    await session.close()
 })
 
 app.listen(3000, () => {

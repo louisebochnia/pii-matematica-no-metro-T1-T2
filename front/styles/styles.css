@@ -116,16 +116,21 @@ textarea {
     border-color:#002687 !important;
 }
 
-#loginInput, #senhaInput, #cadastroInput, #senhaCadastroInput, #senhaCadastroInput2{
+#emailLoginInput, #senhaLoginInput, #emailCadastroInput, #senhaCadastroInput, #senhaCadastroInput2, #apelidoInput{
     background-color:#E6E6E6; 
     height: 60px;
     font-size: 80%;
 }
 
-#loginCadastroButton{
+#loginCadastroButton,#duvidaSendButton{
     background-color: #002687;
     color: white;
     height: 50px;
+}
+#editButton{
+    background-color: #186FAB;
+    color: #ffffff;
+    border-color: #ffffff;
 }
 
 #emailSpan, #senhaButton {
@@ -135,5 +140,31 @@ textarea {
     text-align: center;
     font-size: 80%;
 }
+
+body {
+    background-color: #ffffff;
+    color: #000000;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.night-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.night-mode nav {
+    background-color: #333333;
+}
+
+body.night-mode .navbar-toggler-icon {
+    background-color: #ffffff;
+}
+
+button#toggleModeButton {
+    color: #ffffff;
+}
+
+
 
 

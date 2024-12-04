@@ -61,24 +61,26 @@
 
             <form>
                 <div class="my-4">
-                    <label for="loginInput" class="col-form-label">E-mail</label>
+                    <label for="emailLoginInput" class="col-form-label">E-mail</label>
                     <div class="input-group">
-                        <input type="email" id="loginInput" class="form-control" placeholder="Digite seu e-mail">
+                        <input type="email" id="emailLoginInput" class="form-control" placeholder="Digite seu e-mail">
                         <span class="input-group-text btn btn-outline-secondary disabled" id="emailSpan">@email.com</span>
                     </div>
                 </div>
 
                 <div class="my-4">
-                    <label for="senhaInput" class="col-form-label">Senha</label>
+                    <label for="senhaLoginInput" class="col-form-label">Senha</label>
                     <div class="input-group">
-                        <input type="password" id="senhaInput" class="form-control" placeholder="Digite sua senha">
-                        <button type="button" id="senhaButton" class="btn btn-outline-secondary" onmouseenter="esconderSenha()">Mostrar</button>
+                        <input type="password" id="senhaLoginInput" class="form-control" placeholder="Digite sua senha">
+                        <button type="button" id="senhaButton" class="btn btn-outline-secondary" onmouseenter="esconderSenha()">Mostrar senha</button>
                     </div>
                 </div>                
                 
+                <div class="alert d-none alert-dismissible fade alert-login mt-5"></div>
+
                 <div class="container justify-content-center mt-5 mb-3">
                     <div class="row">
-                        <button class="btn" id="loginCadastroButton" type="submit">Fazer Login</button>
+                        <button class="btn" id="loginCadastroButton" type="button" onclick="fazerLogin()">Fazer Login</button>
                     </div>
                 </div>
 
