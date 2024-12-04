@@ -62,11 +62,11 @@
         <div class="container col-8 align-self-center my-4">
             <h3>EDITAR LOGIN</h3>
             <p>Edite suas informações de login:</p>
-            <form id="editForm" action="/submit-url" method="POST">
+            <form id="editForm">
                 <div class="my-4">
                     <label for="editEmail" class="col-form-label">E-mail</label>
                     <div class="input-group">
-                        <input type="email" id="editEmail" name="email" class="form-control" placeholder="Digite seu novo e-mail" value="{{email}}" required disabled>
+                        <input type="email" id="editEmail" class="form-control" required disabled>
                         <span class="input-group-text btn btn-outline-secondary disabled" id="emailSpan">@email.com</span>
                         <button type="button" id="editEmailButton" class="btn btn-primary" onclick="enableEdit('editEmail')">Alterar</button>
                     </div>
@@ -75,7 +75,7 @@
                 <div class="my-4">
                     <label for="editPassword" class="col-form-label">Senha</label>
                     <div class="input-group">
-                        <input type="password" id="editPassword" name="password" class="form-control" placeholder="Digite sua nova senha" required disabled>
+                        <input type="password" id="editPassword" class="form-control" required disabled>
                         <button type="button" id="showPasswordButton" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">Mostrar</button>
                         <button type="button" id="editPasswordButton" class="btn btn-primary" onclick="enableEdit('editPassword')">Alterar</button>
                     </div>
@@ -84,14 +84,14 @@
                 <div class="my-4">
                     <label for="editNickname" class="col-form-label">Apelido</label>
                     <div class="input-group">
-                        <input type="text" id="editNickname" name="nickname" class="form-control" placeholder="Digite seu novo apelido" value="{{nickname}}" disabled>
+                        <input type="text" id="editNickname" class="form-control" disabled>
                         <button type="button" id="editNicknameButton" class="btn btn-primary" onclick="enableEdit('editNickname')">Alterar</button>
                     </div>
                 </div>
 
                 <div class="container justify-content-center mt-5 mb-3">
                     <div class="row">
-                        <button class="btn btn-outline-primary" id="saveChangesButton" type="submit" style="border: 2px solid #007bff;">Salvar Alterações</button>
+                        <button class="btn btn-outline-primary" id="saveChangesButton" type="button" style="border: 2px solid #007bff;">Salvar Alterações</button>
                     </div>
                 </div>
             </form>

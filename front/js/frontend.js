@@ -544,8 +544,7 @@ async function cadastrarUsuario() {
     let senha = senhaInput.value
     let apelido = apelidoInput.value
     // Determinando o idTipoLogin (1 é Voluntário e 2 é Comum)
-    let idTipoLogin = email === 'matnometrot1t2@gmail.com' ? 1 : 2;
-    console.log(idTipoLogin === 1 ? 'Você é um voluntário' : 'Você é um aluno');
+    let idTipoLogin = 2;
 
     // Verifica se o checkbox está marcado
     if (!checkbox.checked) {
@@ -596,6 +595,8 @@ const fazerLogin = async () => {
             exibeAlerta('.alert-login', "Usuário logado com sucesso", ['show', 'alert-success'], ['d-none'], 4000)
             // const loginLink = document.querySelector('#loginLink')
             // loginLink.innerHTML = "Logout"
+            localStorage.setItem("idLogin", response.idLogin)
+            localStorage.setItem("idTipoLogin", response.idTipoLogin)
             window.location.href = "/front/index.html"
         }catch(e) {
             emailInput.value = ""
