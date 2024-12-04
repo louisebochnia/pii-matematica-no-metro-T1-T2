@@ -135,6 +135,23 @@ app.get('/enderecos', async (req, res) => {
     }
 })
 
+app.get('/estacao', async (req, res) => {
+    try {
+        const session = await mysqlx.getSession(config)
+        const resultado = await session.sql('select estacao from tbEnderecos').execute()
+
+        const estacoes = resultado.fetchAll().map(estacao => ({
+            estacao: estacao[0]
+        }))
+
+        res.json(estacoes)
+        await session.close(e)
+    }
+    catch (e) {
+      console.log("Erro ao pegar a estação")
+    }
+})
+
 app.get('/desafios', async(req, res) => {
     try {
         const session = await mysqlx.getSession(config) // Conecta ao MySQL
@@ -222,6 +239,22 @@ app.post('/contato', async (req, res) => {
     catch (e) {
         console.error(e);
         res.status(500).send('Erro ao atualizar os dados.');
+    }
+})
+
+app.post('/horarios', async (req,res) => {
+    try {
+        const diaSemanaInput = req.body.diaSemana
+        const horarioInput = req.body.horario
+        const estacaoInput = req.body.estacao
+        const session = await mysqlx.getSession(config)
+        const diaSemana = await session.sql('SELECT idDiaSemana FROM tbDiasSemana WHERE diaSemana = ?').bind(diaSemanaInput).execute()
+        const endereco = await session.sql('SELECT idEndereco FROM tbEnderecos WHERE estacao = ?').bind(estacaoInput).execute()
+        await session.sql('insert into tbHorarios(idDiaSemana, horarioVoluntarios, idEndereco) values(?, ?, ?)').bind(diaSemana, horarioInput, endereco).execute()
+        await session.close()
+    }
+    catch(e) {
+        console.log('erro nos horários')
     }
 })
 

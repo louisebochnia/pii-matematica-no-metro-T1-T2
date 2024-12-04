@@ -69,7 +69,7 @@
                   <div class="alert d-none alert-dismissible fade
                                 alert-modal-cadastro" role="alert"></div>
                   <form>
-                    <select class="form-select" aria-label="Default select example">
+                    <select id="selecionarDia" class="form-select" aria-label="Default select example">
                         <option selected>Dias da semana</option>
                         <option value="1">Domingo</option>
                         <option value="2">Segunda-feira</option>
@@ -79,16 +79,27 @@
                         <option value="6">Sexta-feira</option>
                         <option value="7">Sábado</option>
                       </select>
+                      <div>
+                        <label class="my-2" for="primeiroHorario">Selecione um horario de início:</label>
+                        <div></div>
+                        <input type="time" id="primeiroHorario" name="primeiroHorario" required/> </div>
+
+                        <div>
+                        <label class="my-2" for="segundoHorario">Selecione um horario de encerramento:</label>
+                        <div></div>
+                        <input type="time" id="segundoHorario" name="segundoHorario" required /> </div>
+
                       <div class="my-2">Estação</div>
                       <select id="estacaoEdit" class="form-select" aria-label="Default select example">
                         <option selected>Estações</option>
                       </select>
                   </form>
+                  <div class="alert d-none alert-dismissible fade alert-horarios my-3"></div>
                 </div>
         
                 <div class="modal-footer">
                   <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                  <button type="button" class="btn btn-primary" onclick="cadastrarUsuario()">Cadastrar</button>
+                  <button type="button" class="btn btn-primary" onclick="salvarHorario()">Adicionar</button>
                 </div>
               </div>
             </div>
@@ -140,7 +151,7 @@
                                
                             </tbody>
                         </table>
-                        <button data-bs-toggle="modal" data-bs-target="#modalHorarios" id="editButton" class="dismissable btn">Editar horários</button>
+                        <button data-bs-toggle="modal" data-bs-target="#modalHorarios" id="editButton" onclick="exibirEstacoes()" class="dismissable btn">Editar horários</button>
                     </div>
                 </div>
             </div>

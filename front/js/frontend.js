@@ -11,9 +11,43 @@ async function prepararPaginaInicial() {
     const enderecos = (await axios.get(URLcompletaEnderecos)).data
     exibirEnderecos(enderecos)
 }
+async function salvarHorario() {
+    let selecionarDia = (document.querySelector('#selecionarDia')).value
+    let primeiroHorario = (document.querySelector('#primeiroHorario')).value
+    let segundoHorario = (document.querySelector('#segundoHorario')).value
+    let estacaoEdit = (document.querySelector('#estacaoEdit')).value
+    if (selecionarDia && primeiroHorario && segundoHorario && estacaoEdit){
+        try{
+            const horariosEndpoint = '/horarios'
+            const URLcompletaHorarios = `${protocolo}${baseURL}${horariosEndpoint}`
+            const response = await axios.post(URLcompletaHorarios, {diaSemana: selecionarDia, horario: `${primeiroHorario} - ${segundoHorario}`, estacao: estacaoEdit})
+            console.log(response)
+        }
+        catch(e) {
+            console.log(e)
+        }
+    } else {
+        exibeAlerta('.alert-horarios', 'Preencha todos os campos!', ['show','alert-danger'], ['d-none'], 4000)
+        console.log("Preencha todos os campos!")
+    }
+}
+
+async function exibirEstacoes(){
+    let select = document.querySelector('#estacaoEdit')
+    select.innerHTML = ""
+    const estacaoEndpoint = '/estacao'
+    const URLcompletaEstacao = `${protocolo}${baseURL}${estacaoEndpoint}`
+    const estacoes = (await axios.get(URLcompletaEstacao)).data
+    for(let estacao of estacoes){
+        console.log(estacao.estacao)
+        const option = document.createElement('option')
+        option.innerHTML = estacao.estacao
+        select.appendChild(option)
+    }
+}
 
 async function prepararPaginaContato() {
-    const enderecoEndpoint = '/enderecos'
+    const enderecosEndpoint = '/enderecos'
     const URLcompletaEnderecos = `${protocolo}${baseURL}${enderecosEndpoint}`
     const enderecos = (await axios.get(URLcompletaEnderecos)).data
     exibirEnderecos(enderecos)
@@ -37,6 +71,7 @@ async function postarDuvida() {
             console.log(e)
         }
     } else {
+        exibeAlerta('.alert-contato', 'Preencha todos os campos!', ['show','alert-danger'], ['d-none'], 4000)
         console.log("Preencha todos os campos!")
     }
 
