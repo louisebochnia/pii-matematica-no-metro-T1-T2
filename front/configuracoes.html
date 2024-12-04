@@ -44,7 +44,7 @@
                             <a class="nav-link me-2" href="desafios.html">Desafios</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link me-2" href="#" id="logoutButton">Logout</a>
+                            <a class="nav-link me-2 d-none" id="logoutButton" href="index.html" onclick="logout()">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -76,7 +76,7 @@
                     <label for="editPassword" class="col-form-label">Senha</label>
                     <div class="input-group">
                         <input type="password" id="editPassword" class="form-control" required disabled>
-                        <button type="button" id="showPasswordButton" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">Mostrar</button>
+                        <button type="button" id="showPasswordButton" class="btn btn-outline-secondary" onclick="mostrarSenha('editPassword', 'showPasswordButton', null)">Mostrar</button>
                         <button type="button" id="editPasswordButton" class="btn btn-primary" onclick="enableEdit('editPassword')">Alterar</button>
                     </div>
                 </div>
@@ -115,55 +115,12 @@
     <script src="js/frontend.js"></script>
 
     <script>
-        function togglePasswordVisibility() {
-            const passwordField = document.getElementById('editPassword');
-            const button = document.getElementById('showPasswordButton');
-            
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                button.textContent = "Ocultar";
-            } else {
-                passwordField.type = "password";
-                button.textContent = "Mostrar";
-            }
-        }
-
-        function enableEdit(fieldId) {
-            const field = document.getElementById(fieldId);
-            const button = document.getElementById('edit' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1) + 'Button');
-            
-            field.disabled = false;
-            button.style.display = "none";
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('night-mode');
-                document.getElementById('toggleModeButton').textContent = 'Modo Claro';
-            } else {
-                document.body.classList.remove('night-mode');
-                document.getElementById('toggleModeButton').textContent = 'Modo Noturno';
-            }
-            document.getElementById('toggleModeButton').addEventListener('click', function() {
-                document.body.classList.toggle('night-mode');
-                if (document.body.classList.contains('night-mode')) {
-                    localStorage.setItem('theme', 'dark');
-                    this.textContent = 'Modo Claro';
-                } else {
-                    localStorage.setItem('theme', 'light');
-                    this.textContent = 'Modo Noturno';
-                }
-            });
-        });
 
         document.getElementById('editForm').addEventListener('submit', function(e) {
             e.preventDefault();
             alert('Alterações salvas com sucesso!');
         });
 
-        document.getElementById('logoutButton').addEventListener('click', function() {
-            alert('Você foi desconectado.');
-        });
     </script>
 </body>
 

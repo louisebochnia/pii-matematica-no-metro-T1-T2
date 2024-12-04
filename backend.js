@@ -141,6 +141,7 @@ app.post('/respostas', async (req, res) => {
 app.get ('/avisos', async (req, res) => {
     try {
         const session = await mysqlx.getSession(config)
+
         const resultados = await session.sql('SELECT tl.apelido, tp.idPostagem, tp.postagem, tp.imagemPost, tp.dia, tp.horario FROM tbPostagens as tp JOIN tbLogins as tl on tp.idLogin = tl.idLogin WHERE tp.idTipoPostagem = 1 ORDER BY tp.idPostagem DESC').execute()
         
         const avisos = resultados.fetchAll().map(aviso => ({
@@ -209,7 +210,7 @@ app.get('/estacao', async (req, res) => {
         }))
 
         res.json(estacoes)
-        await session.close(e)
+        await session.close()
     }
     catch (e) {
       console.log("Erro ao pegar a estação")
@@ -267,6 +268,25 @@ app.get('/desafios', async(req, res) => {
     catch (e) {
         console.error("Erro ao buscar desafios:", e)
         res.status(500).json({ error: "Erro ao buscar desafios" })
+    }
+})
+
+app.get('/mensagens', async(req, res) => {
+    try {
+        const session = await mysqlx.getSession(config)
+        const resultado = await session.sql('SELECT nomeCompleto, email, duvida FROM tbContato').execute()
+
+        const mensagens = resultado.fetchAll().map(mensagem => ({
+            nomeCompleto: mensagem[0],
+            email: mensagem[1],
+            duvida: mensagem[2]
+        }))
+
+        await session.close()
+        res.json(mensagens)
+    }
+    catch (e) {
+      console.log("Erro ao pegar a mensagem")
     }
 })
 
@@ -353,7 +373,6 @@ app.post('/cadastro', async(req, res) => {
         
         // Criptografando a senha para inserir no banco de dados
         const senha_criptografada = await bcrypt.hash(senha, 10)
-        const usuario = new Usuario ({email: email, senha: senha_criptografada, apelido: apelido, idTipoLogin: idTipoLogin})
         
         const session = await mysqlx.getSession(config)
         await session.sql('insert into tbLogins (email, senha, apelido, idTipoLogin) values (?, ?, ?, ?)').bind(email, senha_criptografada, apelido, idTipoLogin).execute()
@@ -374,19 +393,19 @@ app.post('/login', async(req, res) => {
 
     try{
         const session = await mysqlx.getSession(config)
-        const validacaoLogin = await session.sql('select idLogin, email, senha, idTipoLogin from tbLogins where email = ?').bind(email).execute()
+        const validacaoLoginExiste = await session.sql('select idLogin, email, senha, idTipoLogin from tbLogins where email = ?').bind(email).execute()
         // Converte o resultado em Array
-        const logins = resultado.fetchAll().map(login => ({
-            idLogin: login[0],
-            email: login[1],
-            senha: login[2],
-            idTipoLogin: login[3]
-        }))
+        const login = validacaoLoginExiste.fetchOne()
 
-        if(validacaoLogin){
-            const senhaValida = await bcrypt.compare(senha, login.senha)
+        if(login){
+            senhaCriptografada = login[2]
+            const senhaValida = await bcrypt.compare(senha, senhaCriptografada)
             if(senhaValida){
                 console.log("Usuário logado!")
+
+                const dados = {idLogin: login[0], idTipoLogin: login[3]}
+                
+                res.json(dados)
             }else{
                 return res.status(401).json({mensagem: "Senha inválida"})
             }

@@ -41,13 +41,12 @@
               <a class="nav-link me-2" href="desafios.html">Desafios</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link me-2 d-none" href="index.html">Logout</a>
-            </li>
+              <a class="nav-link me-2 d-none" id="logoutButton" href="index.html" onclick="logout()">Logout</a>
+          </li>
           </ul>
         </div>
-        <a class="nav-link" href="login.html">
-          <img src="images/login_icon.png" id="icon"
-            alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
+        <a class="nav-link login-link">
+          <img src="images/login_icon.png" id="icon" alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
         </a>
       </div>
     </nav>
@@ -62,6 +61,13 @@
           </div>
           <div class="modal-body">
             <div class="alert d-none alert-dismissable fade alert-modal-login" role="alert"></div>
+            <div>
+              <label for="selecionarTipoPost" class="col-form-label">Tipo de Post</label>
+              <select id="selecionarTipoPost" class="form-select" aria-label="Default select example">
+                <option value="2">Novo Post</option>
+                <option value="1">Novo Aviso</option>
+              </select>
+            </div>
             <form>
               <div class="mb-3">
                 <label for="mensagemPost" class="col-form-label">Escreva sua mensagem na caixa abaixo</label>
@@ -73,7 +79,7 @@
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
               Cancelar
             </button>
-            <button type="submit" class="btn btn-primary" onclick="enviarPost(2, '#mensagemPost')">
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" onclick="enviarPost()">
               Publicar
             </button>
           </div>
@@ -83,10 +89,10 @@
 
     <div class="container my-4">
       <h3>FÓRUM</h3>
+      <div class="alert alert-danger col-md-8 mx-auto aviso-forum">AVISO: Para fazer uma postagem em nosso Fórum é preciso estar logado!</div>
       <div class="row justify-content-center">
-        <div class="col-8 col-md-3 btn border border-2 rounded-0 align-items-center" id="forum-menu"
-          data-bs-toggle="modal" data-bs-target="#modalPostNovo">
-          <p class="m-auto" style="text-align: center;">+ Novo Post</p>
+        <div class="col-8 col-md-3 btn border border-2 rounded-0 align-items-center" id="forum-menu">
+          <button class="m-auto border border-0" data-bs-toggle="modal" id="novoPostButton" data-bs-target="#modalPostNovo" disabled>+ Novo Post</button>
         </div>
         <div class="col-8 col-md-3 border border-2 d-flex justify-content-center align-items-center" id="forum-menu">
           <div class="dropdown-center mx-auto">

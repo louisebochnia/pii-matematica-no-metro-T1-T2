@@ -1,7 +1,7 @@
 /*  */
-p, summary{
+p, summary, label {
     text-align: justify;
-    font-size: larger;
+    font-size: larger; 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 footer{
@@ -28,6 +28,10 @@ textarea {
 }
 .nav-item {
     font-size: large;
+}
+.aviso-forum {
+    text-align: center;
+    font-size: larger; 
 }
 
 /* id */
@@ -116,10 +120,16 @@ textarea {
     border-color:#002687 !important;
 }
 
-#emailLoginInput, #senhaLoginInput, #emailCadastroInput, #senhaCadastroInput, #senhaCadastroInput2, #apelidoInput{
+#emailLoginInput, #senhaLoginInput, #emailCadastroInput, #senhaCadastroInput, #senhaCadastroInput2, #apelidoInput, #nomeInput, #emailInput{
     background-color:#E6E6E6; 
     height: 60px;
     font-size: 80%;
+}
+
+#duvidaTextarea {
+    background-color:#E6E6E6;
+    height: 35%; 
+    width: 100%;
 }
 
 #loginCadastroButton,#duvidaSendButton{
@@ -127,7 +137,7 @@ textarea {
     color: white;
     height: 50px;
 }
-#editButton{
+#editarHorariosButton, #deletarHorariosButton, #editarEnderecosButton, #deletarEnderecosButton{
     background-color: #186FAB;
     color: #ffffff;
     border-color: #ffffff;
@@ -165,6 +175,13 @@ button#toggleModeButton {
     color: #ffffff;
 }
 
+#labelCadastro {
+    font-size: larger !important; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
 
-
-
+#novoPostButton {
+    background-color: transparent;
+    font-size: larger !important; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}

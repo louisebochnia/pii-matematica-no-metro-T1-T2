@@ -42,11 +42,11 @@
                         </li>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link me-2" href="desafios.html">Desafios</a>
+                            <a class="nav-link me-2 d-none" id="logoutButton" href="index.html" onclick="logout()">Logout</a>
                         </li>
                     </ul>
                 </div>
-                <a class="nav-link" href="#">
+                <a class="nav-link login-link">
                     <img src="images/login_icon.png" id="icon" alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
                 </a>
             </div>
@@ -115,14 +115,14 @@
 
             <form>
                 <div class="my-4">
-                    <label for="apelidoInput" class="col-form-label">Apelido</label>
+                    <label for="apelidoInput" id="labelCadastro" class="col-form-label">Apelido</label>
                     <div class="input-group">
                         <input type="text" id="apelidoInput" class="form-control" placeholder="Crie um apelido">
                     </div>
                 </div>
                 
                 <div class="my-4">
-                    <label for="emailCadastroInput" class="col-form-label">E-mail</label>
+                    <label for="emailCadastroInput" id="labelCadastro" class="col-form-label">E-mail</label>
                     <div class="input-group">
                         <input type="email" id="emailCadastroInput" class="form-control" placeholder="Digite seu e-mail">
                         <span class="input-group-text btn btn-outline-secondary disabled" id="emailSpan">@email.com</span>
@@ -130,19 +130,19 @@
                 </div>
 
                 <div class="my-4">
-                    <label for="senhaCadastroInput" class="col-form-label">Senha</label>
+                    <label for="senhaCadastroInput" id="labelCadastro" class="col-form-label">Senha</label>
                     <div class="input-group">
                         <input type="password" id="senhaCadastroInput" class="form-control" placeholder="Crie sua senha">
                     </div>
                 </div>
                 
                 <div class="my-4">
-                    <label for="senhaCadastroInput2" class="col-form-label">Repita sua senha</label>
+                    <label for="senhaCadastroInput2" id="labelCadastro" class="col-form-label">Repita sua senha</label>
                     <div class="input-group">
                         <input type="password" id="senhaCadastroInput2" class="form-control" placeholder="Digite sua senha">
                     </div>
                 </div>   
-                <button type="button" id="senhaCadastroButton" class="btn btn-outline-secondary" onmouseenter="esconderSenha()">Mostrar senha</button>
+                <button type="button" id="senhaCadastroButton" class="btn btn-outline-secondary" onclick="mostrarSenha('senhaCadastroInput', 'senhaCadastroButton', 'senhaCadastroInput2')">Mostrar senha</button>
 
                 <div class="alert d-none alert-dismissible fade alert-cadastro mt-5"></div>
                 

@@ -1,7 +1,53 @@
 const protocolo = 'http://'
 const baseURL = 'localhost:3000'
 
+function logout() {
+    localStorage.clear()
+}
+
+function prepararPaginaSobreNos() {
+    const idTipoLogin = localStorage.getItem("idTipoLogin")
+    const logout = document.querySelector('#logoutButton')
+    const login = document.querySelector('.login-link')
+    if(idTipoLogin){
+        logout.classList.remove('d-none')
+        login.setAttribute("href", 'configuracoes.html')
+    }
+    else{
+        logout.classList.add('d-none')
+        login.setAttribute("href", 'login.html')
+    }
+}
+
 async function prepararPaginaInicial() {
+    const idTipoLogin = localStorage.getItem("idTipoLogin")
+    console.log(idTipoLogin)
+    const logout = document.querySelector('#logoutButton')
+    const login = document.querySelector('.login-link')
+    const editarHorariosButton = document.querySelector('#editarHorariosButton')
+    const deletarHorariosButton = document.querySelector('#deletarHorariosButton')
+    const editarEnderecosButton = document.querySelector('#editarEnderecosButton')
+    const deletarEnderecosButton = document.querySelector('#deletarEnderecosButton')
+    if(idTipoLogin){
+        logout.classList.remove('d-none')
+        login.setAttribute("href", 'configuracoes.html')
+        if(idTipoLogin == '1'){
+            editarHorariosButton.classList.remove('d-none')
+            deletarHorariosButton.classList.remove('d-none')
+            editarEnderecosButton.classList.remove('d-none')
+            deletarEnderecosButton.classList.remove('d-none')
+        }
+        else{
+            editarHorariosButton.classList.add('d-none')
+            deletarHorariosButton.classList.add('d-none')
+            editarEnderecosButton.classList.add('d-none')
+            deletarEnderecosButton.classList.add('d-none')
+        }
+    }
+    else{
+        logout.classList.add('d-none')
+        login.setAttribute("href", 'login.html')
+    }
     const horariosEndpoint = '/horarios'
     const URLcompletaHorarios = `${protocolo}${baseURL}${horariosEndpoint}`
     const horarios = (await axios.get(URLcompletaHorarios)).data
@@ -11,6 +57,7 @@ async function prepararPaginaInicial() {
     const enderecos = (await axios.get(URLcompletaEnderecos)).data
     exibirEnderecos(enderecos)
 }
+
 async function salvarHorario() {
     let selecionarDia = (document.querySelector('#selecionarDia')).value
     let primeiroHorario = (document.querySelector('#primeiroHorario')).value
@@ -47,6 +94,17 @@ async function exibirEstacoes(){
 }
 
 async function prepararPaginaContato() {
+    const idTipoLogin = localStorage.getItem("idTipoLogin")
+    const logout = document.querySelector('#logoutButton')
+    const login = document.querySelector('.login-link')
+    if(idTipoLogin){
+        logout.classList.remove('d-none')
+        login.setAttribute("href", 'configuracoes.html')
+    }
+    else{
+        logout.classList.add('d-none')
+        login.setAttribute("href", 'login.html')
+    }
     const enderecosEndpoint = '/enderecos'
     const URLcompletaEnderecos = `${protocolo}${baseURL}${enderecosEndpoint}`
     const enderecos = (await axios.get(URLcompletaEnderecos)).data
@@ -78,6 +136,23 @@ async function postarDuvida() {
 }
 
 async function prepararForum() {
+    const idTipoLogin = localStorage.getItem("idTipoLogin")
+    const logout = document.querySelector('#logoutButton')
+    const login = document.querySelector('.login-link')
+    const novoPostButton = document.querySelector('#novoPostButton')
+    const aviso = document.querySelector('.aviso-forum')
+    if(idTipoLogin){
+        logout.classList.remove('d-none')
+        login.setAttribute("href", 'configuracoes.html')
+        novoPostButton.disabled = false
+        aviso.classList.add('d-none')
+    }
+    else{
+        logout.classList.add('d-none')
+        login.setAttribute("href", 'login.html')
+        novoPostButton.disabled = true
+        aviso.classList.remove('d-none')
+    }
     const avisosEndpoint = '/avisos'
     const URLcompletaAvisos = `${protocolo}${baseURL}${avisosEndpoint}`
     const avisos = (await axios.get(URLcompletaAvisos)).data
@@ -90,7 +165,7 @@ async function prepararForum() {
     if(filtrarTudo.classList.contains('d-none') == false){
         filtrarTudo.classList.add('d-none')
         let filtroAvisos = document.querySelector('.filtro-avisos')
-        filtroAvisos.classList.remove('d-none')
+        filtroAvisos.innerHTML = "Avisos"
         let filtroAvisosAntigos = document.querySelector('.filtro-avisos-antigos')
         filtroAvisosAntigos.classList.add('d-none')
         let filtroPosts = document.querySelector('.filtro-posts')
@@ -156,7 +231,11 @@ function exibirUltimoAviso(aviso) {
     }
     div.appendChild(respostasContainer)
 
-    botoesRespostas(respostasContainer, div)
+    let idAvisoResp = aviso.idAviso
+
+    botoesRespostas(respostasContainer, div, idAvisoResp)
+
+    criarModal(idAvisoResp, aviso.apelido)
 
 }
 
@@ -190,7 +269,7 @@ function exibirAvisos(avisos) {
     let filtrarTudo = document.querySelector('.filtro-inicio')
     filtrarTudo.classList.remove('d-none')
     let filtroAvisos = document.querySelector('.filtro-avisos')
-    filtroAvisos.classList.add('d-none')
+    filtroAvisos.innerHTML = "Avisos Mais Recentes"
     let filtroAvisosAntigos = document.querySelector('.filtro-avisos-antigos')
     filtroAvisosAntigos.classList.remove('d-none')
     let filtroPosts = document.querySelector('.filtro-posts')
@@ -223,9 +302,11 @@ function exibirAvisos(avisos) {
             montarPost(divResp, resposta, formatacaoDivResposta, formatacaoBalaoResposta, respostasContainer, "resposta")
         }
 
-        div.appendChild(respostasContainer)
+        let idAvisoResp = aviso.idAviso
 
-        botoesRespostas(respostasContainer, div)
+        botoesRespostas(respostasContainer, div, idAvisoResp)
+
+        criarModal(idAvisoResp, aviso.apelido)
     }
     
 }
@@ -345,11 +426,20 @@ function botoesRespostas(respostasContainer, div, idPost){
         esconderRespostas.classList.add('d-none');
     }
 
-    let responder = document.createElement('div')
-    responder.className = "color-secondary justify-content-start btn"
+    let responder = document.createElement('button')
+    responder.className = "color-secondary justify-content-start btn border border-0"
     responder.innerHTML = "Responder"
     responder.setAttribute('data-bs-toggle', 'modal')
     responder.setAttribute('data-bs-target', `#modalResposta${idPost}`)
+    responder.style = "background-color: transparent;"
+    responder.disabled = true
+    const idTipoLogin = localStorage.getItem("idTipoLogin")
+    if(idTipoLogin){
+        responder.disabled = false
+    }
+    else{
+        responder.disabled = true
+    }
     
     botoes.appendChild(responder)
     botoes.appendChild(mostrarRespostas)
@@ -430,14 +520,16 @@ function criarModal (idPost, apelido) {
     document.body.appendChild(div1)
 }
 
-async function enviarPost (idTipoPost, idModal) {
+async function enviarPost () {
+    let idTipoPost = (document.querySelector('#selecionarTipoPost')).value
     let idUsuario = localStorage.getItem("idLogin")
-    let resposta = (document.querySelector(idModal)).value
+    let textArea = document.querySelector('#mensagemPost')
+    let resposta = textArea.value
 
     const tempoPassado = Date.now()
     let data = new Date(tempoPassado)
-    let hora = data.getHours()
-    let minuto = data.getMinutes()
+    let hora = data.getHours().toString().padStart(2, '0')
+    let minuto = data.getMinutes().toString().padStart(2, '0')
     let horarioAtual = `${hora}:${minuto}`
     dataAtual = data.toLocaleDateString()
 
@@ -451,6 +543,8 @@ async function enviarPost (idTipoPost, idModal) {
         const postsEndPoint = '/posts'
         const URLcompletaPosts = `${protocolo}${baseURL}${postsEndPoint}`
         await axios.post(URLcompletaPosts, {postagem: resposta, idLogin: idUsuario, idTipoPostagem: idTipoPost, data: dataAtual, horario: horarioAtual})
+        prepararForum()
+        textArea.value = ""
     } catch (error) {
         console.error(error.response?.data || error.message)
     }
@@ -465,8 +559,8 @@ async function enviarResposta (idTipoPost, idPost, idModal) {
 
     const tempoPassado = Date.now()
     let data = new Date(tempoPassado)
-    let hora = data.getHours()
-    let minuto = data.getMinutes()
+    let hora = data.getHours().toString().padStart(2, '0')
+    let minuto = data.getMinutes().toString().padStart(2, '0')
     let horarioAtual = `${hora}:${minuto}`
     dataAtual = data.toLocaleDateString()
 
@@ -489,6 +583,17 @@ async function enviarResposta (idTipoPost, idPost, idModal) {
 
 // Códigos para visualizar a página de Desafios 
 async function prepararPaginaDesafios() {
+    const idTipoLogin = localStorage.getItem("idTipoLogin")
+    const logout = document.querySelector('#logoutButton')
+    const login = document.querySelector('.login-link')
+    if(idTipoLogin){
+        logout.classList.remove('d-none')
+        login.setAttribute("href", 'configuracoes.html')
+    }
+    else{
+        logout.classList.add('d-none')
+        login.setAttribute("href", 'login.html')
+    }
     const desafiosEndpoint = '/desafios'
     const URLcompletaDesafios = `${protocolo}${baseURL}${desafiosEndpoint}`
     const desafios = (await axios.get(URLcompletaDesafios)).data
@@ -651,35 +756,38 @@ async function prepararPaginaLogin() {
     const URLcompletaLogin = `${protocolo}${baseURL}${loginEndpoint}`
     const login = (await axios.get(URLcompletaLogin)).data
 }
-function esconderSenha() {
-    // Adiciona um único evento de clique ao documento para capturar os dois botões
-    document.addEventListener('click', function (event) {
-        // Verifica se o clique foi em um dos botões relevantes
-        if (event.target.id === 'senhaButton' || event.target.id === 'senhaCadastroButton') {
-            // Determina os campos de entrada associados com base no ID do botão
-            let inputIds = []
-            if (event.target.id === 'senhaButton') {
-                inputIds = ['senhaLoginInput']
-            } else if (event.target.id === 'senhaCadastroButton') {
-                inputIds = ['senhaCadastroInput', 'senhaCadastroInput2']
-            }
-            // Alterna o tipo dos campos associados
-            let allArePassword = true
-            inputIds.forEach((id) => {
-                const input = document.getElementById(id)
-                if (input) {
-                    const isPassword = input.getAttribute('type') === 'password'
-                    input.setAttribute('type', isPassword ? 'text' : 'password')
-                    if (!isPassword) {
-                        allArePassword = false
-                    }
-                }
-            })
-            // Atualiza o texto do botão com base no estado dos campos
-            event.target.textContent = allArePassword ? 'Mostrar senha' : 'Esconder senha'
-        }
-    })
-}
+
+// function esconderSenha() {
+//     // Adiciona um único evento de clique ao documento para capturar os dois botões
+//     document.addEventListener('click', function (event) {
+//         // Verifica se o clique foi em um dos botões relevantes
+//         if (event.target.id === 'senhaButton' || event.target.id === 'senhaCadastroButton') {
+//             // Determina os campos de entrada associados com base no ID do botão
+//             let inputIds = []
+//             if (event.target.id === 'senhaButton') {
+//                 inputIds = ['senhaLoginInput']
+//             } else if (event.target.id === 'senhaCadastroButton') {
+//                 inputIds = ['senhaCadastroInput', 'senhaCadastroInput2']
+//             }
+//             // Alterna o tipo dos campos associados
+//             let allArePassword = true
+//             inputIds.forEach((id) => {
+//                 const input = document.getElementById(id)
+//                 if (input) {
+//                     const isPassword = input.getAttribute('type') === 'password'
+//                     input.setAttribute('type', isPassword ? 'text' : 'password')
+//                     if (!isPassword) {
+//                         allArePassword = false
+//                     }
+//                 }
+//             })
+//             // Atualiza o texto do botão com base no estado dos campos
+//             event.target.textContent = allArePassword ? 'Mostrar senha' : 'Esconder senha'
+//         }
+//     })
+// }
+
+
 function exibeAlerta(seletor, innerHTML, classesToAdd, classesToRemove, timeout) {
     let alert = document.querySelector(seletor)
     alert.innerHTML = innerHTML
@@ -690,6 +798,7 @@ function exibeAlerta(seletor, innerHTML, classesToAdd, classesToRemove, timeout)
         alert.classList.add(...classesToRemove)
     }, timeout)
 }
+
 function esconderModal(seletor, timeout, acao) {
     // Seleciona o elemento do modal
     const modalElement = document.querySelector(seletor)
@@ -711,6 +820,7 @@ function esconderModal(seletor, timeout, acao) {
         }, timeout || 0) // Aplica timeout se fornecido
     }
 }
+
 function validaEntradasCadastro() {
     // Obtém os valores dos campos
     const apelido = document.querySelector('#apelidoInput').value.trim()
@@ -731,6 +841,7 @@ function validaEntradasCadastro() {
     // Exibe o modal de termos e condições
     esconderModal('#modalTermos', 0, 'mostrar')
 }
+
 async function cadastrarUsuario() {
     // Seleciona o checkbox e a mensagem de feedback
     const checkbox = document.getElementById('termosCheck')
@@ -778,25 +889,28 @@ async function cadastrarUsuario() {
         }
     }
 }
-const fazerLogin = async () => {
+
+async function fazerLogin() {
     // Pega os valores dos campos de input
     let emailInput = document.querySelector('#emailLoginInput')
     let senhaInput = document.querySelector('#senhaLoginInput')
-    let email = emailInput.value
-    let senha = senhaInput.value
-    if (email && senha) {
+    let emailInserido = emailInput.value
+    let senhaInserida = senhaInput.value
+    if (emailInserido && senhaInserida) {
         try {
             const loginEndPoint = '/login'
             const URLcompleta = `${protocolo}${baseURL}${loginEndPoint}`
-            const response = await axios.post(URLcompleta, {email: email, senha: senha})
-            localStorage.setItem("token", response.data)
+            const response = await axios.post(URLcompleta, {email: emailInserido, senha: senhaInserida})
+
             emailInput.value = ""
             senhaInput.value = ""
+
+            const { idLogin, idTipoLogin } = response.data
+
             exibeAlerta('.alert-login', "Usuário logado com sucesso", ['show', 'alert-success'], ['d-none'], 4000)
-            // const loginLink = document.querySelector('#loginLink')
-            // loginLink.innerHTML = "Logout"
-            localStorage.setItem("idLogin", response.idLogin)
-            localStorage.setItem("idTipoLogin", response.idTipoLogin)
+
+            localStorage.setItem("idLogin", idLogin)
+            localStorage.setItem("idTipoLogin", idTipoLogin)
             window.location.href = "/front/index.html"
         }catch(e) {
             emailInput.value = ""
@@ -807,4 +921,88 @@ const fazerLogin = async () => {
     else {
         exibeAlerta('.alert-login', "Preencha todos os campos!", ['show', 'alert-danger'], ['d-none'], 2000)
     }
+}
+
+async function prepararPaginaMensagensContato() {
+    const mensagemEndpoint = '/mensagens'
+    const URLcompleta = `${protocolo}${baseURL}${mensagemEndpoint}`
+    const mensagens = (await axios.get(URLcompleta)).data
+    console.log(mensagens)
+    exibirMesagens(mensagens)
+}
+
+function exibirMesagens(mensagens) {
+    console.log(mensagens)
+    let divMensagens = document.querySelector('#mensagens')
+    for(let mensagem of mensagens) {
+
+        let divBorda = document.createElement('div')
+        divBorda.className = "border border-3 rounded-2 my-3 p-4 col-md-8"
+        divBorda.style = "border-color: #002687 !important;"
+
+        let nome = document.createElement('p')
+        nome.textContent = `Nome Completo: ${mensagem.nomeCompleto}`
+
+        let email = document.createElement('p')
+        email.textContent = `E-mail: ${mensagem.email}`
+
+        let duvida = document.createElement('textarea')
+        duvida.value = `Mensagem: ${mensagem.duvida}`
+        duvida.style = "border-color: transparent; height: 50%; width: 100%; font-size: large"
+        divBorda.appendChild(nome)
+        divBorda.appendChild(email)
+        divBorda.appendChild(duvida)
+        divMensagens.appendChild(divBorda)
+    }
+}
+
+function mostrarSenha(idInput, idButton, idInput2) {
+    const senhaInput = document.getElementById(idInput)
+    const button = document.getElementById(idButton)
+
+    if(idInput2) {
+        const senhaInput2 = document.getElementById(idInput2)
+        if (senhaInput2.type == "password"){
+            senhaInput2.type = "text"
+        }
+        else {
+            senhaInput2.type = "password"
+        }
+    }
+    
+    if (senhaInput.type == "password") {
+        senhaInput.type = "text"
+        button.textContent = "Esconder Senha"
+    } else {
+        senhaInput.type = "password"
+        button.textContent = "Mostrar Senha"
+    }
+}
+
+function enableEdit(fieldId) {
+    const field = document.getElementById(fieldId);
+    const button = document.getElementById('edit' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1) + 'Button');
+    
+    field.disabled = false;
+    button.style.display = "none";
+}
+
+function modoDaTela() {
+    if (localStorage.getItem('tema') == 'escuro') {
+        document.body.classList.add('night-mode');
+        document.getElementById('toggleModeButton').textContent = 'Modo Claro';
+    } else {
+        document.body.classList.remove('night-mode');
+        document.getElementById('toggleModeButton').textContent = 'Modo Escuro';
+    }
+    document.getElementById('toggleModeButton').addEventListener('click', function() {
+        document.body.classList.toggle('night-mode');
+        if (document.body.classList.contains('night-mode')) {
+            localStorage.setItem('theme', 'dark');
+            this.textContent = 'Modo Claro';
+        } else {
+            localStorage.setItem('theme', 'light');
+            this.textContent = 'Modo Noturno';
+        }
+    });[]
 }

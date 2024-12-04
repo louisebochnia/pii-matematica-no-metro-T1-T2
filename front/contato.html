@@ -40,11 +40,13 @@
                         <li class="nav-item">
                             <a class="nav-link me-2" href="desafios.html">Desafios</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link me-2 d-none" id="logoutButton" href="index.html" onclick="logout()">Logout</a>
+                        </li>
                     </ul>
                 </div>
-                <a class="nav-link" href="login.html">
-                    <img src="images/login_icon.png" id="icon"
-                        alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
+                <a class="nav-link login-link">
+                    <img src="images/login_icon.png" id="icon" alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
                 </a>
             </div>
         </nav>
@@ -88,11 +90,12 @@
                         </div>
                         <label for="duvidaTextarea" class="col-form-label">Mensagem:</label>
                         <div>
-                            <textarea style="height: 35%; width: 100%;" placeholder="Digite sua mensagem"
+                            <textarea placeholder="Digite sua mensagem"
                                 id="duvidaTextarea"></textarea>
                         </div>
                         <div class="alert d-none alert-dismissible fade alert-contato my-3"></div>
-                        <button onclick="postarDuvida()" class="btn" id="duvidaSendButton" type="button">Enviar</button>
+                        <button onclick="postarDuvida()" class="btn my-2" id="duvidaSendButton" type="button">Enviar</button>
+                        <button class="btn my-2 d-none" id="duvidaSendButton" type="button">Ver Mensagens</button>
 
                         <div class="my-4">
                             <h4>Nosso e-mail:</h4>
