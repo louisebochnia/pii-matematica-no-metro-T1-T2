@@ -40,6 +40,7 @@ app.get('/horarios', async (req, res) => {
 
         // Envia os horários como resposta em formato JSON
         res.json(horarios)
+        await session.close()
     } 
     catch (e) {
         console.error("Erro ao buscar horários:", e)
@@ -74,6 +75,7 @@ app.get('/posts', async (req, res) => {
         }
 
         res.json(posts)
+        await session.close()
     }
     catch (e){
         console.error("Erro ao buscar posts:", e)
@@ -128,6 +130,7 @@ app.get('/enderecos', async (req, res) => {
         }))
 
         res.json(enderecos)
+        await session.close()
     } 
     catch (e) {
         console.error("Erro ao buscar endereços:", e)
@@ -180,6 +183,7 @@ app.get('/desafios', async(req, res) => {
 
         // Envia os desafios como resposta em formato JSON
         res.json(topicosDesafio);
+        await session.close()
     } 
     catch (e) {
         console.error("Erro ao buscar desafios:", e)
@@ -201,11 +205,12 @@ app.post('/desafios', async(req, res) => {
         //Registra a alternativa marcada no banco de dados
         const respSQL = await session.sql(query).bind(quantidade, idQuestao).execute()
         console.log(respSQL)
-        res.status(200).send('Atualização realizada com sucesso!');
+        res.status(200).send('Atualização realizada com sucesso!')
+        await session.close()
     }
     catch (e) {
         console.error(e);
-        res.status(500).send('Erro ao atualizar os dados.');
+        res.status(500).send('Erro ao atualizar os dados.')
     }
 })
 
@@ -218,6 +223,7 @@ app.post('/contato', async (req, res) => {
         const session = await mysqlx.getSession(config)
         await session.sql('insert into tbContato (nomeCompleto, email, duvida) values (?, ?, ?)').bind(nomeCompleto, emailContato, mensagemContato).execute()
         res.status(200).send('Mensagem enviada com sucesso!')
+        await session.close()
     }
     catch (e) {
         console.error(e);
@@ -240,6 +246,7 @@ app.post('/cadastro', async(req, res) => {
         const session = await mysqlx.getSession(config)
         await session.sql('insert into tbLogins (email, senha, apelido, idTipoLogin) values (?, ?, ?, ?)').bind(email, senha_criptografada, apelido, idTipoLogin).execute()
         res.status(201).send('Usuário cadastrado')
+        await session.close()
     }
     catch(e) {
         console.log(e)
@@ -252,31 +259,31 @@ app.post('/login', async(req, res) => {
     const email = req.body.email
     const senha = req.body.senha
 
-    const session = await mysqlx.getSession(config)
-    const tblogins = await session.sql('select email, senha from tbLogins').execute()
+    try{
+        const session = await mysqlx.getSession(config)
+        const validacaoLogin = await session.sql('select idLogin, email, senha, idTipoLogin from tbLogins where email = ?').bind(email).execute()
+        // Converte o resultado em Array
+        const logins = resultado.fetchAll().map(login => ({
+            idLogin: login[0],
+            email: login[1],
+            senha: login[2],
+            idTipoLogin: login[3]
+        }))
 
-    // Converte o resultado em Array
-    const logins = resultado.fetchAll().map(login => ({
-        email: login[0],
-        senha: login[1]
-    }))
-
-    for(let login of logins){
-        if(email == login.email){
+        if(validacaoLogin){
             const senhaValida = await bcrypt.compare(senha, login.senha)
             if(senhaValida){
-                const token = jwt.sign(
-                    {login: login},
-                    "id-secreto",
-                    {expiresIn: "1h"}
-                )
-                res.status(200).json({token: token})
+                console.log("Usuário logado!")
             }else{
                 return res.status(401).json({mensagem: "Senha inválida"})
             }
         }else{
             return res.status(401).json({mensagem: "Email inválido"})
         }
+        await session.close()
+    }
+    catch(e){
+        console.log(e)
     }
 })
 
