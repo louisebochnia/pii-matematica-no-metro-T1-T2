@@ -10,7 +10,7 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
-<body>
+<body onload="prepararPaginaConfiguracoes()">
     <header>
         <nav class="navbar navbar-expand-sm" id="menu-nav" data-bs-theme="dark">
             <div class="container-fluid">
@@ -44,54 +44,53 @@
                             <a class="nav-link me-2" href="desafios.html">Desafios</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link me-2 d-none" id="logoutButton" href="index.html" onclick="logout()">Logout</a>
+                            <a class="nav-link me-2" id="logoutButton" href="index.html" onclick="logout()">Logout</a>
                         </li>
                     </ul>
                 </div>
-                <a class="nav-link" href="#">
-                    <img src="images/login_icon.png" id="icon" alt="Ícone de login">
+                <a class="nav-link login-link">
+                    <img src="images/login_icon.png" id="icon" alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
                 </a>
-                <button id="toggleModeButton" class="btn btn-outline-light ms-3">
+                <!-- <button id="toggleModeButton" class="btn btn-outline-light ms-3">
                     Modo Noturno
-                </button>
+                </button> -->
             </div>
         </nav>
     </header>
 
     <main>
         <div class="container col-8 align-self-center my-4">
-            <h3>EDITAR LOGIN</h3>
+            <h3>CONFIGURAÇÕES</h3>
             <p>Edite suas informações de login:</p>
             <form id="editForm">
                 <div class="my-4">
+                    <label for="editApelido" class="col-form-label">Apelido</label>
+                    <div class="input-group">
+                        <input type="text" id="editApelido" class="form-control" onload="pegarInfosLogin(apelido, email, senha)" disabled>
+                        <button type="button" id="editApelidoButton" class="btn" onclick="habilitarCampo('editApelido')">Alterar</button>
+                    </div>
+                </div>
+
+                <div class="my-4">
                     <label for="editEmail" class="col-form-label">E-mail</label>
                     <div class="input-group">
-                        <input type="email" id="editEmail" class="form-control" required disabled>
-                        <span class="input-group-text btn btn-outline-secondary disabled" id="emailSpan">@email.com</span>
-                        <button type="button" id="editEmailButton" class="btn btn-primary" onclick="enableEdit('editEmail')">Alterar</button>
+                        <input type="email" id="editEmail" class="form-control" disabled>
+                        <button type="button" id="editEmailButton" class="btn" onclick="habilitarCampo('editEmail')">Alterar</button>
                     </div>
                 </div>
 
                 <div class="my-4">
-                    <label for="editPassword" class="col-form-label">Senha</label>
+                    <label for="editSenha" class="col-form-label">Senha</label>
                     <div class="input-group">
-                        <input type="password" id="editPassword" class="form-control" required disabled>
-                        <button type="button" id="showPasswordButton" class="btn btn-outline-secondary" onclick="mostrarSenha('editPassword', 'showPasswordButton', null)">Mostrar</button>
-                        <button type="button" id="editPasswordButton" class="btn btn-primary" onclick="enableEdit('editPassword')">Alterar</button>
+                        <input type="password" id="editSenha" class="form-control" placeholder="Crie uma outra senha que substituirá sua senha antiga" disabled>
+                        <button type="button" id="editSenhaButton" class="btn" onclick="habilitarCampo('editSenha')">Alterar</button>
                     </div>
                 </div>
-
-                <div class="my-4">
-                    <label for="editNickname" class="col-form-label">Apelido</label>
-                    <div class="input-group">
-                        <input type="text" id="editNickname" class="form-control" disabled>
-                        <button type="button" id="editNicknameButton" class="btn btn-primary" onclick="enableEdit('editNickname')">Alterar</button>
-                    </div>
-                </div>
+                <button type="button" id="mostrarSenhaButton" class="btn btn-outline-secondary" onclick="mostrarSenha('editSenha', 'mostrarSenhaButton', null)">Mostrar senha</button>
 
                 <div class="container justify-content-center mt-5 mb-3">
                     <div class="row">
-                        <button class="btn btn-outline-primary" id="saveChangesButton" type="button" style="border: 2px solid #007bff;">Salvar Alterações</button>
+                        <button class="btn" id="configuracoesButton" type="button" onclick="salvarConfiguracoes()">Salvar Alterações</button>
                     </div>
                 </div>
             </form>
@@ -108,20 +107,25 @@
         </nav>
     </footer>
 
+    <!-- Incluindo intérprete de Libras com o VLibras Widget -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+          <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 
     <script src="js/frontend.js"></script>
 
-    <script>
-
-        document.getElementById('editForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Alterações salvas com sucesso!');
-        });
-
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </body>
 
 </html>

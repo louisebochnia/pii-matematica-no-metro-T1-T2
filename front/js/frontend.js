@@ -881,10 +881,6 @@ async function cadastrarUsuario() {
             window.location.href = "/front/login.html"
         } 
         catch(e) {
-            apelidoInput.value = ""
-            emailInput.value = ""
-            senhaInput.value = ""
-            senhaInput2.value = ""
             exibeAlerta('.alert-cadastro', "Não foi possível cadastrar usuário. Tente mais tarde...", ['show', 'alert-danger'], ['d-none'], 4000)
         }
     }
@@ -913,8 +909,6 @@ async function fazerLogin() {
             localStorage.setItem("idTipoLogin", idTipoLogin)
             window.location.href = "/front/index.html"
         }catch(e) {
-            emailInput.value = ""
-            senhaInput.value = ""
             exibeAlerta('.alert-login', "Falha na autenticação! Confira se você preencheu os campos corretamente!", ['show', 'alert-danger'], ['d-none'], 4000)
         }
     }
@@ -979,12 +973,56 @@ function mostrarSenha(idInput, idButton, idInput2) {
     }
 }
 
-function enableEdit(fieldId) {
-    const field = document.getElementById(fieldId);
-    const button = document.getElementById('edit' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1) + 'Button');
+// Funções para carregar a página Configurações
+async function prepararPaginaConfiguracoes() {
+    const id = localStorage.getItem("idLogin")
+    console.log(id)
+
+    const configuracoesEndpoint = '/configuracoes'
+    const URLcompletaConfiguracoes = `${protocolo}${baseURL}${configuracoesEndpoint}`
+    const infos = (await axios.post(URLcompletaConfiguracoes, {id: id})).data
+    exibirLogin(infos)
+}
+
+function exibirLogin(infos){
+    console.log("exibindo infos")
+    let apelido = document.querySelector('#editApelido')
+    let email = document.querySelector('#editEmail')
+    email.value = infos[0]
+    apelido.value = infos[1]
+}
+
+async function salvarConfiguracoes(){
+    const id = localStorage.getItem("idLogin")
+    console.log(id)
+    let apelido = (document.querySelector('#editApelido')).value
+    let email = (document.querySelector('#editEmail')).value
+    let senha = (document.querySelector('#editSenha')).value
+
+    if(!senha){
+        const configuracoesEndpoint = '/editConfiguracoes'
+        const URLcompletaConfiguracoes = `${protocolo}${baseURL}${configuracoesEndpoint}`
+        const novoLogin = (await axios.post(URLcompletaConfiguracoes, {id: id, apelido: apelido, email: email})).data
+        console.log(novoLogin)
+    }else{
+        salvarNovaSenha(senha)
+    }
+}
+
+async function salvarNovaSenha(senha) {
+    const id = localStorage.getItem("idLogin")
+    console.log(senha)
+    const configuracoesEndpoint = '/editSenha'
+    const URLcompletaConfiguracoes = `${protocolo}${baseURL}${configuracoesEndpoint}`
+    const novaSenha = (await axios.post(URLcompletaConfiguracoes, {id: id, senha: senha})).data
+    console.log(novaSenha)
+}
+
+function habilitarCampo(id) {
+    const field = document.getElementById(id);
+    const button = document.getElementById('edit' + id.charAt(0).toUpperCase() + id.slice(1) + 'Button');
     
     field.disabled = false;
-    button.style.display = "none";
 }
 
 function modoDaTela() {
@@ -1006,3 +1044,8 @@ function modoDaTela() {
         }
     });[]
 }
+
+// document.getElementById('editForm').addEventListener('submit', function(e) {
+//     e.preventDefault();
+//     alert('Alterações salvas com sucesso!');
+// })

@@ -120,10 +120,10 @@ textarea {
     border-color:#002687 !important;
 }
 
-#emailLoginInput, #senhaLoginInput, #emailCadastroInput, #senhaCadastroInput, #senhaCadastroInput2, #apelidoInput, #nomeInput, #emailInput{
+#emailLoginInput, #senhaLoginInput, #emailCadastroInput, #senhaCadastroInput, #senhaCadastroInput2, #apelidoInput, #nomeInput, #emailInput, #editEmail, #editSenha, #editApelido{
     background-color:#E6E6E6; 
-    height: 60px;
-    font-size: 80%;
+    height: 50px;
+
 }
 
 #duvidaTextarea {
@@ -132,7 +132,7 @@ textarea {
     width: 100%;
 }
 
-#loginCadastroButton,#duvidaSendButton{
+#loginCadastroButton,#duvidaSendButton, #configuracoesButton, #editApelidoButton, #editEmailButton, #editSenhaButton{
     background-color: #002687;
     color: white;
     height: 50px;
@@ -141,14 +141,6 @@ textarea {
     background-color: #186FAB;
     color: #ffffff;
     border-color: #ffffff;
-}
-
-#emailSpan, #senhaButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-size: 80%;
 }
 
 body {

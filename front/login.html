@@ -64,7 +64,6 @@
                     <label for="emailLoginInput" id="labelCadastro" class="col-form-label">E-mail</label>
                     <div class="input-group">
                         <input type="email" id="emailLoginInput" class="form-control" placeholder="Digite seu e-mail">
-                        <span class="input-group-text btn btn-outline-secondary disabled" id="emailSpan">@email.com</span>
                     </div>
                 </div>
 
@@ -72,9 +71,9 @@
                     <label for="senhaLoginInput" id="labelCadastro" class="col-form-label">Senha</label>
                     <div class="input-group">
                         <input type="password" id="senhaLoginInput" class="form-control" placeholder="Digite sua senha">
-                        <button type="button" id="senhaButton" class="btn btn-outline-secondary" onclick="mostrarSenha('senhaLoginInput', 'senhaButton', null)">Mostrar senha</button>
                     </div>
-                </div>                
+                </div>     
+                <button type="button" id="senhaButton" class="btn btn-outline-secondary" onclick="mostrarSenha('senhaLoginInput', 'senhaButton', null)">Mostrar senha</button>           
                 
                 <div class="alert d-none alert-dismissible fade alert-login mt-5"></div>
 

@@ -290,6 +290,54 @@ app.get('/mensagens', async(req, res) => {
     }
 })
 
+app.post('/configuracoes', async(req, res) => {
+    try{
+        const id = req.body.id
+        const session = await mysqlx.getSession(config)
+        const resultado = await session.sql('SELECT email, apelido FROM tbLogins WHERE idLogin=?').bind(id).execute()
+        const infos = resultado.fetchOne()
+        await session.close()
+        res.json(infos)
+    }
+    catch (e) {
+      console.log("Erro ao pegar as informações de login")
+    }
+})
+
+app.post('/editConfiguracoes', async(req, res) => {
+    try{
+        const id = req.body.id
+        const apelido = req.body.apelido
+        const email = req.body.email
+
+        const session = await mysqlx.getSession(config)
+        const resultado = await session.sql('UPDATE tbLogins SET apelido = ?, email = ? WHERE idLogin = ?').bind(apelido, email, id).execute()
+        await session.close()
+        res.json(resultado)
+    }
+    catch (e) {
+      console.log("Erro ao editar as informações de login")
+    }
+})
+
+app.post('/editSenha', async(req, res) => {
+    try{
+        const id = req.body.id
+        const senha = req.body.senha
+
+        // Criptografando a senha para inserir no banco de dados
+        const senha_criptografada = await bcrypt.hash(senha, 10)
+
+        const session = await mysqlx.getSession(config)
+        const resultado = await session.sql('UPDATE tbLogins SET senha = ? WHERE idLogin = ?').bind(senha_criptografada, id).execute()
+        await session.close()
+        res.json(resultado)
+    }
+    catch (e) {
+      console.log("Erro ao editar senha")
+    }
+})
+
 app.post('/desafios', async(req, res) => {
     try {
         const idQuestao = req.body.idQuestao
