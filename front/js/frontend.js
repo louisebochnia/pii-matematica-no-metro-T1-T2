@@ -9,11 +9,11 @@ function prepararPaginaSobreNos() {
     const idTipoLogin = localStorage.getItem("idTipoLogin")
     const logout = document.querySelector('#logoutButton')
     const login = document.querySelector('.login-link')
-    if(idTipoLogin){
+    if (idTipoLogin) {
         logout.classList.remove('d-none')
         login.setAttribute("href", 'configuracoes.html')
     }
-    else{
+    else {
         logout.classList.add('d-none')
         login.setAttribute("href", 'login.html')
     }
@@ -28,23 +28,23 @@ async function prepararPaginaInicial() {
     const deletarHorariosButton = document.querySelector('#deletarHorariosButton')
     const editarEnderecosButton = document.querySelector('#editarEnderecosButton')
     const deletarEnderecosButton = document.querySelector('#deletarEnderecosButton')
-    if(idTipoLogin){
+    if (idTipoLogin) {
         logout.classList.remove('d-none')
         login.setAttribute("href", 'configuracoes.html')
-        if(idTipoLogin == '1'){
+        if (idTipoLogin == '1') {
             editarHorariosButton.classList.remove('d-none')
             deletarHorariosButton.classList.remove('d-none')
             editarEnderecosButton.classList.remove('d-none')
             deletarEnderecosButton.classList.remove('d-none')
         }
-        else{
+        else {
             editarHorariosButton.classList.add('d-none')
             deletarHorariosButton.classList.add('d-none')
             editarEnderecosButton.classList.add('d-none')
             deletarEnderecosButton.classList.add('d-none')
         }
     }
-    else{
+    else {
         logout.classList.add('d-none')
         login.setAttribute("href", 'login.html')
     }
@@ -52,7 +52,7 @@ async function prepararPaginaInicial() {
     const URLcompletaHorarios = `${protocolo}${baseURL}${horariosEndpoint}`
     const horarios = (await axios.get(URLcompletaHorarios)).data
     exibirHorarios(horarios)
-    const enderecosEndpoint = '/enderecos'
+    const enderecosEndpoint = '/enderacoes'
     const URLcompletaEnderecos = `${protocolo}${baseURL}${enderecosEndpoint}`
     const enderecos = (await axios.get(URLcompletaEnderecos)).data
     exibirEnderecos(enderecos)
@@ -60,52 +60,132 @@ async function prepararPaginaInicial() {
 
 async function salvarHorario() {
     let selecionarDia = (document.querySelector('#selecionarDia')).value
+    console.log(selecionarDia)
     let primeiroHorario = (document.querySelector('#primeiroHorario')).value
     let segundoHorario = (document.querySelector('#segundoHorario')).value
     let estacaoEdit = (document.querySelector('#estacaoEdit')).value
-    if (selecionarDia && primeiroHorario && segundoHorario && estacaoEdit){
-        try{
+    if (selecionarDia && primeiroHorario && segundoHorario && estacaoEdit) {
+        try {
             const horariosEndpoint = '/horarios'
             const URLcompletaHorarios = `${protocolo}${baseURL}${horariosEndpoint}`
-            const response = await axios.post(URLcompletaHorarios, {diaSemana: selecionarDia, horario: `${primeiroHorario} - ${segundoHorario}`, estacao: estacaoEdit})
+            const response = await axios.post(URLcompletaHorarios, { diaSemana: selecionarDia, horario: `${primeiroHorario} - ${segundoHorario}`, estacao: estacaoEdit })
             console.log(response)
+            prepararPaginaInicial()
         }
-        catch(e) {
+        catch (e) {
             console.log(e)
         }
     } else {
-        exibeAlerta('.alert-horarios', 'Preencha todos os campos!', ['show','alert-danger'], ['d-none'], 4000)
+        exibeAlerta('.alert-horarios', 'Preencha todos os campos!', ['show', 'alert-danger'], ['d-none'], 4000)
         console.log("Preencha todos os campos!")
     }
 }
 
-async function exibirEstacoes(){
+async function exibirEstacoes() {
     let select = document.querySelector('#estacaoEdit')
     select.innerHTML = ""
     const estacaoEndpoint = '/estacao'
     const URLcompletaEstacao = `${protocolo}${baseURL}${estacaoEndpoint}`
     const estacoes = (await axios.get(URLcompletaEstacao)).data
-    for(let estacao of estacoes){
+    for (let estacao of estacoes) {
         console.log(estacao.estacao)
         const option = document.createElement('option')
         option.innerHTML = estacao.estacao
+        option.value = estacao.estacao
         select.appendChild(option)
     }
+}
+
+async function exibirEnderacoes() {
+    let select = document.querySelector('#deletEnderecos')
+    select.innerHTML = ""
+    const enderecosEndpoint = '/enderacoes'
+    const URLcompletaEnderecos = `${protocolo}${baseURL}${enderecosEndpoint}`
+    const enderecos = (await axios.get(URLcompletaEnderecos)).data
+    for (let endereco of enderecos) {
+        console.log(endereco.enderecoEstacao)
+        const option = document.createElement('option')
+        option.innerHTML = `${endereco.estacao} - ${endereco.enderecoEstacao}`
+        option.value = endereco.estacao
+        select.appendChild(option)
+    }
+}
+
+async function apagarEnderacoes() {
+    let select = (document.querySelector('#deletEnderecos')).value
+    const apagarEnderacoesEndpoint = '/enderacoes'
+    const URLcompletaEnderacoes = `${protocolo}${baseURL}${apagarEnderacoesEndpoint}`
+    try {
+        await axios.post(URLcompletaEnderacoes, { estacao: select })
+    }
+    catch (e) {
+        console.log(e)
+    }
+}
+
+async function exibirHorarioss() {
+    let select = document.querySelector('#deletHorarios')
+    select.innerHTML = ""
+    const horariosEndpoint = '/horarios'
+    const URLcompletaHorarios = `${protocolo}${baseURL}${horariosEndpoint}`
+    const horarios = (await axios.get(URLcompletaHorarios)).data
+    for (let horario of horarios) {
+        const option = document.createElement('option')
+        option.innerHTML = `${horario.diaSemana} - ${horario.horarioVoluntarios} - ${horario.estacao}`
+        option.value = horario.idHorario
+        select.appendChild(option)
+    }
+}
+
+async function apagarHorarios() {
+    let select = (document.querySelector('#deletHorarios')).value
+    const apagarHorariosEndpoint = '/horarioss'
+    const URLcompletaHorarios = `${protocolo}${baseURL}${apagarHorariosEndpoint}`
+    try {
+        await axios.post(URLcompletaHorarios, { idHorario: select })
+    }
+    catch (e) {
+        console.log(e)
+    }
+}
+
+async function postarEnderecos() {
+    let inputEnderecos = (document.querySelector('#enderecoTextarea'))
+    let inputEstacoes = (document.querySelector('#estacaoTextarea'))
+    let enderecos = inputEnderecos.value
+    console.log(enderecos)
+    let estacoes = inputEstacoes.value
+    console.log(estacoes)
+    if (enderecos && estacoes) {
+        try {
+            const enderecosEndpoint = '/enderecos'
+            const URLcompletaEnderecos = `${protocolo}${baseURL}${enderecosEndpoint}`
+            const response = await axios.post(URLcompletaEnderecos, { postEnderecos: enderecos, postEstacoes: estacoes })
+            console.log(response)
+        }
+        catch (e) {
+            console.log(e)
+        }
+    } else {
+        exibeAlerta('.alert-contato', 'Preencha todos os campos!', ['show', 'alert-danger'], ['d-none'], 4000)
+        console.log("Preencha todos os campos!")
+    }
+
 }
 
 async function prepararPaginaContato() {
     const idTipoLogin = localStorage.getItem("idTipoLogin")
     const logout = document.querySelector('#logoutButton')
     const login = document.querySelector('.login-link')
-    if(idTipoLogin){
+    if (idTipoLogin) {
         logout.classList.remove('d-none')
         login.setAttribute("href", 'configuracoes.html')
     }
-    else{
+    else {
         logout.classList.add('d-none')
         login.setAttribute("href", 'login.html')
     }
-    const enderecosEndpoint = '/enderecos'
+    const enderecosEndpoint = '/enderacoes'
     const URLcompletaEnderecos = `${protocolo}${baseURL}${enderecosEndpoint}`
     const enderecos = (await axios.get(URLcompletaEnderecos)).data
     exibirEnderecos(enderecos)
@@ -118,18 +198,18 @@ async function postarDuvida() {
     let nome = inputNomeCompleto.value
     let email = inputEmailContato.value
     let mensagem = inputMensagemContato.value
-    if (nome && email && mensagem){
-        try{
+    if (nome && email && mensagem) {
+        try {
             const contatoEndpoint = '/contato'
             const URLcompletaContato = `${protocolo}${baseURL}${contatoEndpoint}`
-            const response = await axios.post(URLcompletaContato, {nomeCompleto: nome, emailContato: email, mensagemContato: mensagem})
+            const response = await axios.post(URLcompletaContato, { nomeCompleto: nome, emailContato: email, mensagemContato: mensagem })
             console.log(response)
         }
-        catch(e) {
+        catch (e) {
             console.log(e)
         }
     } else {
-        exibeAlerta('.alert-contato', 'Preencha todos os campos!', ['show','alert-danger'], ['d-none'], 4000)
+        exibeAlerta('.alert-contato', 'Preencha todos os campos!', ['show', 'alert-danger'], ['d-none'], 4000)
         console.log("Preencha todos os campos!")
     }
 
@@ -141,13 +221,13 @@ async function prepararForum() {
     const login = document.querySelector('.login-link')
     const novoPostButton = document.querySelector('#novoPostButton')
     const aviso = document.querySelector('.aviso-forum')
-    if(idTipoLogin){
+    if (idTipoLogin) {
         logout.classList.remove('d-none')
         login.setAttribute("href", 'configuracoes.html')
         novoPostButton.disabled = false
         aviso.classList.add('d-none')
     }
-    else{
+    else {
         logout.classList.add('d-none')
         login.setAttribute("href", 'login.html')
         novoPostButton.disabled = true
@@ -162,7 +242,7 @@ async function prepararForum() {
     const posts = (await axios.get(URLcompletaPosts)).data
     exibirPosts(posts)
     const filtrarTudo = document.querySelector('.filtro-inicio')
-    if(filtrarTudo.classList.contains('d-none') == false){
+    if (filtrarTudo.classList.contains('d-none') == false) {
         filtrarTudo.classList.add('d-none')
         let filtroAvisos = document.querySelector('.filtro-avisos')
         filtroAvisos.innerHTML = "Avisos"
@@ -174,32 +254,32 @@ async function prepararForum() {
         filtroPostsAntigos.classList.remove('d-none')
     }
     const divPosts = document.querySelector('.posts')
-    if(divPosts.classList.contains('d-none')){
+    if (divPosts.classList.contains('d-none')) {
         divPosts.classList.remove('d-none')
     }
 }
 
-function exibirHorarios(horarios){
+function exibirHorarios(horarios) {
     let tabela = document.querySelector('#horarios')
     let corpoTabela = tabela.getElementsByTagName('tbody')[0]
     corpoTabela.innerHTML = ""
 
-    for (let horario of horarios){
+    for (let horario of horarios) {
         let linha = corpoTabela.insertRow(0)
         let celulaDiaSemana = linha.insertCell(0)
         let celulaHorarioVoluntarios = linha.insertCell(1)
         let celulaEstacao = linha.insertCell(2)
         celulaDiaSemana.innerHTML = horario.diaSemana
-        celulaHorarioVoluntarios.innerHTML = horario.horarioVoluntarios  
+        celulaHorarioVoluntarios.innerHTML = horario.horarioVoluntarios
         celulaEstacao.innerHTML = horario.estacao
     }
 }
 
-function exibirEnderecos(enderecos){
+function exibirEnderecos(enderecos) {
     let div = document.querySelector('.enderecos')
     div.innerHTML = ""
 
-    for (let endereco of enderecos){
+    for (let endereco of enderecos) {
         const p = document.createElement('p')
         p.textContent = `${endereco.estacao}${' - '}${endereco.enderecoEstacao}`
         div.appendChild(p)
@@ -220,14 +300,14 @@ function exibirUltimoAviso(aviso) {
 
     let respostasContainer = document.createElement('div')
     respostasContainer.className = "respostas-container d-none"
-    
+
     for (resposta of aviso.resposta) {
         let divResp = document.createElement('div')
 
         let formatacaoDivResposta = "row justify-content-end align-items-end my-2"
         let formatacaoBalaoResposta = "col-6 col-md-10 p-3 mx-auto mx-md-1 bg-secondary-subtle rounded-top-4 rounded-end-4"
 
-        montarPost(divResp, resposta, formatacaoDivResposta, formatacaoBalaoResposta, respostasContainer, "resposta")    
+        montarPost(divResp, resposta, formatacaoDivResposta, formatacaoBalaoResposta, respostasContainer, "resposta")
     }
     div.appendChild(respostasContainer)
 
@@ -239,28 +319,28 @@ function exibirUltimoAviso(aviso) {
 
 }
 
-async function filtrarAvisos(){
+async function filtrarAvisos() {
     const avisosEndpoint = '/avisos'
     const URLcompletaAvisos = `${protocolo}${baseURL}${avisosEndpoint}`
     const avisos = (await axios.get(URLcompletaAvisos)).data
     exibirAvisos(avisos)
 }
 
-async function filtrar(ordem){
+async function filtrar(ordem) {
     const postsEndPoint = '/posts'
     const URLcompletaPosts = `${protocolo}${baseURL}${postsEndPoint}`
     const posts = (await axios.get(URLcompletaPosts)).data
     const avisosEndpoint = '/avisos'
     const URLcompletaAvisos = `${protocolo}${baseURL}${avisosEndpoint}`
     const avisos = (await axios.get(URLcompletaAvisos)).data
-    if(ordem == 1) {
+    if (ordem == 1) {
         exibirPosts(posts)
     }
-    else if(ordem == 0) {
+    else if (ordem == 0) {
         antigos = [...posts].reverse()
         exibirPosts(antigos)
     }
-    else if(ordem == 2){
+    else if (ordem == 2) {
         exibirAvisos(avisos.reverse())
     }
 }
@@ -284,7 +364,7 @@ function exibirAvisos(avisos) {
     let divPosts = document.querySelector('.posts')
     divPosts.classList.add('d-none')
 
-    for (let aviso of avisos){
+    for (let aviso of avisos) {
         formatacaoDiv = "row justify-content-end align-items-end my-2"
         formatacaoBalao = "col-8 col-md-11 p-3 mx-auto bg-secondary-subtle rounded-top-4 rounded-end-4"
 
@@ -294,7 +374,7 @@ function exibirAvisos(avisos) {
         respostasContainer.className = "respostas-container d-none"
 
         for (resposta of aviso.resposta) {
-            
+
             let divResp = document.createElement('div')
             let formatacaoDivResposta = "row justify-content-end align-items-end my-2"
             let formatacaoBalaoResposta = "col-6 col-md-10 p-3 mx-auto mx-md-1 bg-secondary-subtle rounded-top-4 rounded-end-4"
@@ -308,7 +388,7 @@ function exibirAvisos(avisos) {
 
         criarModal(idAvisoResp, aviso.apelido)
     }
-    
+
 }
 
 function exibirPosts(posts) {
@@ -318,14 +398,14 @@ function exibirPosts(posts) {
     h4.textContent = "Posts"
     div.appendChild(h4)
 
-    for (let post of posts){
+    for (let post of posts) {
 
         let divPost = document.createElement('div')
         let formatacaoDiv = "row justify-content-end align-items-end my-2"
         let formatacaoBalao = "col-8 col-md-11 p-3 mx-auto bg-secondary-subtle rounded-top-4 rounded-end-4"
 
         montarPost(divPost, post, formatacaoDiv, formatacaoBalao, div, "post")
-        
+
         let respostasContainer = document.createElement('div')
         respostasContainer.className = "respostas-container d-none"
 
@@ -340,7 +420,7 @@ function exibirPosts(posts) {
 
         divPost.appendChild(respostasContainer)
         div.appendChild(divPost)
-        
+
         let idPostResp = post.idPost
 
         botoesRespostas(respostasContainer, div, idPostResp)
@@ -349,11 +429,11 @@ function exibirPosts(posts) {
     }
 }
 
-function montarPost(divPost, post, formatacaoDiv, formatacaoBalao, div, tipo){
-    if (tipo == "post"){
+function montarPost(divPost, post, formatacaoDiv, formatacaoBalao, div, tipo) {
+    if (tipo == "post") {
         divAviso = document.createElement('div')
     }
-    else{
+    else {
         divAviso = divPost
     }
 
@@ -365,7 +445,7 @@ function montarPost(divPost, post, formatacaoDiv, formatacaoBalao, div, tipo){
     postFoto.id = "forum-icon"
 
     let divFoto = document.createElement('div')
-    divFoto.className ="col-1"
+    divFoto.className = "col-1"
     divFoto.appendChild(postFoto)
 
     let divBalao = document.createElement('div')
@@ -394,7 +474,7 @@ function montarPost(divPost, post, formatacaoDiv, formatacaoBalao, div, tipo){
     divBalao.appendChild(rowApelidoData)
     divBalao.appendChild(pTexto)
 
-    if (post.imagemPost) { 
+    if (post.imagemPost) {
         let imgAviso = document.createElement('img')
         imgAviso.src = `/front${post.imagemPost}`
         divBalao.appendChild(imgAviso)
@@ -405,7 +485,7 @@ function montarPost(divPost, post, formatacaoDiv, formatacaoBalao, div, tipo){
     div.appendChild(divAviso)
 }
 
-function botoesRespostas(respostasContainer, div, idPost){
+function botoesRespostas(respostasContainer, div, idPost) {
     let botoes = document.createElement('div')
 
     let mostrarRespostas = document.createElement('div')
@@ -434,21 +514,21 @@ function botoesRespostas(respostasContainer, div, idPost){
     responder.style = "background-color: transparent;"
     responder.disabled = true
     const idTipoLogin = localStorage.getItem("idTipoLogin")
-    if(idTipoLogin){
+    if (idTipoLogin) {
         responder.disabled = false
     }
-    else{
+    else {
         responder.disabled = true
     }
-    
+
     botoes.appendChild(responder)
     botoes.appendChild(mostrarRespostas)
     botoes.appendChild(esconderRespostas)
-    
+
     div.appendChild(botoes)
 }
 
-function criarModal (idPost, apelido) {
+function criarModal(idPost, apelido) {
     let div1 = document.createElement('div')
     div1.className = "modal fade"
     div1.id = `modalResposta${idPost}`
@@ -577,7 +657,7 @@ async function enviarPost() {
     }
 }
 
-async function enviarResposta (idTipoPost, idPost, idModal) {
+async function enviarResposta(idTipoPost, idPost, idModal) {
     let idUsuario = localStorage.getItem("idLogin")
     let resposta = (document.querySelector(idModal)).value
     let idTipoPostagem = idTipoPost
@@ -634,11 +714,11 @@ async function prepararPaginaDesafios() {
     const idTipoLogin = localStorage.getItem("idTipoLogin")
     const logout = document.querySelector('#logoutButton')
     const login = document.querySelector('.login-link')
-    if(idTipoLogin){
+    if (idTipoLogin) {
         logout.classList.remove('d-none')
         login.setAttribute("href", 'configuracoes.html')
     }
-    else{
+    else {
         logout.classList.add('d-none')
         login.setAttribute("href", 'login.html')
     }
@@ -662,7 +742,7 @@ function exibirDesafios(topicosDesafio) {
         let i = 1
 
         //coloca e exibe todos os desafios da lista desafio na página na página
-        for (let desafio of topicoDesafio.desafio){
+        for (let desafio of topicoDesafio.desafio) {
             const divQuestao = document.createElement('div')
             divQuestao.className = "my-2 p-4 border-bottom border-3"
             divQuestao.style = "border-color: #002687 !important;"
@@ -682,13 +762,13 @@ function exibirDesafios(topicosDesafio) {
             let alternativasEmbaralhadas = embaralharAlternativas(desafio.alternativas)
 
             //coloca e exibe todas as alternativas da lista embaralhada na página
-            for(let alternativa of alternativasEmbaralhadas) {
+            for (let alternativa of alternativasEmbaralhadas) {
                 const p = document.createElement('p')
                 const inputRadio = document.createElement('input')
                 inputRadio.type = 'radio'
                 inputRadio.name = `alternativa-${topicoDesafio.id}-${desafio.id}`
                 inputRadio.value = alternativa
-                
+
                 const label = document.createElement('label')
                 label.style.cursor = "pointer";
                 label.appendChild(inputRadio)
@@ -702,7 +782,7 @@ function exibirDesafios(topicosDesafio) {
             const divResolucao = document.createElement('div')
             divResolucao.className = "d-none"
             const respAssinalada = document.createElement('p')
-            divResolucao.appendChild(respAssinalada)             
+            divResolucao.appendChild(respAssinalada)
             const mensagem = document.createElement('p')
             divResolucao.appendChild(mensagem)
             const resolucao = document.createElement('p')
@@ -716,14 +796,14 @@ function exibirDesafios(topicosDesafio) {
 
             botao.onclick = function () {
                 let assinalada = divQuestao.querySelector(`input[name="alternativa-${topicoDesafio.id}-${desafio.id}"]:checked`)
-                
+
                 //confirma se o usuário selecionou uma alternativa
                 if (assinalada) {
                     //pega a resposta que o usuário selecionou
                     let resposta = assinalada.value
 
                     //verifica se o usuário acertou ou errou a questão
-                    if (resposta == desafio.respostaCorreta){
+                    if (resposta == desafio.respostaCorreta) {
                         //pega a quantidade de vezes que a resposta do usuário já foi selecionada
                         let quantidade = desafio.porcentagemRespCorreta + 1
 
@@ -738,7 +818,7 @@ function exibirDesafios(topicosDesafio) {
                     } else {
                         //pega o indíce da resposta do usuário na lista não embaralhada
                         let nRepsIncorreta = alternativas.indexOf(resposta)
-                        
+
                         //pega a quantidade de vezes que a resposta do usuário já foi selecionada
                         let quantidade = desafio.porcentagemRespIncorretas[nRepsIncorreta - 1] + 1
 
@@ -747,7 +827,7 @@ function exibirDesafios(topicosDesafio) {
 
                         //chama a função para armazenar a quantidade de respostas no banco de dados
                         armazenarResposta(desafio.idQuestao, alternativaMarcada, quantidade)
-                        
+
                         //mostra a resolução da questão e informa ao usuário que ele errou
                         respAssinalada.textContent = `Você assinalou: ${resposta}`
                         mensagem.textContent = "Oh não! Você Errou! Veja a resolução correta abaixo:"
@@ -770,31 +850,31 @@ function exibirDesafios(topicosDesafio) {
         }
 
         div.appendChild(details)
-        
+
     }
 }
 
 // código para embaralhar as alternativas do desafio
 function embaralharAlternativas(respostas) {
     let m = respostas.length, t, i;
-    
+
     while (m) {
-      i = Math.floor(Math.random() * m--);
-  
-      t = respostas[m];
-      respostas[m] = respostas[i];
-      respostas[i] = t;
+        i = Math.floor(Math.random() * m--);
+
+        t = respostas[m];
+        respostas[m] = respostas[i];
+        respostas[i] = t;
     }
-  
+
     return respostas;
 }
 
 // código para armazenar a quantidade de respostas
 async function armazenarResposta(questao, assinalada, quantidade) {
-        const desafiosEndpoint = '/desafios'
-        const URLcompletaDesafios = `${protocolo}${baseURL}${desafiosEndpoint}`
-        const response = await axios.post(URLcompletaDesafios, {idQuestao: questao, assinalada: assinalada, quantidade: quantidade}) 
-        console.log(response)
+    const desafiosEndpoint = '/desafios'
+    const URLcompletaDesafios = `${protocolo}${baseURL}${desafiosEndpoint}`
+    const response = await axios.post(URLcompletaDesafios, { idQuestao: questao, assinalada: assinalada, quantidade: quantidade })
+    console.log(response)
 }
 
 
@@ -919,7 +999,7 @@ async function cadastrarUsuario() {
             // Cadastra o usuário
             let cadastroUsuarioEndPoint = '/cadastro'
             let URLcompleta = `${protocolo}${baseURL}${cadastroUsuarioEndPoint}`
-            await axios.post(URLcompleta, {apelido: apelido, email: email, senha: senha, idTipoLogin: idTipoLogin})
+            await axios.post(URLcompleta, { apelido: apelido, email: email, senha: senha, idTipoLogin: idTipoLogin })
             apelidoInput.value = ""
             emailInput.value = ""
             senhaInput.value = ""
@@ -927,8 +1007,8 @@ async function cadastrarUsuario() {
             exibeAlerta('.alert-cadastro', "Usuário cadastrado com sucesso!", ['show', 'alert-success'], ['d-none'], 4000)
             // Redireciona para a página de login
             window.location.href = "/front/login.html"
-        } 
-        catch(e) {
+        }
+        catch (e) {
             apelidoInput.value = ""
             emailInput.value = ""
             senhaInput.value = ""
@@ -948,7 +1028,7 @@ async function fazerLogin() {
         try {
             const loginEndPoint = '/login'
             const URLcompleta = `${protocolo}${baseURL}${loginEndPoint}`
-            const response = await axios.post(URLcompleta, {email: emailInserido, senha: senhaInserida})
+            const response = await axios.post(URLcompleta, { email: emailInserido, senha: senhaInserida })
 
             emailInput.value = ""
             senhaInput.value = ""
@@ -960,7 +1040,7 @@ async function fazerLogin() {
             localStorage.setItem("idLogin", idLogin)
             localStorage.setItem("idTipoLogin", idTipoLogin)
             window.location.href = "/front/index.html"
-        }catch(e) {
+        } catch (e) {
             emailInput.value = ""
             senhaInput.value = ""
             exibeAlerta('.alert-login', "Falha na autenticação! Confira se você preencheu os campos corretamente!", ['show', 'alert-danger'], ['d-none'], 4000)
@@ -982,11 +1062,11 @@ async function prepararPaginaMensagensContato() {
 function exibirMesagens(mensagens) {
     console.log(mensagens)
     let divMensagens = document.querySelector('#mensagens')
-    for(let mensagem of mensagens) {
+    for (let mensagem of mensagens) {
 
         let divBorda = document.createElement('div')
         divBorda.className = "border border-3 rounded-2 my-3 p-4 col-md-8"
-        divBorda.style = "border-color: #002687 !important;"
+        divBorda.style = "border-color: #002687 !important; margin: auto;"
 
         let nome = document.createElement('p')
         nome.textContent = `Nome Completo: ${mensagem.nomeCompleto}`
@@ -994,9 +1074,9 @@ function exibirMesagens(mensagens) {
         let email = document.createElement('p')
         email.textContent = `E-mail: ${mensagem.email}`
 
-        let duvida = document.createElement('textarea')
-        duvida.value = `Mensagem: ${mensagem.duvida}`
-        duvida.style = "border-color: transparent; height: 50%; width: 100%; font-size: large"
+        let duvida = document.createElement('p')
+        duvida.textContent = `Mensagem: ${mensagem.duvida}`
+       
         divBorda.appendChild(nome)
         divBorda.appendChild(email)
         divBorda.appendChild(duvida)
@@ -1008,16 +1088,16 @@ function mostrarSenha(idInput, idButton, idInput2) {
     const senhaInput = document.getElementById(idInput)
     const button = document.getElementById(idButton)
 
-    if(idInput2) {
+    if (idInput2) {
         const senhaInput2 = document.getElementById(idInput2)
-        if (senhaInput2.type == "password"){
+        if (senhaInput2.type == "password") {
             senhaInput2.type = "text"
         }
         else {
             senhaInput2.type = "password"
         }
     }
-    
+
     if (senhaInput.type == "password") {
         senhaInput.type = "text"
         button.textContent = "Esconder Senha"
@@ -1030,7 +1110,7 @@ function mostrarSenha(idInput, idButton, idInput2) {
 function enableEdit(fieldId) {
     const field = document.getElementById(fieldId);
     const button = document.getElementById('edit' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1) + 'Button');
-    
+
     field.disabled = false;
     button.style.display = "none";
 }
@@ -1043,7 +1123,7 @@ function modoDaTela() {
         document.body.classList.remove('night-mode');
         document.getElementById('toggleModeButton').textContent = 'Modo Escuro';
     }
-    document.getElementById('toggleModeButton').addEventListener('click', function() {
+    document.getElementById('toggleModeButton').addEventListener('click', function () {
         document.body.classList.toggle('night-mode');
         if (document.body.classList.contains('night-mode')) {
             localStorage.setItem('theme', 'dark');
@@ -1053,4 +1133,107 @@ function modoDaTela() {
             this.textContent = 'Modo Noturno';
         }
     });[]
+}
+async function adicionarDesafio() {
+    // Pega os valores dos campos de input
+    let enunciado = document.querySelector('#perguntaTextarea')
+    let respostacorreta = document.querySelector('#respostacorretaTextarea')
+    let resposta1 = document.querySelector('#respostaincorreta1Textarea')
+    let resposta2 = document.querySelector('#respostaincorreta2Textarea')
+    let resposta3 = document.querySelector('#respostaincorreta3Textarea')
+    let resposta4 = document.querySelector('#respostaincorreta4Textarea')
+    let resolucao = document.querySelector('#resolucaoTextarea')
+    let select = document.querySelector('#topicoDesafio')
+    select = select.value 
+    console.log (select)
+     enunciado = enunciado.value
+     respostacorreta = respostacorreta.value
+     resposta1 = resposta1.value
+     resposta2 = resposta2.value
+     resposta3 = resposta3.value
+     resposta4 = resposta4.value
+     resolucao = resolucao.value
+    if (enunciado && respostacorreta && resposta1 && resposta2 && resposta3) {
+        try {
+            const desafiosEndPoint = '/desafios'
+            const URLcompleta = `${protocolo}${baseURL}${desafiosEndPoint}`
+            const response = await axios.post(URLcompleta, {enunciado: enunciado, respostacorreta: respostacorreta, resposta1: resposta1, resposta2: resposta2, resposta3: resposta3, resposta4: resposta4, resolucao: resolucao, select: select})
+
+            enunciado.value = ""
+            respostacorreta.value = ""
+            resposta1.value = ""
+            resposta2.value = ""
+            resposta3.value = ""
+            resposta4.value = ""
+            resolucao.value = ""
+
+            exibeAlerta('.alert-desafios', "Questão enviada com sucesso!", ['show', 'alert-success'], ['d-none'], 4000)
+        }catch(e) {
+            enunciado.value = ""
+            respostacorreta.value = ""
+            resposta1.value = ""
+            resposta2.value = ""
+            resposta3.value = ""
+            resposta4.value = ""
+            resolucao.value = ""
+            exibeAlerta('.alert-desafios', "Falha ao enviar o desafio", ['show', 'alert-danger'], ['d-none'], 4000)
+        }
+    }
+    else {
+        exibeAlerta('.alert-desafios', "Preencha todos os campos!", ['show', 'alert-danger'], ['d-none'], 2000)
+    }
+}
+async function exibirTopicoDesafios(){
+    let select = document.querySelector('#topicoDesafio')
+    select.innerHTML = ""
+    const desafiosEndpoint = '/topico'
+    const URLcompleta = `${protocolo}${baseURL}${desafiosEndpoint}`
+    const desafios = (await axios.get(URLcompleta)).data
+    for(let desafio of desafios){
+        console.log(desafio.topicoDesafios)
+        const option = document.createElement('option')
+        option.innerHTML = desafio.topicoDesafios
+        option.value = desafio.idTopicoDesafios
+        console.log (option.value)
+        select.appendChild(option)
+    }
+}
+function mostrarCampo(seletor, classesToAdd, classesToRemove, timeout) {
+   setTimeout(() => {
+    seletor.classList.remove(... classesToRemove)
+    seletor.classList.add(... classesToAdd)
+   }, timeout);
+
+   
+
+}
+
+
+function mostrarCampoTopico() {
+let input = document.querySelector('.inputclass')
+let button = document.querySelector('.buttonclass')
+input.classList.remove('d-none')
+button.classList.remove('d-none')
+   
+
+}
+async function adicionarTopico() {
+    let topicoInserido = (document.querySelector('#topicoInput'))
+    let topico = topicoInserido.value
+        if (topico){
+        try{
+            const topicoEndpoint = '/topico'
+            const URLtopico = `${protocolo}${baseURL}${topicoEndpoint}`
+            const response = await axios.post(URLtopico, {topico: topico})
+            console.log(response)
+            mostrarCampo('.inputclass','d-none','',2000 )
+        }
+        catch(e) {
+            console.log(e)
+        }
+    } else {
+        exibeAlerta('.alert-topico', 'Preencha o campo!', ['show','alert-danger'], ['d-none'], 4000)
+        console.log("Preencha todos os campos!")
+    }
+
 }

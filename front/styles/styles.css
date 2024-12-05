@@ -126,13 +126,13 @@ textarea {
     font-size: 80%;
 }
 
-#duvidaTextarea {
+#duvidaTextarea, #estacaoTextarea, #enderecoTextarea {
     background-color:#E6E6E6;
     height: 35%; 
     width: 100%;
 }
 
-#loginCadastroButton,#duvidaSendButton{
+#loginCadastroButton,#duvidaSendButton, #botaoTopico, #topicoAdicionar{
     background-color: #002687;
     color: white;
     height: 50px;
@@ -184,4 +184,19 @@ button#toggleModeButton {
     background-color: transparent;
     font-size: larger !important; 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+#perguntaTextarea, #respostacorretaTextarea, #respostaincorreta1Textarea, #respostaincorreta2Textarea, #respostaincorreta3Textarea, #respostaincorreta4Textarea, #resolucaoTextarea {
+    background-color:#E6E6E6;
+    height: 35%; 
+    width: 100%;
+}
+
+#topicoLabel {
+    font-size: 100%;
+}
+
+#topicoInput{
+    background-color:#E6E6E6;
+    height: 40px; 
+    width: 100%;
 }

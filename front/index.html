@@ -20,9 +20,14 @@
                 <a>
                     <img src="images/logo_matematica_no_metro.JPG" id="icon-menu"
                         alt="Esta imagem representa o logo do projeto Matemática no Metrô">
+                    <img src="images/logo_matematica_no_metro.JPG" id="icon-menu"
+                        alt="Esta imagem representa o logo do projeto Matemática no Metrô">
                 </a>
                 <a class="navbar-brand mx-sm-3" id="tituloSite">MATEMÁTICA NO METRÔ</a>
 
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#myNav"
+                    aria-controls="myNav" aria-expanded="false" aria-label="Toggle Navigation">
+                    <span class="navbar-toggler-icon"></span>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#myNav"
                     aria-controls="myNav" aria-expanded="false" aria-label="Toggle Navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -46,10 +51,14 @@
                         <li class="nav-item">
                             <a class="nav-link me-2 d-none" id="logoutButton" href="index.html"
                                 onclick="logout()">Logout</a>
+                            <a class="nav-link me-2 d-none" id="logoutButton" href="index.html"
+                                onclick="logout()">Logout</a>
                         </li>
                     </ul>
                 </div>
                 <a class="nav-link login-link">
+                    <img src="images/login_icon.png" id="icon"
+                        alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
                     <img src="images/login_icon.png" id="icon"
                         alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
                 </a>
@@ -59,6 +68,7 @@
 
     <!-- Conteúdo da página -->
     <main>
+        <!-- editar horarios -->
         <div class="modal fade" id="modalHorarios">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -103,11 +113,95 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary"
                             data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-primary" onclick="salvarHorario()">Adicionar</button>
+                        <button type="submit" class="btn btn-primary" onclick="salvarHorario()">Adicionar</button>
                     </div>
                 </div>
             </div>
         </div>
+
+
+        <!-- apagar horarios -->
+        <div class="modal fade" id="modalApagarHorarios">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Apagar Horários</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert d-none alert-dismissible fade
+                        alert-modal-cadastro" role="alert"></div>
+                        <form>
+                            <div>Selecione um horário:</div>
+                            <select id="deletHorarios" class="form-select" aria-label="Default select example">
+                                <option selected>Horarios</option>
+                            </select>
+                        </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" onclick="apagarHorarios()" class="btn btn-primary">Apagar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- editar endereços -->
+        <div class="modal fade" id="modalEnderecos">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Editar Endereços</h1>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="alert d-none alert-dismissible fade
+                                alert-modal-cadastro" role="alert"></div>
+                        <label for="enderecoTextarea" class="col-form-label">Digite um novo endereço:</label>
+                        <div>
+                            <textarea placeholder="Digite sua mensagem" id="enderecoTextarea"></textarea>
+                        </div>
+                        <label for="estacaoTextarea" class="col-form-label">Digite uma nova estação:</label>
+                        <div>
+                            <textarea placeholder="Digite sua mensagem" id="estacaoTextarea"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" onclick="postarEnderecos()" class="btn btn-primary">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- apagar endereços -->
+        <div class="modal fade" id="modalApagarEnderecos">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Apagar Endereços</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert d-none alert-dismissible fade
+                                alert-modal-cadastro" role="alert"></div>
+                        <form>
+                            <div>Selecione um(a) estação/endereço:</div>
+                            <select id="deletEnderecos" class="form-select" aria-label="Default select example">
+                                <option selected>Estações/Endereços</option>
+
+                            </select>
+                        </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" onclick="apagarEnderacoes()" class="btn btn-primary">Apagar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="container my-4">
             <div class="row">
                 <div class="col-md-6 align-self-center">
@@ -149,10 +243,11 @@
 
                         </div>
                         <div class="d-flex justify-content-center">
-                            <button data-bs-toggle="modal" data-bs-target="#" id="editarEnderecosButton"
-                                class="dismissable btn mx-2">Editar endereços</button>
-                            <button data-bs-toggle="modal" data-bs-target="#" id="deletarEnderecosButton"
-                                class="dismissable btn mx-2">Apagar endereços</button>
+                            <button data-bs-toggle="modal" data-bs-target="#modalEnderecos" id="editarEnderecosButton"
+                                class="dismissable d-none btn mx-2">Editar endereços</button>
+                            <button data-bs-toggle="modal" data-bs-target="#modalApagarEnderecos"
+                                id="deletarEnderecosButton" onclick="exibirEnderacoes()"
+                                class="dismissable d-none btn mx-2">Apagar endereços</button>
                         </div>
                     </div>
                     <div class="col-sm-6 my-auto">
@@ -172,9 +267,9 @@
                         </table>
                         <div class="d-flex justify-content-center">
                             <button data-bs-toggle="modal" data-bs-target="#modalHorarios" id="editarHorariosButton"
-                                onclick="exibirEstacoes()" class="dismissable btn mx-2">Editar horários</button>
-                            <button data-bs-toggle="modal" data-bs-target="#" id="deletarHorariosButton"
-                                class="dismissable btn mx-2">Apagar horários</button>
+                                onclick="exibirEstacoes()" class="dismissable d-none btn mx-2">Editar horários</button>
+                            <button data-bs-toggle="modal" onclick="exibirHorarioss()" data-bs-target="#modalApagarHorarios" id="deletarHorariosButton"
+                                class="dismissable d-none btn mx-2">Apagar horários</button>
                         </div>
                     </div>
                 </div>

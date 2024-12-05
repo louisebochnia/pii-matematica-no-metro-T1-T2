@@ -44,13 +44,14 @@ app.get('/horarios', async (req, res) => {
         const session = await mysqlx.getSession(config)
 
         // Executa a consulta
-        const resultado = await session.sql('SELECT tbDiasSemana.diaSemana, tbHorarios.horarioVoluntarios, tbEnderecos.estacao FROM tbDiasSemana JOIN tbHorarios ON tbDiasSemana.idDiaSemana = tbHorarios.idDiaSemana JOIN tbEnderecos ON tbHorarios.idEndereco = tbEnderecos.idEndereco ORDER BY tbHorarios.idDiaSemana DESC').execute()
+        const resultado = await session.sql('SELECT tbDiasSemana.diaSemana, tbHorarios.horarioVoluntarios, tbEnderecos.estacao, tbHorarios.idHorario FROM tbDiasSemana JOIN tbHorarios ON tbDiasSemana.idDiaSemana = tbHorarios.idDiaSemana JOIN tbEnderecos ON tbHorarios.idEndereco = tbEnderecos.idEndereco ORDER BY tbHorarios.idDiaSemana DESC').execute()
 
         // Converte o resultado em array
         const horarios = resultado.fetchAll().map(horario => ({
             diaSemana: horario[0],
             horarioVoluntarios: horario[1],
-            estacao: horario[2]
+            estacao: horario[2],
+            idHorario: horario[3]
         }))
 
         // Envia os horários como resposta em formato JSON
@@ -132,6 +133,61 @@ app.post('/uploadForum', upload.single('imagem'), async (req, res) => {
         res.status(500).send("Erro ao salvar a imagem.");
     }
 });
+
+app.get('/topico', async (req, res) => {
+    try {
+        console.log ('entrei no try')
+        const session = await mysqlx.getSession(config)
+        const resultado = await session.sql('select idTopicoDesafios, topicoDesafio from tbTopicosDesafios').execute()
+        console.log ('entrei no try2')
+
+        const topicosDesafios = resultado.fetchAll().map(desafio => ({
+            idtopicoDesafios: desafio[0],
+            topicoDesafios: desafio[1]
+        }))
+        console.log (topicosDesafios)
+        res.json(topicosDesafios)
+        await session.close()
+    }
+    catch (e) {
+      console.log("Erro ao pegar topicos")
+    }
+})
+
+app.post('/desafios', async (req, res) => {
+    try {
+        const enunciado = req.body.enunciado
+        const respostacorreta = req.body.respostacorreta
+        const resposta1 = req.body.resposta1
+        const resposta2 = req.body.resposta2
+        const resposta3 = req.body.resposta3
+        const resposta4 = req.body.resposta4
+        const resolucao = req.body.resolucao
+        const select = req.body.select
+        const session = await mysqlx.getSession(config)
+        await session.sql('Insert into tbDesafios (idTopicoDesafios, questao, respostaCorreta, respostaIncorreta1, respostaIncorreta2, respostaIncorreta3, respostaIncorreta4, resolucao) values(?, ?, ?, ?, ?, ?, ?, ?)').bind(select, enunciado, respostacorreta, resposta1, resposta2, resposta3, resposta4, resolucao).execute()
+        res.status(200).send('Desafio enviado com sucesso!')
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao enviar os dados.')
+    }
+})
+app.post('/topico', async (req, res) => {
+    try {
+        const topico = req.body.topico
+        const session = await mysqlx.getSession(config)
+        await session.sql('insert into tbTopicosDesafios (topicoDesafio) values (?)').bind(topico).execute()
+        res.status(200).send('Topico salvo!')
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao atualizar o topico.')
+    }
+})
+
 
 app.post('/posts', async (req, res) => {
     try {
@@ -227,7 +283,7 @@ app.get('/avisos', async (req, res) => {
     }
 })
 
-app.get('/enderecos', async (req, res) => {
+app.get('/enderacoes', async (req, res) => {
     try {
         const session = await mysqlx.getSession(config)
 
@@ -362,6 +418,41 @@ app.post('/desafios', async (req, res) => {
     }
 })
 
+app.post('/enderacoes', async(req, res) => {
+    try {
+        const estacao = req.body.estacao
+        const session = await mysqlx.getSession(config) 
+
+        const respSQL = await session.sql("DELETE FROM tbEnderecos where estacao = ?").bind(estacao).execute()
+        console.log(respSQL)
+        res.status(200).send('Apagado com sucesso!')
+
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao apagar os dados.')
+    
+    }
+})
+
+app.post('/enderecos', async (req, res) => {
+    try {
+        const postEnderecos = req.body.postEnderecos
+        console.log(postEnderecos)
+        const postEstacoes = req.body.postEstacoes
+        console.log(postEstacoes)
+        const session = await mysqlx.getSession(config)
+        await session.sql('insert into tbEnderecos (endereco, estacao) values (?, ?)').bind(postEnderecos, postEstacoes).execute()
+        res.status(200).send('Estação salva com sucesso!')
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao atualizar os dados.')
+    }
+})
+
 // Postar uma dúvida na página contato
 app.post('/contato', async (req, res) => {
     try {
@@ -379,15 +470,14 @@ app.post('/contato', async (req, res) => {
     }
 })
 
-app.post('/horarios', async (req, res) => {
+app.post('/horarios', async (req,res) => {
     try {
         const diaSemanaInput = req.body.diaSemana
         const horarioInput = req.body.horario
         const estacaoInput = req.body.estacao
         const session = await mysqlx.getSession(config)
-        const diaSemana = await session.sql('SELECT idDiaSemana FROM tbDiasSemana WHERE diaSemana = ?').bind(diaSemanaInput).execute()
-        const endereco = await session.sql('SELECT idEndereco FROM tbEnderecos WHERE estacao = ?').bind(estacaoInput).execute()
-        await session.sql('insert into tbHorarios(idDiaSemana, horarioVoluntarios, idEndereco) values(?, ?, ?)').bind(diaSemana, horarioInput, endereco).execute()
+        const endereco = (await session.sql('SELECT idEndereco FROM tbEnderecos WHERE estacao = ?').bind(estacaoInput).execute()).fetchOne()
+        await session.sql('insert into tbHorarios(idDiaSemana, horarioVoluntarios, idEndereco) values(?, ?, ?)').bind(diaSemanaInput, horarioInput, endereco).execute()
         await session.close()
     }
     catch (e) {
@@ -395,19 +485,15 @@ app.post('/horarios', async (req, res) => {
     }
 })
 
-app.post('/horarios', async (req, res) => {
+app.post('/horarioss', async (req,res) => {
     try {
-        const diaSemanaInput = req.body.diaSemana
-        const horarioInput = req.body.horario
-        const estacaoInput = req.body.estacao
-        const session = await mysqlx.getSession(config)
-        const diaSemana = await session.sql('SELECT idDiaSemana FROM tbDiasSemana WHERE diaSemana = ?').bind(diaSemanaInput).execute()
-        const endereco = await session.sql('SELECT idEndereco FROM tbEnderecos WHERE estacao = ?').bind(estacaoInput).execute()
-        await session.sql('insert into tbHorarios(idDiaSemana, horarioVoluntarios, idEndereco) values(?, ?, ?)').bind(diaSemana, horarioInput, endereco).execute()
-        await session.close()
+    let idHorario = req.body.idHorario
+    const session = await mysqlx.getSession(config)
+    const resultado = await session.sql('DELETE FROM tbHorarios where idHorario = ?').bind(idHorario).execute()
+    await session.close()
     }
-    catch (e) {
-        console.log('erro nos horários')
+    catch(e) {
+        console.log('erro ao apagar os horários')
     }
 })
 
