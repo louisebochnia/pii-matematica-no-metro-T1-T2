@@ -66,9 +66,74 @@
                     Esta área do site concentra questões para exercitar matemática, incluindo contas básicas do dia a dia, como operações básicas e de porcentagem, até questões mais difíceis, como trigonometria e exercícios de vestibulares. Para abrir a lista de exercícios, selecione a matéria desejada, e para ver a resolução do exercício, clique em "Responder" a pergunta.
                 </p>
                 <div class="container-md p-3 mb-3 topico-desafios"></div>
+                <button data-bs-toggle="modal" data-bs-target="#modalquestoes" id="editarEnderecosButton" class="dismissable btn" onclick="exibirTopicoDesafios()">Adicionar questões</button>
 
             </div>
         </div>
+
+        <div class="modal fade" id="modalquestoes">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Adicionar uma nova questão</h1>
+                    </div>
+
+                    <div class="modal-body">
+                        <label class="my-2" id="topicoLabel" for="topicoDesafio">Selecione o tópico do desafio:</label>
+                        <select id="topicoDesafio" class="form-select" aria-label="Default select example">
+                            <option selected>Tópico do desafio</option>
+                        </select>
+                        <div class="justify-content-center my-2 buttonclass">
+                            <div class="row"><button class="btn " id="botaoTopico" onclick="mostrarCampoTopico()">Adicionar outro tópico </button></div>
+                        </div>
+                        <div class="d-none my-2 inputclass justify-content-center">
+                            <input type="text" id="topicoInput" placeholder="Digite o novo tópico">
+                            <div class="alert d-none alert-dismissible fade
+                            alert-topico my-3" role="alert"></div>
+                            <div class="justify-content-center my-2 buttonclass">
+                                <div class="row"> <button id="topicoAdicionar" type="button" class="btn " onclick="adicionarTopico()">Adicionar </button></div>
+                            </div>
+                            </div>
+                        <label for="perguntaTextarea" class="col-form-label">Digite uma nova pergunta:</label>
+                        <div>
+                            <textarea placeholder="Digite sua mensagem" id="perguntaTextarea"></textarea>
+                        </div>
+                        <label for="respostacorretaTextarea" class="col-form-label">Resposta correta</label>
+                        <div>
+                            <textarea placeholder="Digite sua mensagem" id="respostacorretaTextarea"></textarea>
+                        </div>
+                        <label for="respostaincorreta1Textarea" class="col-form-label">Resposta incorreta</label>
+                        <div>
+                            <textarea placeholder="Digite sua mensagem" id="respostaincorreta1Textarea"></textarea>
+                        </div>
+                        <label for="respostaincorreta2Textarea" class="col-form-label">Resposta incorreta</label>
+                        <div>
+                            <textarea placeholder="Digite sua mensagem" id="respostaincorreta2Textarea"></textarea>
+                        </div>
+                        <label for="respostaincorreta3Textarea" class="col-form-label">Resposta incorreta</label>
+                        <div>
+                            <textarea placeholder="Digite sua mensagem" id="respostaincorreta3Textarea"></textarea>
+                        </div>
+                        <label for="respostaincorreta4Textarea" class="col-form-label">Resposta incorreta</label>
+                        <div>
+                            <textarea placeholder="Digite sua mensagem" id="respostaincorreta4Textarea"></textarea>
+                        </div>
+                        <label for="resolucaoTextarea" class="col-form-label">Resolução</label>
+                        <div>
+                            <textarea placeholder="Digite sua mensagem" id="resolucaoTextarea"></textarea>
+                        </div>
+                        <div class="alert d-none alert-dismissible fade
+                                alert-desafios my-3" role="alert"></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" onclick="adicionarDesafio()">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
     
     <!-- Rodapé -->
