@@ -136,16 +136,13 @@ app.post('/uploadForum', upload.single('imagem'), async (req, res) => {
 
 app.get('/topico', async (req, res) => {
     try {
-        console.log ('entrei no try')
         const session = await mysqlx.getSession(config)
         const resultado = await session.sql('select idTopicoDesafios, topicoDesafio from tbTopicosDesafios').execute()
-        console.log ('entrei no try2')
 
         const topicosDesafios = resultado.fetchAll().map(desafio => ({
             idtopicoDesafios: desafio[0],
             topicoDesafios: desafio[1]
         }))
-        console.log (topicosDesafios)
         res.json(topicosDesafios)
         await session.close()
     }
@@ -154,7 +151,49 @@ app.get('/topico', async (req, res) => {
     }
 })
 
-app.post('/desafios', async (req, res) => {
+app.get('/questao', async (req, res) => {
+    try {
+        const idTopico = req.body.idTopico
+        const session = await mysqlx.getSession(config)
+        const resultado = await session.sql('SELECT idQuestao, questao, imagemURL, respostaCorreta, respostaIncorreta1, respostaIncorreta2, respostaIncorreta3, respostaIncorreta4 resolucao FROM tbDesafios ON WHERE idTopicoDesafios = ?').bind(idTopico).execute()
+
+        const desafios = resultado.fetchAll().map(desafio => ({
+            idQuestao: desafio[0],
+            enunciado: desafio[1],
+            imagemURL: desafio[2],
+            respostaCorreta: desafio[3],
+            respostaIncorreta1: desafio[4],
+            respostaIncorreta2: desafio[5],
+            respostaIncorreta3: desafio[6],
+            respostaIncorreta4: desafio[7],
+            resolucao: desafio[8]
+        }))
+        res.json(desafios)
+        await session.close()
+    }
+    catch (e) {
+      console.log("Erro ao pegar topicos")
+    }
+})
+
+
+app.post('/removerTopico', async (req, res) => {
+    try{
+        const idTopico = req.body.idTopico
+        console.log(idTopico)
+        const session = await mysqlx.getSession(config)
+        const result = await session.sql('DELETE FROM tbTopicosDesafios WHERE idTopicoDesafios = ?').bind(idTopico).execute()
+        console.log(result)
+        res.status(200).send('Tópico apagado com sucesso!')
+        await session.close()
+
+    }
+    catch (e) {
+        console.log("Erro ao apagar topico")
+    }
+})
+
+app.post('/desafioNovo', async (req, res) => {
     try {
         const enunciado = req.body.enunciado
         const respostacorreta = req.body.respostacorreta

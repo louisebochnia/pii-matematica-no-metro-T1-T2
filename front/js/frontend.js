@@ -26,6 +26,12 @@ function prepararPaginaSobreNos() {
 }
 
 async function prepararPaginaInicial() {
+    const modo = localStorage.getItem('tema')
+    if (modo == 'escuro') {
+        document.body.classList.add('night-mode')
+    } else if(modo == 'claro'){
+        document.body.classList.remove('night-mode')
+    }
     const idTipoLogin = localStorage.getItem("idTipoLogin")
     console.log(idTipoLogin)
     const logout = document.querySelector('#logoutButton')
@@ -180,6 +186,12 @@ async function postarEnderecos() {
 }
 
 async function prepararPaginaContato() {
+    const modo = localStorage.getItem('tema')
+    if (modo == 'escuro') {
+        document.body.classList.add('night-mode')
+    } else if(modo == 'claro'){
+        document.body.classList.remove('night-mode')
+    }
     const idTipoLogin = localStorage.getItem("idTipoLogin")
     const logout = document.querySelector('#logoutButton')
     const login = document.querySelector('.login-link')
@@ -737,18 +749,38 @@ async function enviarResposta(idTipoPost, idPost, idModal) {
 
 // Códigos para visualizar a página de Desafios 
 async function prepararPaginaDesafios() {
+    const modo = localStorage.getItem('tema')
+    if (modo == 'escuro') {
+        document.body.classList.add('night-mode')
+    } else if(modo == 'claro'){
+        document.body.classList.remove('night-mode')
+    }
     const idTipoLogin = localStorage.getItem("idTipoLogin")
     const logout = document.querySelector('#logoutButton')
     const login = document.querySelector('.login-link')
     const adicionarDesafio = document.querySelector('#adicionarDesafioButton')
+    // const apagarDesafio = document.querySelector('#apagarDesafioButton')
+    const verEstatisticas = document.querySelector('#verEstatisticasButton')
     if (idTipoLogin) {
         logout.classList.remove('d-none')
-        adicionarDesafio.classList.remove('d-none')
         login.setAttribute("href", 'configuracoes.html')
+        if(idTipoLogin == 1){
+            adicionarDesafio.classList.remove('d-none')
+            // apagarDesafio.classList.remove('d-none')
+            verEstatisticas.classList.remove('d-none')
+        }
+        else{
+            adicionarDesafio.classList.add('d-none')
+            // apagarDesafio.classList.add('d-none')
+            verEstatisticas.classList.add('d-none')
+        }
     }
     else {
         logout.classList.add('d-none')
         login.setAttribute("href", 'login.html')
+        adicionarDesafio.classList.add('d-none')
+        // apagarDesafio.classList.add('d-none')
+        verEstatisticas.classList.add('d-none')
     }
     const desafiosEndpoint = '/desafios'
     const URLcompletaDesafios = `${protocolo}${baseURL}${desafiosEndpoint}`
@@ -908,9 +940,12 @@ async function armazenarResposta(questao, assinalada, quantidade) {
 
 // Códigos para as páginas login e cadastro
 async function prepararPaginaLogin() {
-    const loginEndpoint = '/login'
-    const URLcompletaLogin = `${protocolo}${baseURL}${loginEndpoint}`
-    const login = (await axios.get(URLcompletaLogin)).data
+    const modo = localStorage.getItem('tema')
+    if (modo == 'escuro') {
+        document.body.classList.add('night-mode')
+    } else if(modo == 'claro'){
+        document.body.classList.remove('night-mode')
+    }
 }
 
 function exibeAlerta(seletor, innerHTML, classesToAdd, classesToRemove, timeout) {
@@ -1043,6 +1078,12 @@ async function fazerLogin() {
 }
 
 async function prepararPaginaMensagensContato() {
+    const modo = localStorage.getItem('tema')
+    if (modo == 'escuro') {
+        document.body.classList.add('night-mode')
+    } else if(modo == 'claro'){
+        document.body.classList.remove('night-mode')
+    }
     const mensagemEndpoint = '/mensagens'
     const URLcompleta = `${protocolo}${baseURL}${mensagemEndpoint}`
     const mensagens = (await axios.get(URLcompleta)).data
@@ -1100,6 +1141,12 @@ function mostrarSenha(idInput, idButton, idInput2) {
 
 // Funções para carregar a página Configurações
 async function prepararPaginaConfiguracoes() {
+    const modo = localStorage.getItem('tema')
+    if (modo == 'escuro') {
+        document.body.classList.add('night-mode')
+    } else if(modo == 'claro'){
+        document.body.classList.remove('night-mode')
+    }
     const id = localStorage.getItem("idLogin")
     console.log(id)
 
@@ -1177,16 +1224,16 @@ async function adicionarDesafio() {
     let select = document.querySelector('#topicoDesafio')
     select = select.value 
     console.log (select)
-     enunciado = enunciado.value
-     respostacorreta = respostacorreta.value
-     resposta1 = resposta1.value
-     resposta2 = resposta2.value
-     resposta3 = resposta3.value
-     resposta4 = resposta4.value
-     resolucao = resolucao.value
+    enunciado = enunciado.value
+    respostacorreta = respostacorreta.value
+    resposta1 = resposta1.value
+    resposta2 = resposta2.value
+    resposta3 = resposta3.value
+    resposta4 = resposta4.value
+    resolucao = resolucao.value
     if (enunciado && respostacorreta && resposta1 && resposta2 && resposta3) {
         try {
-            const desafiosEndPoint = '/desafios'
+            const desafiosEndPoint = '/desafioNovo'
             const URLcompleta = `${protocolo}${baseURL}${desafiosEndPoint}`
             const response = await axios.post(URLcompleta, {enunciado: enunciado, respostacorreta: respostacorreta, resposta1: resposta1, resposta2: resposta2, resposta3: resposta3, resposta4: resposta4, resolucao: resolucao, select: select})
 
@@ -1200,13 +1247,6 @@ async function adicionarDesafio() {
 
             exibeAlerta('.alert-desafios', "Questão enviada com sucesso!", ['show', 'alert-success'], ['d-none'], 4000)
         }catch(e) {
-            enunciado.value = ""
-            respostacorreta.value = ""
-            resposta1.value = ""
-            resposta2.value = ""
-            resposta3.value = ""
-            resposta4.value = ""
-            resolucao.value = ""
             exibeAlerta('.alert-desafios', "Falha ao enviar o desafio", ['show', 'alert-danger'], ['d-none'], 4000)
         }
     }
@@ -1214,35 +1254,72 @@ async function adicionarDesafio() {
         exibeAlerta('.alert-desafios', "Preencha todos os campos!", ['show', 'alert-danger'], ['d-none'], 2000)
     }
 }
-async function exibirTopicoDesafios(){
-    let select = document.querySelector('#topicoDesafio')
+
+async function removerTopicoDesafio() {
+    const select = document.querySelector('#topicoApagarDesafio')
+    const topico = select.value
+    if(topico){
+        try {
+            const removerEndpoint = '/removerTopico'
+            const URLcompleta = `${protocolo}${baseURL}${removerEndpoint}`
+            await axios.post(URLcompleta, {idTopico: topico})
+
+            exibirTopicoDesafios('#topicoApagarDesafio')
+
+            exibeAlerta('.alert-remover-desafios', "Tópico removido com sucesso!", ['show', 'alert-success'], ['d-none'], 4000)
+        }catch(e) {
+            exibeAlerta('.alert-remover-desafios', "Para remover um tópico é importante que não há nenhuma questão relacionada a ele!", ['show', 'alert-danger'], ['d-none'], 4000)
+        }
+    }
+    else {
+        exibeAlerta('.alert-remover-desafios', "Selecione um tópico", ['show', 'alert-danger'], ['d-none'], 2000)
+    }
+}
+
+
+async function exibirTopicoDesafios(seletor){
+    let select = document.querySelector(seletor)
     select.innerHTML = ""
     const desafiosEndpoint = '/topico'
     const URLcompleta = `${protocolo}${baseURL}${desafiosEndpoint}`
     const desafios = (await axios.get(URLcompleta)).data
     for(let desafio of desafios){
-        console.log(desafio.topicoDesafios)
         const option = document.createElement('option')
         option.innerHTML = desafio.topicoDesafios
-        option.value = desafio.idTopicoDesafios
-        console.log (option.value)
+        option.value = desafio.idtopicoDesafios
         select.appendChild(option)
+        if(seletor == "#topicoApagarDesafio"){
+            option.addEventListener("mouseover", async function () {
+                let select2 = document.querySelector('#topicoApagarQuestao')
+                select2.innerHTML = ""
+                const questoesEndpoint = '/questoes'
+                const URLcompletaQuestoes = `${protocolo}${baseURL}${questoesEndpoint}`
+                const questoes = (await axios.get(URLcompletaQuestoes)).data
+                for(let questao of questoes){
+                    const optionQuestao = document.createElement('option')
+                    optionQuestao.innerHTML = questao.enunciado
+                    optionQuestao.value = questao.idDesafio
+                    select2.appendChild(optionQuestao)
+                    optionQuestao.addEventListener("click", async function () {
+
+                    })
+                }
+            })
+        }
     }
 }
 
-function mostrarCampo(seletor, classesToAdd, classesToRemove, timeout) {
-   setTimeout(() => {
-    seletor.classList.remove(... classesToRemove)
-    seletor.classList.add(... classesToAdd)
-   }, timeout);
-}
-
-
-function mostrarCampoTopico() {
-    let input = document.querySelector('.inputclass')
-    let button = document.querySelector('.buttonclass')
-    input.classList.remove('d-none')
-    button.classList.remove('d-none')
+function mostrarCampo(seletor, classesToAdd, classesToRemove) {
+    let elemento = document.querySelector(seletor)
+    if(classesToAdd){
+        elemento.classList.add(... classesToAdd)
+    }
+    if(classesToRemove){
+        console.log(classesToRemove)
+        console.log(elemento)
+        elemento.classList.remove(... classesToRemove)
+    }
+     
 }
 
 async function adicionarTopico() {
@@ -1254,7 +1331,8 @@ async function adicionarTopico() {
             const URLtopico = `${protocolo}${baseURL}${topicoEndpoint}`
             const response = await axios.post(URLtopico, {topico: topico})
             console.log(response)
-            mostrarCampo('.inputclass','d-none','',2000 )
+            mostrarCampo('.inputclass', ['d-none'], null)
+            exibirTopicoDesafios('#topicoAdicionarDesafio')
         }
         catch(e) {
             console.log(e)
@@ -1264,4 +1342,105 @@ async function adicionarTopico() {
         console.log("Preencha todos os campos!")
     }
 
+}
+
+async function prepararPaginaEstatisticas() {
+    const modo = localStorage.getItem('tema')
+    if (modo == 'escuro') {
+        document.body.classList.add('night-mode')
+    } else if(modo == 'claro'){
+        document.body.classList.remove('night-mode')
+    }
+    const idTipoLogin = localStorage.getItem("idTipoLogin")
+    const logout = document.querySelector('#logoutButton')
+    const login = document.querySelector('.login-link')
+    if (idTipoLogin) {
+        logout.classList.remove('d-none')
+        login.setAttribute("href", 'configuracoes.html')
+    }
+    else {
+        logout.classList.add('d-none')
+        login.setAttribute("href", 'login.html')
+    }
+    const desafiosEndpoint = '/desafios'
+    const URLcompletaDesafios = `${protocolo}${baseURL}${desafiosEndpoint}`
+    const desafios = (await axios.get(URLcompletaDesafios)).data
+    exibirEstatisticas(desafios)
+}
+
+function exibirEstatisticas(topicosDesafio){
+    let div = document.querySelector('.topico-desafios')
+    div.innerHTML = ""
+
+    //coloca e exibe todos os tópicos de desafios na página
+    for (let topicoDesafio of topicosDesafio) {
+        const details = document.createElement('details')
+        details.className = "my-2"
+        const summary = document.createElement('summary')
+        summary.textContent = topicoDesafio.topico
+        details.appendChild(summary)
+        let i = 1
+
+        //coloca e exibe todos os desafios da lista desafio na página na página
+        for (let desafio of topicoDesafio.desafio) {
+            const divQuestao = document.createElement('div')
+            divQuestao.className = "my-2 p-4 border-bottom border-3"
+            divQuestao.style = "border-color: #002687 !important;"
+
+            const enunciado = document.createElement('p')
+            enunciado.innerHTML = `${i}.  ${desafio.questao}`
+
+            const escolha = document.createElement('p')
+            escolha.style = "font-weight: bold;"
+            escolha.innerHTML = "Porcentagem das respostas assinaladas:"
+
+            const qtdeRespCorreta = desafio.porcentagemRespCorreta
+            const qntdRespIncorreta1 = desafio.porcentagemRespIncorretas[0]
+            const qntdRespIncorreta2 = desafio.porcentagemRespIncorretas[1]
+            const qntdRespIncorreta3 = desafio.porcentagemRespIncorretas[2]
+            const qntdRespIncorreta4 = desafio.porcentagemRespIncorretas[3]
+            const qtdeTotal = qtdeRespCorreta + qntdRespIncorreta1 + qntdRespIncorreta2 + qntdRespIncorreta3 + qntdRespIncorreta4
+            const porcentagemRespCorreta = qtdeRespCorreta / qtdeTotal * 100
+            const porcentagemRespIncorreta1 = qntdRespIncorreta1 / qtdeTotal * 100
+            const porcentagemRespIncorreta2 = qntdRespIncorreta2 / qtdeTotal * 100
+            const porcentagemRespIncorreta3 = qntdRespIncorreta3 / qtdeTotal * 100
+            const porcentagemRespIncorreta4 = qntdRespIncorreta4 / qtdeTotal * 100
+
+            const divPorcentagens = document.createElement('div')
+
+            const p1 = document.createElement('p')
+            p1.textContent = `Resposta correta(${desafio.alternativas[0]}): ${porcentagemRespCorreta}`
+            divPorcentagens.appendChild(p1)
+            const p2 = document.createElement('p')
+            p2.textContent = `${desafio.alternativas[1]}: ${porcentagemRespIncorreta1}`
+            divPorcentagens.appendChild(p2)
+            const p3 = document.createElement('p')
+            p3.textContent = `${desafio.alternativas[2]}: ${porcentagemRespIncorreta2}`
+            divPorcentagens.appendChild(p3)
+            const p4 = document.createElement('p')
+            p4.textContent = `${desafio.alternativas[3]}: ${porcentagemRespIncorreta3}`
+            divPorcentagens.appendChild(p4)
+            if(desafio.alternativas[4]){
+                const p5 = document.createElement('p')
+                p5.textContent = `${desafio.alternativas[4]}: ${porcentagemRespIncorreta4}`
+                divPorcentagens.appendChild(p5)
+            }
+
+            const divResolucao = document.createElement('div')
+            const resolucao = document.createElement('p')
+            resolucao.innerHTML = desafio.resolucao
+            divResolucao.appendChild(resolucao)
+
+            divQuestao.appendChild(enunciado)
+            divQuestao.appendChild(divPorcentagens)
+            divQuestao.appendChild(divResolucao)
+
+            details.appendChild(divQuestao)
+
+            i++
+        }
+
+        div.appendChild(details)
+
+    }
 }

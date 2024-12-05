@@ -75,8 +75,12 @@
                 <p >
                     Esta área do site concentra questões para exercitar matemática, incluindo contas básicas do dia a dia, como operações básicas e de porcentagem, até questões mais difíceis, como trigonometria e exercícios de vestibulares. Para abrir a lista de exercícios, selecione a matéria desejada, e para ver a resolução do exercício, clique em "Responder" a pergunta.
                 </p>
-                <div class="container-md p-3 mb-3 topico-desafios"></div>
-                <button data-bs-toggle="modal" data-bs-target="#modalquestoes" id="adicionarDesafioButton" class="dismissable btn d-none" onclick="exibirTopicoDesafios()">Adicionar questões</button>
+                <div class="container-md p-3 mb-3 topico-desafios">
+
+                </div>
+                <button data-bs-toggle="modal" data-bs-target="#modalquestoes" id="adicionarDesafioButton" class="dismissable btn d-none" onclick="exibirTopicoDesafios('#topicoAdicionarDesafio')">Adicionar questão</button>
+                <!-- <button data-bs-toggle="modal" data-bs-target="#modalApagarQuestao" id="apagarDesafioButton" class="dismissable btn d-none" onclick="exibirTopicoDesafios('#topicoApagarDesafio')">Remover questão</button> -->
+                <button data-bs-toggle="modal" data-bs-target="#modalquestoes" id="verEstatisticasButton" class="dismissable btn d-none" onclick="window.location.href='estatisticas.html'">Ver Estatísticas</button>
 
             </div>
         </div>
@@ -90,22 +94,22 @@
 
                     <div class="modal-body">
                         <label class="my-2" id="topicoLabel" for="topicoDesafio">Selecione o tópico do desafio:</label>
-                        <select id="topicoDesafio" class="form-select" aria-label="Default select example">
+                        <select id="topicoAdicionarDesafio" class="form-select" aria-label="Default select example">
                             <option selected>Tópico do desafio</option>
+
                         </select>
                         <div class="d-flex justify-content-center my-3">
                             <div class="row col-12">
-                                <button class="btn" id="botaoTopico" onclick="mostrarCampoTopico()">Adicionar outro tópico</button>
+                                <button class="btn" id="botaoTopico" onclick="mostrarCampo('.inputclass', null, ['d-none'])">Adicionar outro tópico</button>
                             </div>
                         </div>
-                        <div class="d-none my-2 inputclass justify-content-center border border-gray border-2 p-2">
+                        <div class="d-none my-2 justify-content-center border border-gray border-2 p-2 inputclass">
                             <input type="text" id="topicoInput" placeholder="Digite o novo tópico">
-                            <div class="alert d-none alert-dismissible fade
-                            alert-topico my-3" role="alert"></div>
+                            <div class="alert d-none alert-dismissible fade alert-topico my-3" role="alert"></div>
                             <div class="d-flex justify-content-center mt-3">
                                 <div class="row mx-1"> 
                                     <div class="col-md-12 col-sm-6"> 
-                                        <button type="button" class="btn btn-outline-secondary" style="width: auto; height: 50px;" onclick="mostrarCampo([''], classesToAdd, classesToRemove, timeout)">Cancelar</button>
+                                        <button type="button" class="btn btn-outline-secondary" style="width: auto; height: 50px;" onclick="mostrarCampo('.inputclass', ['d-none'], null)">Cancelar</button>
                                     </div>
                                 </div>
                                 <div class="row mx-1">
@@ -149,6 +153,45 @@
                             <button type="button" class="btn btn-outline-secondary"
                                 data-bs-dismiss="modal">Cancelar</button>
                             <button type="button" class="btn btn-primary" onclick="adicionarDesafio()">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalApagarQuestao">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Adicionar uma nova questão</h1>
+                    </div>
+
+                    <div class="modal-body">
+                        <label class="my-2" id="topicoLabel" for="topicoApagarDesafio">Selecione o tópico do desafio:</label>
+                        <select id="topicoApagarDesafio" class="form-select" aria-label="Default select example">
+                            <option selected>Tópico do desafio</option>
+
+                        </select>
+                        <div class="d-flex justify-content-center my-3">
+                            <div class="row col-12">
+                                <button class="btn" id="botaoTopico" onclick="removerTopicoDesafio()">Remover tópico</button>
+                            </div>
+                        </div>
+                        <div class="d-none my-2 justify-content-center border border-gray border-2 p-2 inputclass">
+                            <div class="alert d-none alert-dismissible fade alert-topico my-3" role="alert"></div>
+                        </div>
+                        <label class="my-2" id="topicoLabel" for="topicoApagarQuestao">Selecione uma questão:</label>
+                        <select id="topicoApagarQuestao" class="form-select" aria-label="Default select example">
+                            <option selected>Enunciado da questão</option>
+
+                        </select>
+                        
+                        <div class="alert d-none alert-dismissible fade
+                                alert-remover-desafios my-3" role="alert"></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" onclick="adicionarDesafio()">Remover</button>
                         </div>
                     </div>
                 </div>
