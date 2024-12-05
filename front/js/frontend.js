@@ -1391,8 +1391,9 @@ function exibirEstatisticas(topicosDesafio){
             enunciado.innerHTML = `${i}.  ${desafio.questao}`
 
             const escolha = document.createElement('p')
-            escolha.style = "font-weight: bold;"
+            escolha.style = "font-weight: bold; padding: 3px;"
             escolha.innerHTML = "Porcentagem das respostas assinaladas:"
+            enunciado.appendChild(escolha)
 
             const qtdeRespCorreta = desafio.porcentagemRespCorreta
             const qntdRespIncorreta1 = desafio.porcentagemRespIncorretas[0]
@@ -1400,11 +1401,11 @@ function exibirEstatisticas(topicosDesafio){
             const qntdRespIncorreta3 = desafio.porcentagemRespIncorretas[2]
             const qntdRespIncorreta4 = desafio.porcentagemRespIncorretas[3]
             const qtdeTotal = qtdeRespCorreta + qntdRespIncorreta1 + qntdRespIncorreta2 + qntdRespIncorreta3 + qntdRespIncorreta4
-            const porcentagemRespCorreta = qtdeRespCorreta / qtdeTotal * 100
-            const porcentagemRespIncorreta1 = qntdRespIncorreta1 / qtdeTotal * 100
-            const porcentagemRespIncorreta2 = qntdRespIncorreta2 / qtdeTotal * 100
-            const porcentagemRespIncorreta3 = qntdRespIncorreta3 / qtdeTotal * 100
-            const porcentagemRespIncorreta4 = qntdRespIncorreta4 / qtdeTotal * 100
+            const porcentagemRespCorreta = Math.round(qtdeRespCorreta / qtdeTotal * 100) + '%'
+            const porcentagemRespIncorreta1 = Math.round(qntdRespIncorreta1 / qtdeTotal * 100) + '%'
+            const porcentagemRespIncorreta2 = Math.round(qntdRespIncorreta2 / qtdeTotal * 100) + '%'
+            const porcentagemRespIncorreta3 = Math.round(qntdRespIncorreta3 / qtdeTotal * 100) + '%'
+            const porcentagemRespIncorreta4 = Math.round(qntdRespIncorreta4 / qtdeTotal * 100) + '%'
 
             const divPorcentagens = document.createElement('div')
 
@@ -1428,8 +1429,9 @@ function exibirEstatisticas(topicosDesafio){
 
             const divResolucao = document.createElement('div')
             const resolucao = document.createElement('p')
-            resolucao.innerHTML = desafio.resolucao
+            resolucao.innerHTML = 'Resolução: ' + desafio.resolucao
             divResolucao.appendChild(resolucao)
+            // criarGrafico(porcentagemRespCorreta, porcentagemRespIncorreta1, porcentagemRespIncorreta2, porcentagemRespIncorreta3, porcentagemRespIncorreta4, )
 
             divQuestao.appendChild(enunciado)
             divQuestao.appendChild(divPorcentagens)
@@ -1444,3 +1446,57 @@ function exibirEstatisticas(topicosDesafio){
 
     }
 }
+//     // Dados do gráfico
+// async function criarGrafico(porcentagemRespCorreta, porcentagemRespIncorreta1, porcentagemRespIncorreta2, porcentagemRespIncorreta3, porcentagemRespIncorreta4, ){
+//         var ctx = document.getElementById('grafico').getContext('2d');
+//         var meuGrafico = new Chart(ctx, {
+//         type: 'bar', // tipo de gráfico (pode ser 'line', 'bar', 'pie', etc.)
+//         data: {
+//             labels: ['Alternativa correta', 'Alternativa incorreta1', 'Alternativa incorreta2', 'Alternativa incorreta3', 'Alternativa incorreta4'], // rótulos do eixo X
+//             datasets: [{
+//                 label: 'Alternativas', // título da série de dados
+//                 data: [porcentagemRespCorreta, porcentagemRespIncorretas, porcentagemRespIncorretas, porcentagemRespIncorretas, porcentagemRespIncorretas], // valores para cada mês
+//                 backgroundColor: [
+//                     'rgba(75, 192, 192, 0.2)', // Cor da alternativa correta
+//                     'rgba(255, 99, 132, 0.2)', // Cor das incorretas
+//                     'rgba(255, 159, 64, 0.2)',
+//                     'rgba(255, 205, 86, 0.2)',
+//                     'rgba(54, 162, 235, 0.2)'
+//                 ],
+//                 borderColor: [
+//                     'rgba(75, 192, 192, 1)',
+//                     'rgba(255, 99, 132, 1)',
+//                     'rgba(255, 159, 64, 1)',
+//                     'rgba(255, 205, 86, 1)',
+//                     'rgba(54, 162, 235, 1)'
+//                 ],
+//                 borderWidth: 1
+//             }]
+//         },
+//         options: {
+//             responsive: true, // Gráfico responsivo
+//             plugins: {
+//                 legend: {
+//                     display: true,
+//                     position: 'top'
+//                 }
+//             },
+//             scales: {
+//                 y: {
+//                     beginAtZero: true, // Começa no zero
+//                     title: {
+//                         display: true,
+//                         text: 'Porcentagem (%)'
+//                     }
+//                 },
+//                 x: {
+//                     title: {
+//                         display: true,
+//                         text: 'Alternativas'
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// )}
+    
