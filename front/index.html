@@ -18,18 +18,14 @@
         <nav class="navbar navbar-expand-md" id="menu-nav" data-bs-theme="dark">
             <div class="container-fluid">
                 <a>
-                    <img src="images/logo_matematica_no_metro.JPG" id="icon-menu" alt="Esta imagem representa o logo do projeto Matemática no Metrô">
+                    <img src="images/logo_matematica_no_metro.JPG" id="icon-menu"
+                        alt="Esta imagem representa o logo do projeto Matemática no Metrô">
                 </a>
                 <a class="navbar-brand mx-sm-3" id="tituloSite">MATEMÁTICA NO METRÔ</a>
 
-                <button class="navbar-toggler" 
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#myNav"
-                    aria-controls="myNav"
-                    aria-expanded="false"
-                    aria-label="Toggle Navigation">
-                <span class="navbar-toggler-icon"></span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#myNav"
+                    aria-controls="myNav" aria-expanded="false" aria-label="Toggle Navigation">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="nav nav-underline collapse navbar-collapse text-end" id="myNav">
@@ -48,12 +44,14 @@
                             <a class="nav-link me-2" href="desafios.html">Desafios</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link me-2 d-none" id="logoutButton" href="index.html" onclick="logout()">Logout</a>
+                            <a class="nav-link me-2 d-none" id="logoutButton" href="index.html"
+                                onclick="logout()">Logout</a>
                         </li>
                     </ul>
                 </div>
                 <a class="nav-link login-link">
-                    <img src="images/login_icon.png" id="icon" alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
+                    <img src="images/login_icon.png" id="icon"
+                        alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
                 </a>
             </div>
         </nav>
@@ -61,63 +59,156 @@
 
     <!-- Conteúdo da página -->
     <main>
+        <!-- editar horarios -->
         <div class="modal fade" id="modalHorarios">
             <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5">Editar horários</h1>
-                </div>
-        
-                <div class="modal-body">
-                  <div class="alert d-none alert-dismissible fade
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Editar horários</h1>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="alert d-none alert-dismissible fade
                                 alert-modal-cadastro" role="alert"></div>
-                  <form>
-                    <select id="selecionarDia" class="form-select" aria-label="Default select example">
-                        <option selected>Dias da semana</option>
-                        <option value="1">Domingo</option>
-                        <option value="2">Segunda-feira</option>
-                        <option value="3">Terça-feira</option>
-                        <option value="4">Quarta-feira</option>
-                        <option value="5">Quinta-feira</option>
-                        <option value="6">Sexta-feira</option>
-                        <option value="7">Sábado</option>
-                      </select>
-                      <div>
-                        <label class="my-2" for="primeiroHorario">Selecione um horario de início:</label>
-                        <div></div>
-                        <input type="time" id="primeiroHorario" name="primeiroHorario" required/> </div>
+                        <form>
+                            <select id="selecionarDia" class="form-select" aria-label="Default select example">
+                                <option selected>Dias da semana</option>
+                                <option value="1">Domingo</option>
+                                <option value="2">Segunda-feira</option>
+                                <option value="3">Terça-feira</option>
+                                <option value="4">Quarta-feira</option>
+                                <option value="5">Quinta-feira</option>
+                                <option value="6">Sexta-feira</option>
+                                <option value="7">Sábado</option>
+                            </select>
+                            <div>
+                                <label class="my-2" for="primeiroHorario">Selecione um horario de início:</label>
+                                <div></div>
+                                <input type="time" id="primeiroHorario" name="primeiroHorario" required />
+                            </div>
 
-                        <div>
-                        <label class="my-2" for="segundoHorario">Selecione um horario de encerramento:</label>
-                        <div></div>
-                        <input type="time" id="segundoHorario" name="segundoHorario" required /> </div>
+                            <div>
+                                <label class="my-2" for="segundoHorario">Selecione um horario de encerramento:</label>
+                                <div></div>
+                                <input type="time" id="segundoHorario" name="segundoHorario" required />
+                            </div>
 
-                      <div class="my-2">Estação</div>
-                      <select id="estacaoEdit" class="form-select" aria-label="Default select example">
-                        <option selected>Estações</option>
-                      </select>
-                  </form>
-                  <div class="alert d-none alert-dismissible fade alert-horarios my-3"></div>
+                            <div class="my-2">Estação</div>
+                            <select id="estacaoEdit" class="form-select" aria-label="Default select example">
+                                <option selected>Estações</option>
+                            </select>
+                        </form>
+                        <div class="alert d-none alert-dismissible fade alert-horarios my-3"></div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" onclick="salvarHorario()">Adicionar</button>
+                    </div>
                 </div>
-        
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                  <button type="button" class="btn btn-primary" onclick="salvarHorario()">Adicionar</button>
-                </div>
-              </div>
             </div>
-          </div>
+        </div>
+
+
+        <!-- apagar horarios -->
+        <div class="modal fade" id="modalApagarHorarios">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Apagar Horários</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert d-none alert-dismissible fade
+                        alert-modal-cadastro" role="alert"></div>
+                        <form>
+                            <div>Selecione um horário:</div>
+                            <select id="deletHorarios" class="form-select" aria-label="Default select example">
+                                <option selected>Horarios</option>
+                            </select>
+                        </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" onclick="apagarHorarios()" class="btn btn-primary">Apagar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- editar endereços -->
+        <div class="modal fade" id="modalEnderecos">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Editar Endereços</h1>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="alert d-none alert-dismissible fade
+                                alert-modal-cadastro" role="alert"></div>
+                        <label for="enderecoTextarea" class="col-form-label">Digite um novo endereço:</label>
+                        <div>
+                            <textarea placeholder="Digite sua mensagem" id="enderecoTextarea"></textarea>
+                        </div>
+                        <label for="estacaoTextarea" class="col-form-label">Digite uma nova estação:</label>
+                        <div>
+                            <textarea placeholder="Digite sua mensagem" id="estacaoTextarea"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" onclick="postarEnderecos()" class="btn btn-primary">Adicionar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- apagar endereços -->
+        <div class="modal fade" id="modalApagarEnderecos">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Apagar Endereços</h1>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert d-none alert-dismissible fade
+                                alert-modal-cadastro" role="alert"></div>
+                        <form>
+                            <div>Selecione um(a) estação/endereço:</div>
+                            <select id="deletEnderecos" class="form-select" aria-label="Default select example">
+                                <option selected>Estações/Endereços</option>
+
+                            </select>
+                        </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" onclick="apagarEnderacoes()" class="btn btn-primary">Apagar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="container my-4">
             <div class="row">
                 <div class="col-md-6 align-self-center">
                     <h3>SOBRE O PROJETO</h3>
                     <p>
                         O projeto Matemática no Metrô tem o objetivo de proporcionar aos passageiros do metrô,
-                        independentemente da idade, ajuda com suas dúvidas em matemática de forma voluntária. O projeto foi desenvolvido em parceria entre o Instituto de Engenharia de São Paulo e o Metrô Social, apoiados pelo Instituto Mauá de Tecnologia.
+                        independentemente da idade, ajuda com suas dúvidas em matemática de forma voluntária. O projeto
+                        foi desenvolvido em parceria entre o Instituto de Engenharia de São Paulo e o Metrô Social,
+                        apoiados pelo Instituto Mauá de Tecnologia.
                     </p>
                 </div>
                 <div class="col-md-6 text-center">
-                    <img src="images/imagem_voluntário.jpg" alt="Esta imagem mostra um voluntário trabalhando na estação de metrô Sacomã" style="width: 80%;">
+                    <img src="images/imagem_voluntário.jpg"
+                        alt="Esta imagem mostra um voluntário trabalhando na estação de metrô Sacomã"
+                        style="width: 80%;">
                 </div>
             </div>
         </div>
@@ -125,7 +216,8 @@
 
         <div class="my-4" id="info">
             <hr>
-            <div class="p-4" id="sinais" style="background-image: url('images/sinais_matematica.png'); background-repeat: repeat-x; background-size: auto;">
+            <div class="p-4" id="sinais"
+                style="background-image: url('images/sinais_matematica.png'); background-repeat: repeat-x; background-size: auto;">
             </div>
 
             <div class="container my-4">
@@ -133,20 +225,27 @@
                     <div class="col-sm-6">
                         <h3>LOCALIZAÇÃO</h3>
                         <h4 class="mt-2">Mapa</h4>
-                        <iframe src="https://www.google.com/maps/d/u/2/embed?mid=1nVsvGwLbGGA-cZ8mVktUEMHMjWRAJNY&ehbc=2E312F&noprof=1" width="640" height="480" style="width: 100%;"></iframe>
-                        <p class="mt-2">Clique <a href="https://maps.app.goo.gl/nBmhaDZZoNHXCYLs8" style="color:white">aqui</a> para ir ao Google Maps</p>
+                        <iframe
+                            src="https://www.google.com/maps/d/u/2/embed?mid=1nVsvGwLbGGA-cZ8mVktUEMHMjWRAJNY&ehbc=2E312F&noprof=1"
+                            width="640" height="480" style="width: 100%;"></iframe>
+                        <p class="mt-2">Clique <a href="https://maps.app.goo.gl/nBmhaDZZoNHXCYLs8"
+                                style="color:white">aqui</a> para ir ao Google Maps</p>
                         <h4 class="mt-2">Endereço</h4>
                         <div class="enderecos">
 
                         </div>
                         <div class="d-flex justify-content-center">
-                            <button data-bs-toggle="modal" data-bs-target="#" id="editarEnderecosButton" class="dismissable btn mx-2">Editar endereços</button>
-                            <button data-bs-toggle="modal" data-bs-target="#" id="deletarEnderecosButton" class="dismissable btn mx-2">Apagar endereços</button>
+                            <button data-bs-toggle="modal" data-bs-target="#modalEnderecos" id="editarEnderecosButton"
+                                class="dismissable d-none btn mx-2">Editar endereços</button>
+                            <button data-bs-toggle="modal" data-bs-target="#modalApagarEnderecos"
+                                id="deletarEnderecosButton" onclick="exibirEnderacoes()"
+                                class="dismissable d-none btn mx-2">Apagar endereços</button>
                         </div>
                     </div>
                     <div class="col-sm-6 my-auto">
                         <h3>HORÁRIOS DOS VOLUNTÁRIOS</h3>
-                        <table class="table table-bordered horarios" id="horarios" summary="A tabela mostra os horários que os voluntários estão presentes no metrô para tirar dúvidas e ajudar as pessoas. A primeira coluna possui os dias da semana em que os voluntários estão na estação, podendo variar entre todos os dias da semana. A segunda coluna possui os horários que os voluntários estão livres para atender as pessoas.">
+                        <table class="table table-bordered horarios" id="horarios"
+                            summary="A tabela mostra os horários que os voluntários estão presentes no metrô para tirar dúvidas e ajudar as pessoas. A primeira coluna possui os dias da semana em que os voluntários estão na estação, podendo variar entre todos os dias da semana. A segunda coluna possui os horários que os voluntários estão livres para atender as pessoas.">
                             <thead>
                                 <tr>
                                     <th id="elementos-horarios">Dia da Semana</th>
@@ -155,18 +254,21 @@
                                 </tr>
                             </thead>
                             <tbody>
-                               
+
                             </tbody>
                         </table>
                         <div class="d-flex justify-content-center">
-                            <button data-bs-toggle="modal" data-bs-target="#modalHorarios" id="editarHorariosButton" onclick="exibirEstacoes()" class="dismissable btn mx-2">Editar horários</button>
-                            <button data-bs-toggle="modal" data-bs-target="#" id="deletarHorariosButton" class="dismissable btn mx-2">Apagar horários</button>
+                            <button data-bs-toggle="modal" data-bs-target="#modalHorarios" id="editarHorariosButton"
+                                onclick="exibirEstacoes()" class="dismissable d-none btn mx-2">Editar horários</button>
+                            <button data-bs-toggle="modal" onclick="exibirHorarioss()" data-bs-target="#modalApagarHorarios" id="deletarHorariosButton"
+                                class="dismissable d-none btn mx-2">Apagar horários</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="p-4" id="sinais" style="background-image: url('images/sinais_matematica.png'); background-repeat: repeat-x; background-size: auto;">
+            <div class="p-4" id="sinais"
+                style="background-image: url('images/sinais_matematica.png'); background-repeat: repeat-x; background-size: auto;">
             </div>
             <hr>
         </div>
@@ -174,16 +276,22 @@
         <div class="container my-4">
             <h3>NESTE SITE</h3>
             <div class="row gap-3">
-                <a class="col-md-3 mx-md-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site" href="sobrenos.html">
-                    <img src="images/logo_matematica_no_metro.JPG" alt="Esta imagem possui uma outra logo para o site Matemática no Metrô">
+                <a class="col-md-3 mx-md-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site"
+                    href="sobrenos.html">
+                    <img src="images/logo_matematica_no_metro.JPG"
+                        alt="Esta imagem possui uma outra logo para o site Matemática no Metrô">
                     <p>Sobre Nós</p>
                 </a>
-                <a class="col-md-3 mx-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site" href="forum.html">
-                    <img src="images/forum.jpeg" alt="Esta imagem possui um balão de mensagem para representar a página do fórum do site">
+                <a class="col-md-3 mx-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site"
+                    href="forum.html">
+                    <img src="images/forum.jpeg"
+                        alt="Esta imagem possui um balão de mensagem para representar a página do fórum do site">
                     <p>Fórum</p>
                 </a>
-                <a class="col-md-3 mx-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site" href="desafios.html">
-                    <img src="images/desafios.jpeg" alt="Esta imagem possui um gráfico de função representar a página do desafio">
+                <a class="col-md-3 mx-auto mt-3 p-5 justify-content-center border rounded-4" id="neste-site"
+                    href="desafios.html">
+                    <img src="images/desafios.jpeg"
+                        alt="Esta imagem possui um gráfico de função representar a página do desafio">
                     <p>Desafios</p>
                 </a>
             </div>
@@ -208,7 +316,7 @@
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
         <div vw-plugin-wrapper>
-          <div class="vw-plugin-top-wrapper"></div>
+            <div class="vw-plugin-top-wrapper"></div>
         </div>
     </div>
     <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
@@ -217,14 +325,13 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous">
-    </script>
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        </script>
 
     <script src="js/frontend.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        
+
 </body>
 
 </html>
