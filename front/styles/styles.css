@@ -132,7 +132,7 @@ textarea {
     width: 100%;
 }
 
-#loginCadastroButton,#duvidaSendButton, #botaoTopico, #topicoAdicionar, #configuracoesButton, #editApelidoButton, #editEmailButton, #editSenhaButton{
+#loginCadastroButton,#duvidaSendButton, #botaoTopico, #topicoAdicionar, #configuracoesButton, #editApelidoButton, #editEmailButton, #editSenhaButton, #adicionarDesafioButton{
     background-color: #002687;
     color: white;
     height: 50px;

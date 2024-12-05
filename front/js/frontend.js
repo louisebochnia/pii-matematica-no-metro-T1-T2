@@ -714,8 +714,10 @@ async function prepararPaginaDesafios() {
     const idTipoLogin = localStorage.getItem("idTipoLogin")
     const logout = document.querySelector('#logoutButton')
     const login = document.querySelector('.login-link')
+    const adicionarDesafio = document.querySelector('#adicionarDesafioButton')
     if (idTipoLogin) {
         logout.classList.remove('d-none')
+        adicionarDesafio.classList.remove('d-none')
         login.setAttribute("href", 'configuracoes.html')
     }
     else {
@@ -1236,25 +1238,22 @@ async function exibirTopicoDesafios(){
         select.appendChild(option)
     }
 }
+
 function mostrarCampo(seletor, classesToAdd, classesToRemove, timeout) {
    setTimeout(() => {
     seletor.classList.remove(... classesToRemove)
     seletor.classList.add(... classesToAdd)
    }, timeout);
-
-   
-
 }
 
 
 function mostrarCampoTopico() {
-let input = document.querySelector('.inputclass')
-let button = document.querySelector('.buttonclass')
-input.classList.remove('d-none')
-button.classList.remove('d-none')
-   
-
+    let input = document.querySelector('.inputclass')
+    let button = document.querySelector('.buttonclass')
+    input.classList.remove('d-none')
+    button.classList.remove('d-none')
 }
+
 async function adicionarTopico() {
     let topicoInserido = (document.querySelector('#topicoInput'))
     let topico = topicoInserido.value

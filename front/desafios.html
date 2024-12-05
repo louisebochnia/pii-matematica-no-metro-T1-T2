@@ -66,7 +66,7 @@
                     Esta área do site concentra questões para exercitar matemática, incluindo contas básicas do dia a dia, como operações básicas e de porcentagem, até questões mais difíceis, como trigonometria e exercícios de vestibulares. Para abrir a lista de exercícios, selecione a matéria desejada, e para ver a resolução do exercício, clique em "Responder" a pergunta.
                 </p>
                 <div class="container-md p-3 mb-3 topico-desafios"></div>
-                <button data-bs-toggle="modal" data-bs-target="#modalquestoes" id="editarEnderecosButton" class="dismissable btn" onclick="exibirTopicoDesafios()">Adicionar questões</button>
+                <button data-bs-toggle="modal" data-bs-target="#modalquestoes" id="adicionarDesafioButton" class="dismissable btn d-none" onclick="exibirTopicoDesafios()">Adicionar questões</button>
 
             </div>
         </div>
@@ -83,17 +83,28 @@
                         <select id="topicoDesafio" class="form-select" aria-label="Default select example">
                             <option selected>Tópico do desafio</option>
                         </select>
-                        <div class="justify-content-center my-2 buttonclass">
-                            <div class="row"><button class="btn " id="botaoTopico" onclick="mostrarCampoTopico()">Adicionar outro tópico </button></div>
+                        <div class="d-flex justify-content-center my-3">
+                            <div class="row col-12">
+                                <button class="btn" id="botaoTopico" onclick="mostrarCampoTopico()">Adicionar outro tópico</button>
+                            </div>
                         </div>
-                        <div class="d-none my-2 inputclass justify-content-center">
+                        <div class="d-none my-2 inputclass justify-content-center border border-gray border-2 p-2">
                             <input type="text" id="topicoInput" placeholder="Digite o novo tópico">
                             <div class="alert d-none alert-dismissible fade
                             alert-topico my-3" role="alert"></div>
-                            <div class="justify-content-center my-2 buttonclass">
-                                <div class="row"> <button id="topicoAdicionar" type="button" class="btn " onclick="adicionarTopico()">Adicionar </button></div>
+                            <div class="d-flex justify-content-center mt-3">
+                                <div class="row mx-1"> 
+                                    <div class="col-md-12 col-sm-6"> 
+                                        <button type="button" class="btn btn-outline-secondary" style="width: auto; height: 50px;" onclick="mostrarCampo([''], classesToAdd, classesToRemove, timeout)">Cancelar</button>
+                                    </div>
+                                </div>
+                                <div class="row mx-1">
+                                    <div class="col-md-12 col-sm-6"> 
+                                        <button id="topicoAdicionar" type="button" class="btn" style="width: auto;" onclick="adicionarTopico()">Adicionar</button>
+                                    </div>
+                                </div>
                             </div>
-                            </div>
+                        </div>
                         <label for="perguntaTextarea" class="col-form-label">Digite uma nova pergunta:</label>
                         <div>
                             <textarea placeholder="Digite sua mensagem" id="perguntaTextarea"></textarea>
