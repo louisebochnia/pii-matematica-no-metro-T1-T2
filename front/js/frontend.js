@@ -396,7 +396,7 @@ function montarPost(divPost, post, formatacaoDiv, formatacaoBalao, div, tipo){
 
     if (post.imagemPost) { 
         let imgAviso = document.createElement('img')
-        imgAviso.src = post.imagemPost
+        imgAviso.src = `/front${post.imagemPost}`
         divBalao.appendChild(imgAviso)
     }
 
@@ -520,35 +520,61 @@ function criarModal (idPost, apelido) {
     document.body.appendChild(div1)
 }
 
-async function enviarPost () {
-    let idTipoPost = (document.querySelector('#selecionarTipoPost')).value
-    let idUsuario = localStorage.getItem("idLogin")
-    let textArea = document.querySelector('#mensagemPost')
-    let resposta = textArea.value
+async function enviarPost() {
+    let idTipoPost = document.querySelector('#selecionarTipoPost').value;
+    let idUsuario = localStorage.getItem("idLogin");
+    let textArea = document.querySelector('#mensagemPost');
+    let resposta = textArea.value;
 
-    const tempoPassado = Date.now()
-    let data = new Date(tempoPassado)
-    let hora = data.getHours().toString().padStart(2, '0')
-    let minuto = data.getMinutes().toString().padStart(2, '0')
-    let horarioAtual = `${hora}:${minuto}`
-    dataAtual = data.toLocaleDateString()
+    const fileInput = document.getElementById('imagemInput');
+    if (fileInput.files.length === 0) {
+        alert("Por favor, selecione uma imagem.");
+        return;
+    }
 
-    // Verifica se os valores necessários estão disponíveis
+    const tempoPassado = Date.now();
+    let data = new Date(tempoPassado);
+    let hora = data.getHours().toString().padStart(2, '0');
+    let minuto = data.getMinutes().toString().padStart(2, '0');
+    let horarioAtual = `${hora}:${minuto}`;
+    let dataAtual = data.toLocaleDateString();
+
     if (!idUsuario || !resposta) {
-        alert("Por favor, verifique os dados antes de enviar.")
-        return
+        alert("Por favor, verifique os dados antes de enviar.");
+        return;
     }
 
     try {
-        const postsEndPoint = '/posts'
-        const URLcompletaPosts = `${protocolo}${baseURL}${postsEndPoint}`
-        await axios.post(URLcompletaPosts, {postagem: resposta, idLogin: idUsuario, idTipoPostagem: idTipoPost, data: dataAtual, horario: horarioAtual})
-        prepararForum()
-        textArea.value = ""
+        const postsEndPoint = '/posts';
+        const URLcompletaPosts = `${protocolo}${baseURL}${postsEndPoint}`;
+        const respostaPost = await axios.post(URLcompletaPosts, {
+            postagem: resposta,
+            idLogin: idUsuario,
+            idTipoPostagem: idTipoPost,
+            data: dataAtual,
+            horario: horarioAtual
+        });
+
+        const idPostCriado = respostaPost.data.idPost[0]; // Extraindo o ID corretamente
+        console.log("ID do post criado:", idPostCriado);
+
+        // Enviar a imagem usando FormData
+        const formData = new FormData();
+        formData.append('imagem', fileInput.files[0]);
+        formData.append('idPost', idPostCriado);
+
+        const uploadEndpoint = '/uploadForum';
+        const URLcompletaUpload = `${protocolo}${baseURL}${uploadEndpoint}`;
+        const uploadResult = await axios.post(URLcompletaUpload, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+
+        console.log(uploadResult.data.message);
+        prepararForum();
+        textArea.value = ""; // Limpar o campo de texto
     } catch (error) {
-        console.error(error.response?.data || error.message)
+        console.error(error.response?.data || error.message);
     }
-    
 }
 
 async function enviarResposta (idTipoPost, idPost, idModal) {
@@ -556,6 +582,16 @@ async function enviarResposta (idTipoPost, idPost, idModal) {
     let resposta = (document.querySelector(idModal)).value
     let idTipoPostagem = idTipoPost
     let idPostResp = idPost
+      
+    const formData = new FormData()
+    const fileInput = document.getElementById('imagemInput')
+        
+    if (fileInput.files.length === 0) {
+        alert("Por favor, selecione uma imagem.")
+        return
+    }
+    
+    formData.append('imagem', fileInput.files[0])
 
     const tempoPassado = Date.now()
     let data = new Date(tempoPassado)
@@ -573,8 +609,20 @@ async function enviarResposta (idTipoPost, idPost, idModal) {
     const respostasEndpoint = '/respostas'
     const URLcompletaResposta = `${protocolo}${baseURL}${respostasEndpoint}`
     try {
-        let result = await axios.post(URLcompletaResposta, {postagem: resposta, idLogin: idUsuario, idTipoPostagem: idTipoPostagem, idPostagemResp: idPostResp, data: dataAtual, horario: horarioAtual})
-        console.log(result.data)
+        let resposta = await axios.post(URLcompletaResposta, {postagem: resposta, idLogin: idUsuario, idTipoPostagem: idTipoPostagem, idPostagemResp: idPostResp, data: dataAtual, horario: horarioAtual})
+        prepararForum()
+        textArea.value = ""
+        const idPostCriado = resposta.data.idPost
+
+        // Se há uma imagem, envia a imagem em seguida
+        if (fileInput.files.length > 0) {
+            formData.append('imagem', fileInput.files[0])
+            formData.append('idPost', idPostCriado)
+
+            const uploadResult = await axios.post('/uploadForum', formData, {headers: { 'Content-Type': 'multipart/form-data' }})
+        
+            console.log(uploadResult.data.message)
+        }
     } catch (error) {
         console.error(error.response?.data || error.message)
     }
