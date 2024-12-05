@@ -740,8 +740,10 @@ async function prepararPaginaDesafios() {
     const idTipoLogin = localStorage.getItem("idTipoLogin")
     const logout = document.querySelector('#logoutButton')
     const login = document.querySelector('.login-link')
+    const adicionarDesafio = document.querySelector('#adicionarDesafioButton')
     if (idTipoLogin) {
         logout.classList.remove('d-none')
+        adicionarDesafio.classList.remove('d-none')
         login.setAttribute("href", 'configuracoes.html')
     }
     else {
@@ -1002,12 +1004,8 @@ async function cadastrarUsuario() {
             exibeAlerta('.alert-cadastro', "Usuário cadastrado com sucesso!", ['show', 'alert-success'], ['d-none'], 4000)
             // Redireciona para a página de login
             window.location.href = "/front/login.html"
-        }
-        catch (e) {
-            apelidoInput.value = ""
-            emailInput.value = ""
-            senhaInput.value = ""
-            senhaInput2.value = ""
+        } 
+        catch(e) {
             exibeAlerta('.alert-cadastro', "Não foi possível cadastrar usuário. Tente mais tarde...", ['show', 'alert-danger'], ['d-none'], 4000)
         }
     }
@@ -1035,9 +1033,7 @@ async function fazerLogin() {
             localStorage.setItem("idLogin", idLogin)
             localStorage.setItem("idTipoLogin", idTipoLogin)
             window.location.href = "/front/index.html"
-        } catch (e) {
-            emailInput.value = ""
-            senhaInput.value = ""
+        }catch(e) {
             exibeAlerta('.alert-login', "Falha na autenticação! Confira se você preencheu os campos corretamente!", ['show', 'alert-danger'], ['d-none'], 4000)
         }
     }
@@ -1102,12 +1098,56 @@ function mostrarSenha(idInput, idButton, idInput2) {
     }
 }
 
-function enableEdit(fieldId) {
-    const field = document.getElementById(fieldId);
-    const button = document.getElementById('edit' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1) + 'Button');
+// Funções para carregar a página Configurações
+async function prepararPaginaConfiguracoes() {
+    const id = localStorage.getItem("idLogin")
+    console.log(id)
 
+    const configuracoesEndpoint = '/configuracoes'
+    const URLcompletaConfiguracoes = `${protocolo}${baseURL}${configuracoesEndpoint}`
+    const infos = (await axios.post(URLcompletaConfiguracoes, {id: id})).data
+    exibirLogin(infos)
+}
+
+function exibirLogin(infos){
+    console.log("exibindo infos")
+    let apelido = document.querySelector('#editApelido')
+    let email = document.querySelector('#editEmail')
+    email.value = infos[0]
+    apelido.value = infos[1]
+}
+
+async function salvarConfiguracoes(){
+    const id = localStorage.getItem("idLogin")
+    console.log(id)
+    let apelido = (document.querySelector('#editApelido')).value
+    let email = (document.querySelector('#editEmail')).value
+    let senha = (document.querySelector('#editSenha')).value
+
+    if(!senha){
+        const configuracoesEndpoint = '/editConfiguracoes'
+        const URLcompletaConfiguracoes = `${protocolo}${baseURL}${configuracoesEndpoint}`
+        const novoLogin = (await axios.post(URLcompletaConfiguracoes, {id: id, apelido: apelido, email: email})).data
+        console.log(novoLogin)
+    }else{
+        salvarNovaSenha(senha)
+    }
+}
+
+async function salvarNovaSenha(senha) {
+    const id = localStorage.getItem("idLogin")
+    console.log(senha)
+    const configuracoesEndpoint = '/editSenha'
+    const URLcompletaConfiguracoes = `${protocolo}${baseURL}${configuracoesEndpoint}`
+    const novaSenha = (await axios.post(URLcompletaConfiguracoes, {id: id, senha: senha})).data
+    console.log(novaSenha)
+}
+
+function habilitarCampo(id) {
+    const field = document.getElementById(id);
+    const button = document.getElementById('edit' + id.charAt(0).toUpperCase() + id.slice(1) + 'Button');
+    
     field.disabled = false;
-    button.style.display = "none";
 }
 
 function modoDaTela(modo) {
@@ -1189,6 +1229,7 @@ async function exibirTopicoDesafios(){
         select.appendChild(option)
     }
 }
+
 function mostrarCampo(seletor, classesToAdd, classesToRemove, timeout) {
    setTimeout(() => {
     seletor.classList.remove(... classesToRemove)
@@ -1198,13 +1239,12 @@ function mostrarCampo(seletor, classesToAdd, classesToRemove, timeout) {
 
 
 function mostrarCampoTopico() {
-let input = document.querySelector('.inputclass')
-let button = document.querySelector('.buttonclass')
-input.classList.remove('d-none')
-button.classList.remove('d-none')
-   
-
+    let input = document.querySelector('.inputclass')
+    let button = document.querySelector('.buttonclass')
+    input.classList.remove('d-none')
+    button.classList.remove('d-none')
 }
+
 async function adicionarTopico() {
     let topicoInserido = (document.querySelector('#topicoInput'))
     let topico = topicoInserido.value
