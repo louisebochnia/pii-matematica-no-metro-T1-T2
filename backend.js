@@ -89,6 +89,61 @@ app.get('/posts', async (req, res) => {
     }
 })
 
+app.get('/topico', async (req, res) => {
+    try {
+        console.log ('entrei no try')
+        const session = await mysqlx.getSession(config)
+        const resultado = await session.sql('select idTopicoDesafios, topicoDesafio from tbTopicosDesafios').execute()
+        console.log ('entrei no try2')
+
+        const topicosDesafios = resultado.fetchAll().map(desafio => ({
+            idtopicoDesafios: desafio[0],
+            topicoDesafios: desafio[1]
+        }))
+        console.log (topicosDesafios)
+        res.json(topicosDesafios)
+        await session.close()
+    }
+    catch (e) {
+      console.log("Erro ao pegar topicos")
+    }
+})
+
+app.post('/desafios', async (req, res) => {
+    try {
+        const enunciado = req.body.enunciado
+        const respostacorreta = req.body.respostacorreta
+        const resposta1 = req.body.resposta1
+        const resposta2 = req.body.resposta2
+        const resposta3 = req.body.resposta3
+        const resposta4 = req.body.resposta4
+        const resolucao = req.body.resolucao
+        const select = req.body.select
+        const session = await mysqlx.getSession(config)
+        await session.sql('Insert into tbDesafios (idTopicoDesafios, questao, respostaCorreta, respostaIncorreta1, respostaIncorreta2, respostaIncorreta3, respostaIncorreta4, resolucao) values(?, ?, ?, ?, ?, ?, ?, ?)').bind(select, enunciado, respostacorreta, resposta1, resposta2, resposta3, resposta4, resolucao).execute()
+        res.status(200).send('Desafio enviado com sucesso!')
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao enviar os dados.')
+    }
+})
+app.post('/topico', async (req, res) => {
+    try {
+        const topico = req.body.topico
+        const session = await mysqlx.getSession(config)
+        await session.sql('insert into tbTopicosDesafios (topicoDesafio) values (?)').bind(topico).execute()
+        res.status(200).send('Topico salvo!')
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao atualizar o topico.')
+    }
+})
+
+
 app.post('/posts', async (req, res) => {
     try {
         const postagem = req.body.postagem

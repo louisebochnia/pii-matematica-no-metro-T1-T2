@@ -1006,3 +1006,106 @@ function modoDaTela() {
         }
     });[]
 }
+async function adicionarDesafio() {
+    // Pega os valores dos campos de input
+    let enunciado = document.querySelector('#perguntaTextarea')
+    let respostacorreta = document.querySelector('#respostacorretaTextarea')
+    let resposta1 = document.querySelector('#respostaincorreta1Textarea')
+    let resposta2 = document.querySelector('#respostaincorreta2Textarea')
+    let resposta3 = document.querySelector('#respostaincorreta3Textarea')
+    let resposta4 = document.querySelector('#respostaincorreta4Textarea')
+    let resolucao = document.querySelector('#resolucaoTextarea')
+    let select = document.querySelector('#topicoDesafio')
+    select = select.value 
+    console.log (select)
+     enunciado = enunciado.value
+     respostacorreta = respostacorreta.value
+     resposta1 = resposta1.value
+     resposta2 = resposta2.value
+     resposta3 = resposta3.value
+     resposta4 = resposta4.value
+     resolucao = resolucao.value
+    if (enunciado && respostacorreta && resposta1 && resposta2 && resposta3) {
+        try {
+            const desafiosEndPoint = '/desafios'
+            const URLcompleta = `${protocolo}${baseURL}${desafiosEndPoint}`
+            const response = await axios.post(URLcompleta, {enunciado: enunciado, respostacorreta: respostacorreta, resposta1: resposta1, resposta2: resposta2, resposta3: resposta3, resposta4: resposta4, resolucao: resolucao, select: select})
+
+            enunciado.value = ""
+            respostacorreta.value = ""
+            resposta1.value = ""
+            resposta2.value = ""
+            resposta3.value = ""
+            resposta4.value = ""
+            resolucao.value = ""
+
+            exibeAlerta('.alert-desafios', "Questão enviada com sucesso!", ['show', 'alert-success'], ['d-none'], 4000)
+        }catch(e) {
+            enunciado.value = ""
+            respostacorreta.value = ""
+            resposta1.value = ""
+            resposta2.value = ""
+            resposta3.value = ""
+            resposta4.value = ""
+            resolucao.value = ""
+            exibeAlerta('.alert-desafios', "Falha ao enviar o desafio", ['show', 'alert-danger'], ['d-none'], 4000)
+        }
+    }
+    else {
+        exibeAlerta('.alert-desafios', "Preencha todos os campos!", ['show', 'alert-danger'], ['d-none'], 2000)
+    }
+}
+async function exibirTopicoDesafios(){
+    let select = document.querySelector('#topicoDesafio')
+    select.innerHTML = ""
+    const desafiosEndpoint = '/topico'
+    const URLcompleta = `${protocolo}${baseURL}${desafiosEndpoint}`
+    const desafios = (await axios.get(URLcompleta)).data
+    for(let desafio of desafios){
+        console.log(desafio.topicoDesafios)
+        const option = document.createElement('option')
+        option.innerHTML = desafio.topicoDesafios
+        option.value = desafio.idTopicoDesafios
+        console.log (option.value)
+        select.appendChild(option)
+    }
+}
+function mostrarCampo(seletor, classesToAdd, classesToRemove, timeout) {
+   setTimeout(() => {
+    seletor.classList.remove(... classesToRemove)
+    seletor.classList.add(... classesToAdd)
+   }, timeout);
+
+   
+
+}
+
+
+function mostrarCampoTopico() {
+let input = document.querySelector('.inputclass')
+let button = document.querySelector('.buttonclass')
+input.classList.remove('d-none')
+button.classList.remove('d-none')
+   
+
+}
+async function adicionarTopico() {
+    let topicoInserido = (document.querySelector('#topicoInput'))
+    let topico = topicoInserido.value
+        if (topico){
+        try{
+            const topicoEndpoint = '/topico'
+            const URLtopico = `${protocolo}${baseURL}${topicoEndpoint}`
+            const response = await axios.post(URLtopico, {topico: topico})
+            console.log(response)
+            mostrarCampo('.inputclass','d-none','',2000 )
+        }
+        catch(e) {
+            console.log(e)
+        }
+    } else {
+        exibeAlerta('.alert-topico', 'Preencha o campo!', ['show','alert-danger'], ['d-none'], 4000)
+        console.log("Preencha todos os campos!")
+    }
+
+}
