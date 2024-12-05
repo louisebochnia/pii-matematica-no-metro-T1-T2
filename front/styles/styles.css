@@ -126,7 +126,7 @@ textarea {
     font-size: 80%;
 }
 
-#duvidaTextarea {
+#duvidaTextarea, #estacaoTextarea, #enderecoTextarea {
     background-color:#E6E6E6;
     height: 35%; 
     width: 100%;
