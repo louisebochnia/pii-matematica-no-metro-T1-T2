@@ -132,7 +132,7 @@ textarea {
     width: 100%;
 }
 
-#loginCadastroButton,#duvidaSendButton, #botaoTopico, #topicoAdicionar{
+#loginCadastroButton,#duvidaSendButton, #botaoTopico, #topicoAdicionar, #verMensagens{
     background-color: #002687;
     color: white;
     height: 50px;
@@ -199,4 +199,12 @@ button#toggleModeButton {
     background-color:#E6E6E6;
     height: 40px; 
     width: 100%;
+}
+
+#imagemForum {
+    width: 25%;
+}
+
+#modoTela {
+    background-color: #002687;
 }

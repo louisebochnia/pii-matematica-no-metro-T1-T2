@@ -44,6 +44,26 @@
                             <a class="nav-link me-2 d-none" id="logoutButton" href="index.html" onclick="logout()">Logout</a>
                         </li>
                     </ul>
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <img src="images/modo_icon.png" id="icon-menu" alt="">
+                        </button>
+                        <ul class="dropdown-menu" id="modoTela">
+                            <li><button class="dropdown-item" id="modoTelaClaro" type="button" onclick="modoDaTela('claro')">Modo Claro</button></li>
+                            <li><button class="dropdown-item" id="modoTelaEscuro" type="button" onclick="modoDaTela('escuro')">Modo Escuro</button></li>
+                        </ul>
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <img src="images/modo_icon.png" id="icon-menu" alt="">
+                            </button>
+                            <ul class="dropdown-menu" id="modoTela">
+                                <li><button class="dropdown-item" id="modoTelaClaro" type="button" onclick="modoDaTela('claro')">Modo Claro</button></li>
+                                <li><button class="dropdown-item" id="modoTelaEscuro" type="button" onclick="modoDaTela('escuro')">Modo Escuro</button></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <a class="nav-link login-link">
                     <img src="images/login_icon.png" id="icon" alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">

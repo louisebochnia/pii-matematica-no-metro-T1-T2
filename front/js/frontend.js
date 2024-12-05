@@ -17,6 +17,12 @@ function prepararPaginaSobreNos() {
         logout.classList.add('d-none')
         login.setAttribute("href", 'login.html')
     }
+    const modo = localStorage.getItem('tema')
+    if (modo == 'escuro') {
+        document.body.classList.add('night-mode')
+    } else if(modo == 'claro'){
+        document.body.classList.remove('night-mode')
+    }
 }
 
 async function prepararPaginaInicial() {
@@ -177,13 +183,21 @@ async function prepararPaginaContato() {
     const idTipoLogin = localStorage.getItem("idTipoLogin")
     const logout = document.querySelector('#logoutButton')
     const login = document.querySelector('.login-link')
+    const verMensagens = document.querySelector('#verMensagens')
     if (idTipoLogin) {
         logout.classList.remove('d-none')
         login.setAttribute("href", 'configuracoes.html')
+        if(idTipoLogin == 1){
+            verMensagens.classList.remove('d-none')
+        }
+        else{
+            verMensagens.classList.add('d-none')
+        }
     }
     else {
         logout.classList.add('d-none')
         login.setAttribute("href", 'login.html')
+        verMensagens.classList.add('d-none')
     }
     const enderecosEndpoint = '/enderacoes'
     const URLcompletaEnderecos = `${protocolo}${baseURL}${enderecosEndpoint}`
@@ -476,6 +490,7 @@ function montarPost(divPost, post, formatacaoDiv, formatacaoBalao, div, tipo) {
 
     if (post.imagemPost) {
         let imgAviso = document.createElement('img')
+        imgAviso.id = "imagemForum"
         imgAviso.src = `/front${post.imagemPost}`
         divBalao.appendChild(imgAviso)
     }
@@ -563,9 +578,25 @@ function criarModal(idPost, apelido) {
     label.setAttribute("for", `mensagemResposta${idPost}`)
     let input = document.createElement('textarea')
     input.className = "form-control"
-    input.id = `mensagemResposta${idPost}`
+    input.id = `mensagemResposta${idPost}`    
     div4.appendChild(label)
     div4.appendChild(input)
+    let labelImagem = document.createElement('label')
+    labelImagem.className = "col-form-label"
+    labelImagem.textContent = "Insira uma imagem:"
+    labelImagem.setAttribute("for", `imagemResposta${idPost}`)
+    let p = document.createElement('p')
+    p.textContent = "(Não obrigatório)"
+    p.style = "font-weight: lighter; font-style: italic; font-size: medium;"
+    labelImagem.appendChild(p)
+    let inputImagem = document.createElement('input')
+    inputImagem.setAttribute("type", "file")
+    inputImagem.name = "imagem"
+    inputImagem.className = "form-control"
+    inputImagem.id = `imagemResposta${idPost}`  
+    inputImagem.setAttribute("accept", "image/*")  
+    div4.appendChild(labelImagem)
+    div4.appendChild(inputImagem)
     modalBody.appendChild(form)
     div3.appendChild(modalBody)
 
@@ -601,57 +632,52 @@ function criarModal(idPost, apelido) {
 }
 
 async function enviarPost() {
-    let idTipoPost = document.querySelector('#selecionarTipoPost').value;
-    let idUsuario = localStorage.getItem("idLogin");
-    let textArea = document.querySelector('#mensagemPost');
-    let resposta = textArea.value;
+    let idTipoPost = document.querySelector('#selecionarTipoPost').value
+    let idUsuario = localStorage.getItem("idLogin")
+    let textArea = document.querySelector('#mensagemPost')
+    let resposta = textArea.value
 
-    const fileInput = document.getElementById('imagemInput');
-    if (fileInput.files.length === 0) {
-        alert("Por favor, selecione uma imagem.");
-        return;
-    }
+    const fileInput = document.getElementById('imagemInput')
 
-    const tempoPassado = Date.now();
-    let data = new Date(tempoPassado);
-    let hora = data.getHours().toString().padStart(2, '0');
-    let minuto = data.getMinutes().toString().padStart(2, '0');
-    let horarioAtual = `${hora}:${minuto}`;
-    let dataAtual = data.toLocaleDateString();
+    const tempoPassado = Date.now()
+    let data = new Date(tempoPassado)
+    let hora = data.getHours().toString().padStart(2, '0')
+    let minuto = data.getMinutes().toString().padStart(2, '0')
+    let horarioAtual = `${hora}:${minuto}`
+    let dataAtual = data.toLocaleDateString()
 
     if (!idUsuario || !resposta) {
-        alert("Por favor, verifique os dados antes de enviar.");
+        alert("Por favor, verifique os dados antes de enviar.")
         return;
     }
 
     try {
         const postsEndPoint = '/posts';
-        const URLcompletaPosts = `${protocolo}${baseURL}${postsEndPoint}`;
+        const URLcompletaPosts = `${protocolo}${baseURL}${postsEndPoint}`
         const respostaPost = await axios.post(URLcompletaPosts, {
             postagem: resposta,
             idLogin: idUsuario,
             idTipoPostagem: idTipoPost,
             data: dataAtual,
             horario: horarioAtual
-        });
+        })
 
-        const idPostCriado = respostaPost.data.idPost[0]; // Extraindo o ID corretamente
-        console.log("ID do post criado:", idPostCriado);
+        const idPostCriado = respostaPost.data.idPost[0] // Extraindo o ID corretamente
+        console.log("ID do post criado:", idPostCriado)
 
-        // Enviar a imagem usando FormData
-        const formData = new FormData();
-        formData.append('imagem', fileInput.files[0]);
-        formData.append('idPost', idPostCriado);
-
-        const uploadEndpoint = '/uploadForum';
-        const URLcompletaUpload = `${protocolo}${baseURL}${uploadEndpoint}`;
-        const uploadResult = await axios.post(URLcompletaUpload, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        });
-
-        console.log(uploadResult.data.message);
-        prepararForum();
-        textArea.value = ""; // Limpar o campo de texto
+        if(fileInput.files.length !== 0){
+            // Enviar a imagem usando FormData
+            const formData = new FormData();
+            formData.append('imagem', fileInput.files[0])
+            formData.append('idPost', idPostCriado) 
+            const uploadEndpoint = '/uploadForum'
+            const URLcompletaUpload = `${protocolo}${baseURL}${uploadEndpoint}`
+            await axios.post(URLcompletaUpload, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            })
+        }
+        prepararForum()
+        textArea.value = ""
     } catch (error) {
         console.error(error.response?.data || error.message);
     }
@@ -659,12 +685,13 @@ async function enviarPost() {
 
 async function enviarResposta(idTipoPost, idPost, idModal) {
     let idUsuario = localStorage.getItem("idLogin")
-    let resposta = (document.querySelector(idModal)).value
+    let textArea = document.querySelector('#mensagemPost')
+    let resposta = textArea.value
     let idTipoPostagem = idTipoPost
     let idPostResp = idPost
       
     const formData = new FormData()
-    const fileInput = document.getElementById('imagemInput')
+    const fileInput = document.getElementById(`imagemResposta${idPost}`)
         
     if (fileInput.files.length === 0) {
         alert("Por favor, selecione uma imagem.")
@@ -680,29 +707,28 @@ async function enviarResposta(idTipoPost, idPost, idModal) {
     let horarioAtual = `${hora}:${minuto}`
     dataAtual = data.toLocaleDateString()
 
-    // Verifica se os valores necessários estão disponíveis
-    if (!idUsuario || !resposta) {
-        alert("Por favor, verifique os dados antes de enviar.")
-        return
-    }
-
     const respostasEndpoint = '/respostas'
     const URLcompletaResposta = `${protocolo}${baseURL}${respostasEndpoint}`
     try {
-        let resposta = await axios.post(URLcompletaResposta, {postagem: resposta, idLogin: idUsuario, idTipoPostagem: idTipoPostagem, idPostagemResp: idPostResp, data: dataAtual, horario: horarioAtual})
+        let respostaPost = await axios.post(URLcompletaResposta, {postagem: resposta, idLogin: idUsuario, idTipoPostagem: idTipoPostagem, idPostagemResp: idPostResp, data: dataAtual, horario: horarioAtual})
         prepararForum()
         textArea.value = ""
-        const idPostCriado = resposta.data.idPost
+        const idPostCriado = respostaPost.data.idPost
 
         // Se há uma imagem, envia a imagem em seguida
-        if (fileInput.files.length > 0) {
+        if(fileInput.files.length !== 0){
+            // Enviar a imagem usando FormData
+            const formData = new FormData();
             formData.append('imagem', fileInput.files[0])
-            formData.append('idPost', idPostCriado)
-
-            const uploadResult = await axios.post('/uploadForum', formData, {headers: { 'Content-Type': 'multipart/form-data' }})
-        
-            console.log(uploadResult.data.message)
+            formData.append('idPost', idPostCriado) 
+            const uploadEndpoint = '/uploadForum'
+            const URLcompletaUpload = `${protocolo}${baseURL}${uploadEndpoint}`
+            await axios.post(URLcompletaUpload, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            })
         }
+        prepararForum()
+        textArea.value = "" 
     } catch (error) {
         console.error(error.response?.data || error.message)
     }
@@ -884,37 +910,6 @@ async function prepararPaginaLogin() {
     const URLcompletaLogin = `${protocolo}${baseURL}${loginEndpoint}`
     const login = (await axios.get(URLcompletaLogin)).data
 }
-
-// function esconderSenha() {
-//     // Adiciona um único evento de clique ao documento para capturar os dois botões
-//     document.addEventListener('click', function (event) {
-//         // Verifica se o clique foi em um dos botões relevantes
-//         if (event.target.id === 'senhaButton' || event.target.id === 'senhaCadastroButton') {
-//             // Determina os campos de entrada associados com base no ID do botão
-//             let inputIds = []
-//             if (event.target.id === 'senhaButton') {
-//                 inputIds = ['senhaLoginInput']
-//             } else if (event.target.id === 'senhaCadastroButton') {
-//                 inputIds = ['senhaCadastroInput', 'senhaCadastroInput2']
-//             }
-//             // Alterna o tipo dos campos associados
-//             let allArePassword = true
-//             inputIds.forEach((id) => {
-//                 const input = document.getElementById(id)
-//                 if (input) {
-//                     const isPassword = input.getAttribute('type') === 'password'
-//                     input.setAttribute('type', isPassword ? 'text' : 'password')
-//                     if (!isPassword) {
-//                         allArePassword = false
-//                     }
-//                 }
-//             })
-//             // Atualiza o texto do botão com base no estado dos campos
-//             event.target.textContent = allArePassword ? 'Mostrar senha' : 'Esconder senha'
-//         }
-//     })
-// }
-
 
 function exibeAlerta(seletor, innerHTML, classesToAdd, classesToRemove, timeout) {
     let alert = document.querySelector(seletor)
@@ -1115,25 +1110,21 @@ function enableEdit(fieldId) {
     button.style.display = "none";
 }
 
-function modoDaTela() {
-    if (localStorage.getItem('tema') == 'escuro') {
-        document.body.classList.add('night-mode');
-        document.getElementById('toggleModeButton').textContent = 'Modo Claro';
-    } else {
-        document.body.classList.remove('night-mode');
-        document.getElementById('toggleModeButton').textContent = 'Modo Escuro';
+function modoDaTela(modo) {
+    if(!localStorage.getItem('tema')){
+        localStorage.setItem('tema', modo)
     }
-    document.getElementById('toggleModeButton').addEventListener('click', function () {
-        document.body.classList.toggle('night-mode');
-        if (document.body.classList.contains('night-mode')) {
-            localStorage.setItem('theme', 'dark');
-            this.textContent = 'Modo Claro';
-        } else {
-            localStorage.setItem('theme', 'light');
-            this.textContent = 'Modo Noturno';
-        }
-    });[]
+    if (modo == 'escuro') {
+        document.body.classList.add('night-mode')
+        localStorage.removeItem('tema')
+        localStorage.setItem('tema', 'escuro')
+    } else if(modo == 'claro'){
+        document.body.classList.remove('night-mode')
+        localStorage.removeItem('tema')
+        localStorage.setItem('tema', 'claro')
+    }
 }
+
 async function adicionarDesafio() {
     // Pega os valores dos campos de input
     let enunciado = document.querySelector('#perguntaTextarea')
@@ -1203,9 +1194,6 @@ function mostrarCampo(seletor, classesToAdd, classesToRemove, timeout) {
     seletor.classList.remove(... classesToRemove)
     seletor.classList.add(... classesToAdd)
    }, timeout);
-
-   
-
 }
 
 

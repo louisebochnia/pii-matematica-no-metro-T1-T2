@@ -44,9 +44,19 @@
                             <a class="nav-link me-2" href="desafios.html">Desafios</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link me-2 d-none" id="logoutButton" href="index.html" onclick="logout()">Logout</a>
-                        </li>        
+                            <a class="nav-link me-2 d-none" href="index.html" onclick="logout()">Logout</a>
+                        </li>
                     </ul>
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <img src="images/modo_icon.png" id="icon-menu" alt="">
+                        </button>
+                        <ul class="dropdown-menu" id="modoTela">
+                            <li><button class="dropdown-item" id="modoTelaClaro" type="button" onclick="modoDaTela('claro')">Modo Claro</button></li>
+                            <li><button class="dropdown-item" id="modoTelaEscuro" type="button" onclick="modoDaTela('escuro')">Modo Escuro</button></li>
+                        </ul>
+                    </div>
                 </div>
                 <a class="nav-link" href="#">
                     <img src="images/login_icon.png" id="icon" alt="Ícone de login">
@@ -76,7 +86,7 @@
                     <label for="editPassword" class="col-form-label">Senha</label>
                     <div class="input-group">
                         <input type="password" id="editPassword" class="form-control" required disabled>
-                        <button type="button" id="showPasswordButton" class="btn btn-outline-secondary" onclick="mostrarSenha('editPassword', 'showPasswordButton', null)">Mostrar</button>
+                        <button type="button" id="showPasswordButton" class="btn btn-outline-secondary" onclick="togglePasswordVisibility()">Mostrar</button>
                         <button type="button" id="editPasswordButton" class="btn btn-primary" onclick="enableEdit('editPassword')">Alterar</button>
                     </div>
                 </div>
@@ -115,6 +125,7 @@
     <script src="js/frontend.js"></script>
 
     <script>
+
 
         document.getElementById('editForm').addEventListener('submit', function(e) {
             e.preventDefault();

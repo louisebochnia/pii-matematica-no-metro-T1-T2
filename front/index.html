@@ -15,24 +15,19 @@
 <body onload="prepararPaginaInicial()">
     <!-- Barra de navegação/Menu -->
     <header>
-        <nav class="navbar navbar-expand-md" id="menu-nav" data-bs-theme="dark">
+        <nav class="navbar navbar-expand-md align-items-center" id="menu-nav" data-bs-theme="dark">
             <div class="container-fluid">
                 <a>
                     <img src="images/logo_matematica_no_metro.JPG" id="icon-menu"
                         alt="Esta imagem representa o logo do projeto Matemática no Metrô">
-                    <img src="images/logo_matematica_no_metro.JPG" id="icon-menu"
-                        alt="Esta imagem representa o logo do projeto Matemática no Metrô">
                 </a>
                 <a class="navbar-brand mx-sm-3" id="tituloSite">MATEMÁTICA NO METRÔ</a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#myNav"
-                    aria-controls="myNav" aria-expanded="false" aria-label="Toggle Navigation">
-                    <span class="navbar-toggler-icon"></span>
+    
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#myNav"
                     aria-controls="myNav" aria-expanded="false" aria-label="Toggle Navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
+    
                 <div class="nav nav-underline collapse navbar-collapse text-end" id="myNav">
                     <ul class="navbar-nav ms-auto me-4">
                         <li class="nav-item">
@@ -44,21 +39,28 @@
                         <li class="nav-item">
                             <a class="nav-link me-2" href="forum.html">Fórum</a>
                         </li>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link me-2" href="desafios.html">Desafios</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link me-2 d-none" id="logoutButton" href="index.html"
                                 onclick="logout()">Logout</a>
-                            <a class="nav-link me-2 d-none" id="logoutButton" href="index.html"
-                                onclick="logout()">Logout</a>
                         </li>
                     </ul>
+                    <a class="nav-link me-2">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <img src="images/modo_icon.png" id="icon-menu" alt="">
+                            </button>
+                            <ul class="dropdown-menu" id="modoTela">
+                                <li><button class="dropdown-item" id="modoTelaClaro" type="button" onclick="modoDaTela('claro')">Modo Claro</button></li>
+                                <li><button class="dropdown-item" id="modoTelaEscuro" type="button" onclick="modoDaTela('escuro')">Modo Escuro</button></li>
+                            </ul>
+                        </div>
+                    </a>
                 </div>
                 <a class="nav-link login-link">
-                    <img src="images/login_icon.png" id="icon"
-                        alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
                     <img src="images/login_icon.png" id="icon"
                         alt="Esta imagem, de um círculo com uma pessoa no centro, representa o ícone de login para realizar login no site e poder utilizar o fórum.">
                 </a>
@@ -244,7 +246,7 @@
                         </div>
                         <div class="d-flex justify-content-center">
                             <button data-bs-toggle="modal" data-bs-target="#modalEnderecos" id="editarEnderecosButton"
-                                class="dismissable d-none btn mx-2">Editar endereços</button>
+                                class="dismissable d-none btn mx-2">Adicionar endereços</button>
                             <button data-bs-toggle="modal" data-bs-target="#modalApagarEnderecos"
                                 id="deletarEnderecosButton" onclick="exibirEnderacoes()"
                                 class="dismissable d-none btn mx-2">Apagar endereços</button>
@@ -267,7 +269,7 @@
                         </table>
                         <div class="d-flex justify-content-center">
                             <button data-bs-toggle="modal" data-bs-target="#modalHorarios" id="editarHorariosButton"
-                                onclick="exibirEstacoes()" class="dismissable d-none btn mx-2">Editar horários</button>
+                                onclick="exibirEstacoes()" class="dismissable d-none btn mx-2">Adicionar horários</button>
                             <button data-bs-toggle="modal" onclick="exibirHorarioss()" data-bs-target="#modalApagarHorarios" id="deletarHorariosButton"
                                 class="dismissable d-none btn mx-2">Apagar horários</button>
                         </div>
