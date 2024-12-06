@@ -65,6 +65,106 @@ app.get('/horarios', async (req, res) => {
     }
 })
 
+app.post('/horarios', async (req,res) => {
+    try {
+        const diaSemanaInput = req.body.diaSemana
+        const horarioInput = req.body.horario
+        const estacaoInput = req.body.estacao
+        const session = await mysqlx.getSession(config)
+        const endereco = (await session.sql('SELECT idEndereco FROM tbEnderecos WHERE estacao = ?').bind(estacaoInput).execute()).fetchOne()
+        await session.sql('insert into tbHorarios(idDiaSemana, horarioVoluntarios, idEndereco) values(?, ?, ?)').bind(diaSemanaInput, horarioInput, endereco).execute()
+        await session.close()
+    }
+    catch (e) {
+        console.log('erro nos horários')
+    }
+})
+
+app.post('/horarioss', async (req,res) => {
+    try {
+    let idHorario = req.body.idHorario
+    const session = await mysqlx.getSession(config)
+    const resultado = await session.sql('DELETE FROM tbHorarios where idHorario = ?').bind(idHorario).execute()
+    await session.close()
+    }
+    catch(e) {
+        console.log('erro ao apagar os horários')
+    }
+})
+
+app.get('/enderacoes', async (req, res) => {
+    try {
+        const session = await mysqlx.getSession(config)
+
+        const resultado = await session.sql('SELECT estacao, endereco FROM tbEnderecos ORDER BY estacao').execute()
+
+        const enderecos = resultado.fetchAll().map(endereco => ({
+            estacao: endereco[0],
+            enderecoEstacao: endereco[1]
+        }))
+
+        res.json(enderecos)
+
+        await session.close()
+    }
+    catch (e) {
+        console.error("Erro ao buscar endereços:", e)
+        res.status(500).json({ e: "Erro ao buscar endereços" })
+    }
+})
+
+app.post('/enderacoes', async(req, res) => {
+    try {
+        const estacao = req.body.estacao
+        const session = await mysqlx.getSession(config) 
+
+        const respSQL = await session.sql("DELETE FROM tbEnderecos where estacao = ?").bind(estacao).execute()
+        console.log(respSQL)
+        res.status(200).send('Apagado com sucesso!')
+
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao apagar os dados.')
+    
+    }
+})
+
+app.post('/enderecos', async (req, res) => {
+    try {
+        const postEnderecos = req.body.postEnderecos
+        console.log(postEnderecos)
+        const postEstacoes = req.body.postEstacoes
+        console.log(postEstacoes)
+        const session = await mysqlx.getSession(config)
+        await session.sql('insert into tbEnderecos (endereco, estacao) values (?, ?)').bind(postEnderecos, postEstacoes).execute()
+        res.status(200).send('Estação salva com sucesso!')
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao atualizar os dados.')
+    }
+})
+
+app.get('/estacao', async (req, res) => {
+    try {
+        const session = await mysqlx.getSession(config)
+        const resultado = await session.sql('select estacao from tbEnderecos').execute()
+
+        const estacoes = resultado.fetchAll().map(estacao => ({
+            estacao: estacao[0]
+        }))
+
+        res.json(estacoes)
+        await session.close()
+    }
+    catch (e) {
+        console.log("Erro ao pegar a estação")
+    }
+})
+
 app.get('/posts', upload.single('imagem'), async (req, res) => {
     try {
         const session = await mysqlx.getSession(config)
@@ -133,99 +233,6 @@ app.post('/uploadForum', upload.single('imagem'), async (req, res) => {
         res.status(500).send("Erro ao salvar a imagem.");
     }
 });
-
-app.get('/topico', async (req, res) => {
-    try {
-        const session = await mysqlx.getSession(config)
-        const resultado = await session.sql('select idTopicoDesafios, topicoDesafio from tbTopicosDesafios').execute()
-
-        const topicosDesafios = resultado.fetchAll().map(desafio => ({
-            idtopicoDesafios: desafio[0],
-            topicoDesafios: desafio[1]
-        }))
-        res.json(topicosDesafios)
-        await session.close()
-    }
-    catch (e) {
-      console.log("Erro ao pegar topicos")
-    }
-})
-
-app.get('/questao', async (req, res) => {
-    try {
-        const idTopico = req.body.idTopico
-        const session = await mysqlx.getSession(config)
-        const resultado = await session.sql('SELECT idQuestao, questao, imagemURL, respostaCorreta, respostaIncorreta1, respostaIncorreta2, respostaIncorreta3, respostaIncorreta4 resolucao FROM tbDesafios ON WHERE idTopicoDesafios = ?').bind(idTopico).execute()
-
-        const desafios = resultado.fetchAll().map(desafio => ({
-            idQuestao: desafio[0],
-            enunciado: desafio[1],
-            imagemURL: desafio[2],
-            respostaCorreta: desafio[3],
-            respostaIncorreta1: desafio[4],
-            respostaIncorreta2: desafio[5],
-            respostaIncorreta3: desafio[6],
-            respostaIncorreta4: desafio[7],
-            resolucao: desafio[8]
-        }))
-        res.json(desafios)
-        await session.close()
-    }
-    catch (e) {
-      console.log("Erro ao pegar topicos")
-    }
-})
-
-
-app.post('/removerTopico', async (req, res) => {
-    try{
-        const idTopico = req.body.idTopico
-        console.log(idTopico)
-        const session = await mysqlx.getSession(config)
-        const result = await session.sql('DELETE FROM tbTopicosDesafios WHERE idTopicoDesafios = ?').bind(idTopico).execute()
-        console.log(result)
-        res.status(200).send('Tópico apagado com sucesso!')
-        await session.close()
-
-    }
-    catch (e) {
-        console.log("Erro ao apagar topico")
-    }
-})
-
-app.post('/desafioNovo', async (req, res) => {
-    try {
-        const enunciado = req.body.enunciado
-        const respostacorreta = req.body.respostacorreta
-        const resposta1 = req.body.resposta1
-        const resposta2 = req.body.resposta2
-        const resposta3 = req.body.resposta3
-        const resposta4 = req.body.resposta4
-        const resolucao = req.body.resolucao
-        const select = req.body.select
-        const session = await mysqlx.getSession(config)
-        await session.sql('Insert into tbDesafios (idTopicoDesafios, questao, respostaCorreta, respostaIncorreta1, respostaIncorreta2, respostaIncorreta3, respostaIncorreta4, resolucao) values(?, ?, ?, ?, ?, ?, ?, ?)').bind(select, enunciado, respostacorreta, resposta1, resposta2, resposta3, resposta4, resolucao).execute()
-        res.status(200).send('Desafio enviado com sucesso!')
-        await session.close()
-    }
-    catch (e) {
-        console.error(e);
-        res.status(500).send('Erro ao enviar os dados.')
-    }
-})
-app.post('/topico', async (req, res) => {
-    try {
-        const topico = req.body.topico
-        const session = await mysqlx.getSession(config)
-        await session.sql('insert into tbTopicosDesafios (topicoDesafio) values (?)').bind(topico).execute()
-        res.status(200).send('Topico salvo!')
-        await session.close()
-    }
-    catch (e) {
-        console.error(e);
-        res.status(500).send('Erro ao atualizar o topico.')
-    }
-})
 
 
 app.post('/posts', async (req, res) => {
@@ -322,44 +329,6 @@ app.get('/avisos', async (req, res) => {
     }
 })
 
-app.get('/enderacoes', async (req, res) => {
-    try {
-        const session = await mysqlx.getSession(config)
-
-        const resultado = await session.sql('SELECT estacao, endereco FROM tbEnderecos ORDER BY estacao').execute()
-
-        const enderecos = resultado.fetchAll().map(endereco => ({
-            estacao: endereco[0],
-            enderecoEstacao: endereco[1]
-        }))
-
-        res.json(enderecos)
-
-        await session.close()
-    }
-    catch (e) {
-        console.error("Erro ao buscar endereços:", e)
-        res.status(500).json({ e: "Erro ao buscar endereços" })
-    }
-})
-
-app.get('/estacao', async (req, res) => {
-    try {
-        const session = await mysqlx.getSession(config)
-        const resultado = await session.sql('select estacao from tbEnderecos').execute()
-
-        const estacoes = resultado.fetchAll().map(estacao => ({
-            estacao: estacao[0]
-        }))
-
-        res.json(estacoes)
-        await session.close()
-    }
-    catch (e) {
-        console.log("Erro ao pegar a estação")
-    }
-})
-
 app.get('/desafios', async (req, res) => {
     try {
         const session = await mysqlx.getSession(config) // Conecta ao MySQL
@@ -414,22 +383,178 @@ app.get('/desafios', async (req, res) => {
     }
 })
 
-app.get('/mensagens', async (req, res) => {
+app.get('/topico', async (req, res) => {
     try {
         const session = await mysqlx.getSession(config)
-        const resultado = await session.sql('SELECT nomeCompleto, email, duvida FROM tbContato').execute()
+        const resultado = await session.sql('select idTopicoDesafios, topicoDesafio from tbTopicosDesafios').execute()
 
-        const mensagens = resultado.fetchAll().map(mensagem => ({
-            nomeCompleto: mensagem[0],
-            email: mensagem[1],
-            duvida: mensagem[2]
+        const topicosDesafios = resultado.fetchAll().map(desafio => ({
+            idtopicoDesafios: desafio[0],
+            topicoDesafios: desafio[1]
         }))
-
+        res.json(topicosDesafios)
         await session.close()
-        res.json(mensagens)
     }
     catch (e) {
-        console.log("Erro ao pegar a mensagem")
+      console.log("Erro ao pegar topicos")
+    }
+})
+
+app.get('/questao', async (req, res) => {
+    try {
+        const idTopico = req.body.idTopico
+        const session = await mysqlx.getSession(config)
+        const resultado = await session.sql('SELECT idQuestao, questao, imagemURL, respostaCorreta, respostaIncorreta1, respostaIncorreta2, respostaIncorreta3, respostaIncorreta4 resolucao FROM tbDesafios ON WHERE idTopicoDesafios = ?').bind(idTopico).execute()
+
+        const desafios = resultado.fetchAll().map(desafio => ({
+            idQuestao: desafio[0],
+            enunciado: desafio[1],
+            imagemURL: desafio[2],
+            respostaCorreta: desafio[3],
+            respostaIncorreta1: desafio[4],
+            respostaIncorreta2: desafio[5],
+            respostaIncorreta3: desafio[6],
+            respostaIncorreta4: desafio[7],
+            resolucao: desafio[8]
+        }))
+        res.json(desafios)
+        await session.close()
+    }
+    catch (e) {
+      console.log("Erro ao pegar topicos")
+    }
+})
+
+
+app.post('/removerTopico', async (req, res) => {
+    try{
+        const idTopico = req.body.idTopico
+        console.log(idTopico)
+        const session = await mysqlx.getSession(config)
+        const result = await session.sql('DELETE FROM tbTopicosDesafios WHERE idTopicoDesafios = ?').bind(idTopico).execute()
+        console.log(result)
+        res.status(200).send('Tópico apagado com sucesso!')
+        await session.close()
+
+    }
+    catch (e) {
+        console.log("Erro ao apagar topico")
+    }
+})
+
+app.post('/desafioNovo', async (req, res) => {
+    try {
+        const enunciado = req.body.enunciado
+        const respostacorreta = req.body.respostacorreta
+        const resposta1 = req.body.resposta1
+        const resposta2 = req.body.resposta2
+        const resposta3 = req.body.resposta3
+        const resposta4 = req.body.resposta4
+        const resolucao = req.body.resolucao
+        const select = req.body.select
+        const session = await mysqlx.getSession(config)
+        await session.sql('Insert into tbDesafios (idTopicoDesafios, questao, respostaCorreta, respostaIncorreta1, respostaIncorreta2, respostaIncorreta3, respostaIncorreta4, resolucao) values(?, ?, ?, ?, ?, ?, ?, ?)').bind(select, enunciado, respostacorreta, resposta1, resposta2, resposta3, resposta4, resolucao).execute()
+        res.status(200).send('Desafio enviado com sucesso!')
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao enviar os dados.')
+    }
+})
+
+app.post('/topico', async (req, res) => {
+    try {
+        const topico = req.body.topico
+        const session = await mysqlx.getSession(config)
+        await session.sql('insert into tbTopicosDesafios (topicoDesafio) values (?)').bind(topico).execute()
+        res.status(200).send('Topico salvo!')
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao atualizar o topico.')
+    }
+})
+
+app.post('/desafios', async(req, res) => {
+    try {
+        const idQuestao = req.body.idQuestao
+        const assinalada = req.body.assinalada
+        const quantidade = req.body.quantidade
+
+        const query = `UPDATE tbDesafios SET ${assinalada} = ? WHERE idQuestao = ?`
+
+        // Conecta ao MySQL
+        const session = await mysqlx.getSession(config)
+
+        //Registra a alternativa marcada no banco de dados
+        const respSQL = await session.sql(query).bind(quantidade, idQuestao).execute()
+        console.log(respSQL)
+        res.status(200).send('Atualização realizada com sucesso!')
+
+        await session.close()
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).send('Erro ao atualizar os dados.')
+    }
+})
+
+// Cadastrando usuários no banco de dados
+app.post('/cadastro', async (req, res) => {
+    try {
+        const email = req.body.email
+        const senha = req.body.senha
+        const apelido = req.body.apelido
+        const idTipoLogin = req.body.idTipoLogin
+
+        // Criptografando a senha para inserir no banco de dados
+        const senha_criptografada = await bcrypt.hash(senha, 10)
+
+        const session = await mysqlx.getSession(config)
+        await session.sql('insert into tbLogins (email, senha, apelido, idTipoLogin) values (?, ?, ?, ?)').bind(email, senha_criptografada, apelido, idTipoLogin).execute()
+        res.status(201).send('Usuário cadastrado')
+
+        await session.close()
+    }
+    catch (e) {
+        console.log(e)
+        res.status(409).end()
+    }
+
+})
+
+// Validando usuário para fazer login
+app.post('/login', async (req, res) => {
+    const email = req.body.email
+    const senha = req.body.senha
+
+    try {
+        const session = await mysqlx.getSession(config)
+        const validacaoLoginExiste = await session.sql('select idLogin, email, senha, idTipoLogin from tbLogins where email = ?').bind(email).execute()
+        // Converte o resultado em Array
+        const login = validacaoLoginExiste.fetchOne()
+
+        if (login) {
+            senhaCriptografada = login[2]
+            const senhaValida = await bcrypt.compare(senha, senhaCriptografada)
+            if (senhaValida) {
+                console.log("Usuário logado!")
+
+                const dados = { idLogin: login[0], idTipoLogin: login[3] }
+
+                res.json(dados)
+            } else {
+                return res.status(401).json({ mensagem: "Senha inválida" })
+            }
+        } else {
+            return res.status(401).json({ mensagem: "Email inválido" })
+        }
+        await session.close()
+    }
+    catch (e) {
+        console.log(e)
     }
 })
 
@@ -481,65 +606,6 @@ app.post('/editSenha', async(req, res) => {
     }
 })
 
-app.post('/desafios', async(req, res) => {
-    try {
-        const idQuestao = req.body.idQuestao
-        const assinalada = req.body.assinalada
-        const quantidade = req.body.quantidade
-
-        const query = `UPDATE tbDesafios SET ${assinalada} = ? WHERE idQuestao = ?`
-
-        // Conecta ao MySQL
-        const session = await mysqlx.getSession(config)
-
-        //Registra a alternativa marcada no banco de dados
-        const respSQL = await session.sql(query).bind(quantidade, idQuestao).execute()
-        console.log(respSQL)
-        res.status(200).send('Atualização realizada com sucesso!')
-
-        await session.close()
-    }
-    catch (e) {
-        console.error(e);
-        res.status(500).send('Erro ao atualizar os dados.')
-    }
-})
-
-app.post('/enderacoes', async(req, res) => {
-    try {
-        const estacao = req.body.estacao
-        const session = await mysqlx.getSession(config) 
-
-        const respSQL = await session.sql("DELETE FROM tbEnderecos where estacao = ?").bind(estacao).execute()
-        console.log(respSQL)
-        res.status(200).send('Apagado com sucesso!')
-
-        await session.close()
-    }
-    catch (e) {
-        console.error(e);
-        res.status(500).send('Erro ao apagar os dados.')
-    
-    }
-})
-
-app.post('/enderecos', async (req, res) => {
-    try {
-        const postEnderecos = req.body.postEnderecos
-        console.log(postEnderecos)
-        const postEstacoes = req.body.postEstacoes
-        console.log(postEstacoes)
-        const session = await mysqlx.getSession(config)
-        await session.sql('insert into tbEnderecos (endereco, estacao) values (?, ?)').bind(postEnderecos, postEstacoes).execute()
-        res.status(200).send('Estação salva com sucesso!')
-        await session.close()
-    }
-    catch (e) {
-        console.error(e);
-        res.status(500).send('Erro ao atualizar os dados.')
-    }
-})
-
 // Postar uma dúvida na página contato
 app.post('/contato', async (req, res) => {
     try {
@@ -557,86 +623,22 @@ app.post('/contato', async (req, res) => {
     }
 })
 
-app.post('/horarios', async (req,res) => {
-    try {
-        const diaSemanaInput = req.body.diaSemana
-        const horarioInput = req.body.horario
-        const estacaoInput = req.body.estacao
-        const session = await mysqlx.getSession(config)
-        const endereco = (await session.sql('SELECT idEndereco FROM tbEnderecos WHERE estacao = ?').bind(estacaoInput).execute()).fetchOne()
-        await session.sql('insert into tbHorarios(idDiaSemana, horarioVoluntarios, idEndereco) values(?, ?, ?)').bind(diaSemanaInput, horarioInput, endereco).execute()
-        await session.close()
-    }
-    catch (e) {
-        console.log('erro nos horários')
-    }
-})
-
-app.post('/horarioss', async (req,res) => {
-    try {
-    let idHorario = req.body.idHorario
-    const session = await mysqlx.getSession(config)
-    const resultado = await session.sql('DELETE FROM tbHorarios where idHorario = ?').bind(idHorario).execute()
-    await session.close()
-    }
-    catch(e) {
-        console.log('erro ao apagar os horários')
-    }
-})
-
-// Cadastrando usuários no banco de dados
-app.post('/cadastro', async (req, res) => {
-    try {
-        const email = req.body.email
-        const senha = req.body.senha
-        const apelido = req.body.apelido
-        const idTipoLogin = req.body.idTipoLogin
-
-        // Criptografando a senha para inserir no banco de dados
-        const senha_criptografada = await bcrypt.hash(senha, 10)
-
-        const session = await mysqlx.getSession(config)
-        await session.sql('insert into tbLogins (email, senha, apelido, idTipoLogin) values (?, ?, ?, ?)').bind(email, senha_criptografada, apelido, idTipoLogin).execute()
-        res.status(201).send('Usuário cadastrado')
-
-        await session.close()
-    }
-    catch (e) {
-        console.log(e)
-        res.status(409).end()
-    }
-
-})
-// Validando usuário para fazer login
-app.post('/login', async (req, res) => {
-    const email = req.body.email
-    const senha = req.body.senha
-
+app.get('/mensagens', async (req, res) => {
     try {
         const session = await mysqlx.getSession(config)
-        const validacaoLoginExiste = await session.sql('select idLogin, email, senha, idTipoLogin from tbLogins where email = ?').bind(email).execute()
-        // Converte o resultado em Array
-        const login = validacaoLoginExiste.fetchOne()
+        const resultado = await session.sql('SELECT nomeCompleto, email, duvida FROM tbContato').execute()
 
-        if (login) {
-            senhaCriptografada = login[2]
-            const senhaValida = await bcrypt.compare(senha, senhaCriptografada)
-            if (senhaValida) {
-                console.log("Usuário logado!")
+        const mensagens = resultado.fetchAll().map(mensagem => ({
+            nomeCompleto: mensagem[0],
+            email: mensagem[1],
+            duvida: mensagem[2]
+        }))
 
-                const dados = { idLogin: login[0], idTipoLogin: login[3] }
-
-                res.json(dados)
-            } else {
-                return res.status(401).json({ mensagem: "Senha inválida" })
-            }
-        } else {
-            return res.status(401).json({ mensagem: "Email inválido" })
-        }
         await session.close()
+        res.json(mensagens)
     }
     catch (e) {
-        console.log(e)
+        console.log("Erro ao pegar a mensagem")
     }
 })
 

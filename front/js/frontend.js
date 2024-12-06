@@ -241,6 +241,33 @@ async function postarDuvida() {
 
 }
 
+function exibirHorarios(horarios) {
+    let tabela = document.querySelector('#horarios')
+    let corpoTabela = tabela.getElementsByTagName('tbody')[0]
+    corpoTabela.innerHTML = ""
+
+    for (let horario of horarios) {
+        let linha = corpoTabela.insertRow(0)
+        let celulaDiaSemana = linha.insertCell(0)
+        let celulaHorarioVoluntarios = linha.insertCell(1)
+        let celulaEstacao = linha.insertCell(2)
+        celulaDiaSemana.innerHTML = horario.diaSemana
+        celulaHorarioVoluntarios.innerHTML = horario.horarioVoluntarios
+        celulaEstacao.innerHTML = horario.estacao
+    }
+}
+
+function exibirEnderecos(enderecos) {
+    let div = document.querySelector('.enderecos')
+    div.innerHTML = ""
+
+    for (let endereco of enderecos) {
+        const p = document.createElement('p')
+        p.textContent = `${endereco.estacao}${' - '}${endereco.enderecoEstacao}`
+        div.appendChild(p)
+    }
+}
+
 async function prepararForum() {
     const idTipoLogin = localStorage.getItem("idTipoLogin")
     const logout = document.querySelector('#logoutButton')
@@ -282,33 +309,6 @@ async function prepararForum() {
     const divPosts = document.querySelector('.posts')
     if (divPosts.classList.contains('d-none')) {
         divPosts.classList.remove('d-none')
-    }
-}
-
-function exibirHorarios(horarios) {
-    let tabela = document.querySelector('#horarios')
-    let corpoTabela = tabela.getElementsByTagName('tbody')[0]
-    corpoTabela.innerHTML = ""
-
-    for (let horario of horarios) {
-        let linha = corpoTabela.insertRow(0)
-        let celulaDiaSemana = linha.insertCell(0)
-        let celulaHorarioVoluntarios = linha.insertCell(1)
-        let celulaEstacao = linha.insertCell(2)
-        celulaDiaSemana.innerHTML = horario.diaSemana
-        celulaHorarioVoluntarios.innerHTML = horario.horarioVoluntarios
-        celulaEstacao.innerHTML = horario.estacao
-    }
-}
-
-function exibirEnderecos(enderecos) {
-    let div = document.querySelector('.enderecos')
-    div.innerHTML = ""
-
-    for (let endereco of enderecos) {
-        const p = document.createElement('p')
-        p.textContent = `${endereco.estacao}${' - '}${endereco.enderecoEstacao}`
-        div.appendChild(p)
     }
 }
 
@@ -1275,7 +1275,6 @@ async function removerTopicoDesafio() {
         exibeAlerta('.alert-remover-desafios', "Selecione um tópico", ['show', 'alert-danger'], ['d-none'], 2000)
     }
 }
-
 
 async function exibirTopicoDesafios(seletor){
     let select = document.querySelector(seletor)
